@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CategoriaActividadController;
+use App\Http\Controllers\ActividadController;
+use App\Http\Controllers\MiembroController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 
@@ -16,7 +18,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-    Route::resource('customers', CustomerController::class);
+
+    Route::resource('categoriaactividad', CategoriaActividadController::class);
+    Route::resource('actividad', ActividadController::class);
+    Route::resource('miembro', MiembroController::class);
 });
 
 Route::middleware('auth')->group(function () {
