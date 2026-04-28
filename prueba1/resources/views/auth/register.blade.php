@@ -1,77 +1,49 @@
 <x-guest-layout>
-    <div class="min-h-screen bg-[#0E0E12] flex">
+    <div class="card shadow-sm">
+        <div class="card-body p-4 p-md-5">
+            <h1 class="sidebar-title mb-1" style="color: var(--church-text); font-size: 2rem;">Crear cuenta</h1>
+            <div class="mb-3" style="width: 44px; height: 2px; background: linear-gradient(90deg, var(--church-gold), transparent);"></div>
+            <p class="text-muted mb-4">Completa tus datos para acceder al panel de gestión.</p>
 
-        <div class="hidden lg:flex flex-1 relative flex-col justify-end p-12 bg-[#16161C] overflow-hidden">
-            <div class="absolute -top-24 -right-36 w-[480px] h-[480px] rounded-full"
-                 style="background:radial-gradient(circle,rgba(212,175,83,.13) 0%,transparent 70%)"></div>
-            <div class="absolute bottom-20 -left-16 w-[280px] h-[280px] rounded-full"
-                 style="background:radial-gradient(circle,rgba(212,175,83,.08) 0%,transparent 70%)"></div>
-            <div class="absolute inset-0"
-                 style="background-image:repeating-linear-gradient(-45deg,transparent,transparent 36px,rgba(255,255,255,.012) 36px,rgba(255,255,255,.012) 37px)"></div>
+            <form method="POST" action="{{ route('register') }}">
+                @csrf
 
-            <span class="absolute top-10 left-12 font-serif text-2xl tracking-wide text-[#D4AF53]">
-                {{ config('app.name') }}
-            </span>
+                <div class="mb-3">
+                    <label for="name" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Nombre completo</label>
+                    <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
+                        class="form-control @error('name') is-invalid @enderror" placeholder="Tu nombre" />
+                    @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
 
-            <div class="relative z-10">
-                <blockquote class="font-serif italic text-3xl text-[#F0EAD6] leading-snug max-w-md mb-3">
-                    "Cada experto fue alguna vez un principiante."
-                </blockquote>
-                <cite class="text-xs uppercase tracking-widest text-[#F0EAD6]/40 not-italic">— Helen Hayes</cite>
-            </div>
-        </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Correo electrónico</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username"
+                        class="form-control @error('email') is-invalid @enderror" placeholder="tu@correo.com" />
+                    @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
 
-        <div class="flex flex-col justify-center items-center w-full lg:w-[480px] px-8 py-12 bg-[#16161C] border-l border-white/[0.06]">
-            <div class="w-full max-w-sm">
+                <div class="mb-3">
+                    <label for="password" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Contraseña</label>
+                    <input id="password" type="password" name="password" required autocomplete="new-password"
+                        class="form-control @error('password') is-invalid @enderror" placeholder="Mínimo 8 caracteres" />
+                    @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
 
-                <h1 class="font-serif text-[2rem] font-normal text-[#F0EAD6] leading-tight mb-2">Crear cuenta</h1>
-                <div class="w-10 h-0.5 mb-6" style="background:linear-gradient(90deg,#D4AF53,transparent)"></div>
-                <p class="text-sm text-[#F0EAD6]/45 mb-8 leading-relaxed">Únete y comienza tu experiencia.</p>
+                <div class="mb-4">
+                    <label for="password_confirmation" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Confirmar contraseña</label>
+                    <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"
+                        class="form-control @error('password_confirmation') is-invalid @enderror" placeholder="Repite tu contraseña" />
+                    @error('password_confirmation') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
 
-                <form method="POST" action="{{ route('register') }}">
-                    @csrf
+                <button type="submit" class="btn btn-church w-100 py-2">
+                    Crear cuenta
+                </button>
 
-                    <div class="mb-5">
-                        <label for="name" class="block text-[0.7rem] uppercase tracking-widest text-[#F0EAD6]/45 mb-2">Nombre completo</label>
-                        <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Tu nombre"
-                            class="w-full bg-[#252530] border border-white/[0.08] rounded-md text-[#F0EAD6] text-sm font-light px-4 py-3 outline-none placeholder-[#F0EAD6]/20 focus:border-[#D4AF53]/60 transition-colors" />
-                        @error('name') <p class="mt-1.5 text-xs text-[#E07070]">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div class="mb-5">
-                        <label for="email" class="block text-[0.7rem] uppercase tracking-widest text-[#F0EAD6]/45 mb-2">Correo electrónico</label>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" placeholder="tu@correo.com"
-                            class="w-full bg-[#252530] border border-white/[0.08] rounded-md text-[#F0EAD6] text-sm font-light px-4 py-3 outline-none placeholder-[#F0EAD6]/20 focus:border-[#D4AF53]/60 transition-colors" />
-                        @error('email') <p class="mt-1.5 text-xs text-[#E07070]">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div class="mb-5">
-                        <label for="password" class="block text-[0.7rem] uppercase tracking-widest text-[#F0EAD6]/45 mb-2">Contraseña</label>
-                        <input id="password" type="password" name="password" required autocomplete="new-password" placeholder="Mínimo 8 caracteres"
-                            class="w-full bg-[#252530] border border-white/[0.08] rounded-md text-[#F0EAD6] text-sm font-light px-4 py-3 outline-none placeholder-[#F0EAD6]/20 focus:border-[#D4AF53]/60 transition-colors" />
-                        @error('password') <p class="mt-1.5 text-xs text-[#E07070]">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div class="mb-8">
-                        <label for="password_confirmation" class="block text-[0.7rem] uppercase tracking-widest text-[#F0EAD6]/45 mb-2">Confirmar contraseña</label>
-                        <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="Repite tu contraseña"
-                            class="w-full bg-[#252530] border border-white/[0.08] rounded-md text-[#F0EAD6] text-sm font-light px-4 py-3 outline-none placeholder-[#F0EAD6]/20 focus:border-[#D4AF53]/60 transition-colors" />
-                        @error('password_confirmation') <p class="mt-1.5 text-xs text-[#E07070]">{{ $message }}</p> @enderror
-                    </div>
-
-                    <button type="submit"
-                        class="w-full py-3 rounded-md text-[#0E0E12] text-sm font-medium uppercase tracking-widest hover:opacity-85 hover:-translate-y-px active:translate-y-0 transition-all"
-                        style="background:linear-gradient(135deg,#D4AF53 0%,#B8952F 100%)">
-                        Crear cuenta
-                    </button>
-
-                    <p class="text-center mt-5 text-xs text-[#F0EAD6]/40">
-                        ¿Ya tienes cuenta?
-                        <a href="{{ route('login') }}" class="text-[#D4AF53] hover:text-[#EDD98A] transition-colors">Inicia sesión</a>
-                    </p>
-                </form>
-
-            </div>
+                <p class="text-center mt-3 mb-0 text-muted small">
+                    ¿Ya tienes cuenta? <a href="{{ route('login') }}" class="text-decoration-none" style="color: var(--church-gold);">Inicia sesión</a>
+                </p>
+            </form>
         </div>
     </div>
 </x-guest-layout>

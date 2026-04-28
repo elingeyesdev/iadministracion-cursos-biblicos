@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
@@ -13,8 +13,21 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        Role::firstOrCreate(['name' => 'administrador']);
-        Role::firstOrCreate(['name' => 'docente']);
+        foreach (['administrador', 'usuario'] as $name) {
+            Role::query()->firstOrCreate([
+                'name' => $name,
+                'guard_name' => 'web',
+            ]);
+        }
+
+        // Breeze roles are stored directly in users.role.
+        // Ensure existing users have at least the "usuario" role.
+        User::query()->whereNull('role')->update(['role' => 'usuario']);
+
+        // Force user #1 to be administrator when present.
+        $adminUser = User::query()->find(1);
+        if ($adminUser && $adminUser->role !== 'administrador') {
+            $adminUser->update(['role' => 'administrador']);
+        }
     }
 }

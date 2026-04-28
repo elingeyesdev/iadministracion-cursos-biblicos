@@ -2,71 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use Illuminate\View\View;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request): View
     {
-        $roles = Role::all();
-        return view('roles.index', compact('roles'));
+        $busqueda = trim((string) $request->input('busqueda', ''));
+        $roles = Role::query()
+            ->when($busqueda !== '', function ($query) use ($busqueda) {
+                $query->where('name', 'like', "%{$busqueda}%");
+            })
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('roles.index', compact('roles', 'busqueda'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(Role $role): View
     {
-        return view('roles.create');
+        $usuariosConRol = User::query()->where('role', $role->name)->count();
+
+        return view('roles.show', compact('role', 'usuariosConRol'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function destroy(Role $role): RedirectResponse
     {
-        $request->validate(['name' => 'required|unique:roles']);
-        Role::create(['name' => $request->name]);
-        return redirect()->route('roles.index')->with('success', 'Rol creado correctamente');
-    }
+        if (in_array($role->name, ['administrador', 'usuario'], true)) {
+            return redirect()
+                ->route('roles.index')
+                ->with('error', 'No se puede eliminar un rol base del sistema.');
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        
-    }
+        $usersCount = User::query()->where('role', $role->name)->count();
+        if ($usersCount > 0) {
+            return redirect()
+                ->route('roles.index')
+                ->with('error', 'No se puede eliminar un rol asignado a usuarios.');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        return view('roles.edit', compact('role'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $request->validate(['name' => 'required|unique:roles,name,' . $role->id]);
-        $role->update(['name' => $request->name]);
-        return redirect()->route('roles.index')->with('success', 'Rol actualizado correctamente');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
         $role->delete();
-        return redirect()->route('roles.index')->with('success', 'Rol eliminado correctamente');
-    
+
+        return redirect()
+            ->route('roles.index')
+            ->with('success', 'Rol eliminado correctamente.');
     }
 }

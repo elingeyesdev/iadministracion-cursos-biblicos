@@ -1,0 +1,74 @@
+@extends('layouts.app')
+
+@section('title', 'Asignar roles')
+
+@section('content')
+
+<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
+    <div>
+        <h1 class="sidebar-title" style="font-size:2rem;">Asignar roles</h1>
+        <p class="text-muted mb-0">Elige un usuario y define su rol en el sistema.</p>
+    </div>
+</div>
+
+<form method="GET" action="{{ route('asignar-roles.index') }}" class="mb-3">
+    <div class="input-group" style="max-width: 520px;">
+        <span class="input-group-text">🔍</span>
+        <input type="text" name="buscar" value="{{ $buscar }}" class="form-control" placeholder="Buscar por nombre o correo…">
+        <button class="btn btn-outline-church" type="submit">Buscar</button>
+        @if($buscar)
+            <a class="btn btn-outline-secondary" href="{{ route('asignar-roles.index') }}">✕</a>
+        @endif
+    </div>
+    @if($buscar)
+        <div class="text-muted small mt-2">Resultados para: <strong>"{{ $buscar }}"</strong></div>
+    @endif
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover table-striped mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 28%;">Nombre</th>
+                    <th>Correo</th>
+                    <th style="width: 30%;">Rol actual</th>
+                    <th class="text-end" style="width: 14%;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($usuarios as $u)
+                    <tr>
+                        <td>{{ $u->name }}</td>
+                        <td class="text-muted">{{ $u->email }}</td>
+                        <td>
+                            <span class="badge me-1" style="background: rgba(212,175,83,.12); color: var(--church-gold); border: 1px solid rgba(212,175,83,.35);">
+                                {{ $u->role ?? 'usuario' }}
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-church" href="{{ route('asignar-roles.edit', $u) }}">Asignar roles</a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-5">No se encontraron usuarios.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    @if($usuarios->hasPages())
+        <div class="card-body py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="text-muted small">
+                Mostrando {{ $usuarios->firstItem() }}–{{ $usuarios->lastItem() }} de {{ $usuarios->total() }} usuarios
+            </div>
+            <div>
+                {{ $usuarios->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
+    @endif
+</div>
+
+@endsection

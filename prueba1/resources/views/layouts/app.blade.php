@@ -1,4 +1,3 @@
-{{-- resources/views/layouts/app.blade.php --}}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,67 +8,61 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
-<body class="bg-cream min-h-screen bg-cross-pattern">
+<body class="church-dark">
+    <div class="d-flex min-vh-100">
+        {{-- Desktop sidebar --}}
+        <aside class="d-none d-lg-block sidebar">
+            @include('layouts.sidebar')
+        </aside>
 
-    {{-- NAVBAR --}}
-    <nav class="bg-stone-900 border-b-2 border-gold-500 shadow-lg">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                {{-- Brand --}}
-                <div class="flex items-center gap-3">
-                    <span class="text-gold-400 text-xl">✝</span>
-                    <div>
-                        <a href="/dashboard" class="font-display text-gold-300 text-xl font-semibold tracking-wide leading-none">
-                            Mi Iglesia
-                        </a>
-                        <p class="text-stone-500 text-xs tracking-widest uppercase">Sistema de Gestión</p>
-                    </div>
-                </div>
-
-                {{-- Nav links --}}
-                <div class="hidden md:flex items-center gap-6">
-                    <a href="{{ route('categoriaactividad.index') }}"
-                       class="text-stone-300 hover:text-gold-300 text-sm font-medium tracking-wide transition-colors">
-                        Categorías
-                    </a>
-                    <a href="/dashboard"
-                       class="text-stone-300 hover:text-gold-300 text-sm font-medium tracking-wide transition-colors">
-                        Dashboard
-                    </a>
-                    {{-- Logout --}}
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit"
-                            class="text-stone-500 hover:text-stone-300 text-sm transition-colors">
-                            Salir
-                        </button>
-                    </form>
-                </div>
+        {{-- Mobile offcanvas sidebar --}}
+        <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
+            <div class="offcanvas-body p-0">
+                @include('layouts.sidebar')
             </div>
         </div>
-    </nav>
 
-    {{-- BREADCRUMB + ALERTS --}}
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-        @if(session('success'))
-            <div class="flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg px-4 py-3 mb-5 text-sm shadow-sm">
-                <span class="text-emerald-500 text-base">✓</span>
-                {{ session('success') }}
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-800 rounded-lg px-4 py-3 mb-5 text-sm shadow-sm">
-                <span class="text-red-500 text-base">✗</span>
-                {{ session('error') }}
-            </div>
-        @endif
+        <div class="flex-grow-1">
+            <header class="border-bottom" style="border-color: var(--church-border) !important; background: var(--church-surface);">
+                <div class="container-fluid py-3 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-outline-church d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+                            Menú
+                        </button>
+                        <div class="d-none d-lg-block text-muted small" style="letter-spacing:.18em; text-transform:uppercase;">
+                            Sistema de gestión eclesiástica
+                        </div>
+                    </div>
 
-        @yield('content')
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="text-muted small d-none d-sm-block">
+                            {{ auth()->user()->email ?? '' }}
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container-fluid py-4">
+                @if(session('success'))
+                    <div class="alert alert-success border-0" role="alert">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="alert alert-danger border-0" role="alert">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @yield('content')
+            </main>
+
+            <footer class="container-fluid pb-4 text-center">
+                <div class="text-muted small">
+                    ✝ Sistema de Gestión
+                </div>
+            </footer>
+        </div>
     </div>
-
-    <footer class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pb-8 text-center">
-        <span class="text-gold-400 text-base">✝</span>
-        <p class="text-stone-400 text-xs mt-1 tracking-widest uppercase">Sistema de Gestión Eclesiástica</p>
-    </footer>
 </body>
 </html>
