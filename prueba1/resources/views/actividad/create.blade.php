@@ -77,6 +77,14 @@
                     @endforeach
                     @error('estado') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                 </div>
+
+                <div class="col-12">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="es_pago" id="es_pago" value="1"
+                               @checked(old('es_pago'))>
+                        <label class="form-check-label" for="es_pago">Esta actividad es de pago</label>
+                    </div>
+                </div>
             </div>
             <div class="d-flex gap-2 mt-4">
                 <button type="submit" class="btn btn-church">Guardar actividad</button>

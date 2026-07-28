@@ -1,74 +1,113 @@
 @extends('layouts.app')
 
-@section('title', 'Asignar roles')
+@section('title', 'Asignar Roles')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item active text-white" aria-current="page">Asignar Roles</li>
+@endsection
 
 @section('content')
-
-<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
-    <div>
-        <h1 class="sidebar-title" style="font-size:2rem;">Asignar roles</h1>
-        <p class="text-muted mb-0">Elige un usuario y define su rol en el sistema.</p>
-    </div>
-</div>
-
-<form method="GET" action="{{ route('asignar-roles.index') }}" class="mb-3">
-    <div class="input-group" style="max-width: 520px;">
-        <span class="input-group-text">🔍</span>
-        <input type="text" name="buscar" value="{{ $buscar }}" class="form-control" placeholder="Buscar por nombre o correo…">
-        <button class="btn btn-outline-church" type="submit">Buscar</button>
-        @if($buscar)
-            <a class="btn btn-outline-secondary" href="{{ route('asignar-roles.index') }}">✕</a>
-        @endif
-    </div>
-    @if($buscar)
-        <div class="text-muted small mt-2">Resultados para: <strong>"{{ $buscar }}"</strong></div>
-    @endif
-</form>
-
-<div class="card shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover table-striped mb-0">
-            <thead>
-                <tr>
-                    <th style="width: 28%;">Nombre</th>
-                    <th>Correo</th>
-                    <th style="width: 30%;">Rol actual</th>
-                    <th class="text-end" style="width: 14%;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($usuarios as $u)
-                    <tr>
-                        <td>{{ $u->name }}</td>
-                        <td class="text-muted">{{ $u->email }}</td>
-                        <td>
-                            <span class="badge me-1" style="background: rgba(212,175,83,.12); color: var(--church-gold); border: 1px solid rgba(212,175,83,.35);">
-                                {{ $u->role ?? 'usuario' }}
-                            </span>
-                        </td>
-                        <td class="text-end">
-                            <a class="btn btn-sm btn-church" href="{{ route('asignar-roles.edit', $u) }}">Asignar roles</a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="text-center text-muted py-5">No se encontraron usuarios.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+<div class="container-fluid px-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="h2 text-white mb-1">Asignar Roles</h1>
+            <p class="text-muted mb-0">Selecciona un usuario para administrar, activar o desactivar sus roles en el sistema.</p>
+        </div>
     </div>
 
-    @if($usuarios->hasPages())
-        <div class="card-body py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <div class="text-muted small">
-                Mostrando {{ $usuarios->firstItem() }}–{{ $usuarios->lastItem() }} de {{ $usuarios->total() }} usuarios
-            </div>
-            <div>
-                {{ $usuarios->links('pagination::bootstrap-5') }}
+    <!-- Buscador en tiempo real -->
+    <div class="card mb-4 border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
+        <div class="card-body">
+            <div class="input-group">
+                <span class="input-group-text bg-transparent text-muted border-secondary">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" id="realtimeSearch" class="form-control bg-transparent text-white border-secondary" placeholder="Buscar usuario por nombre, email o username...">
             </div>
         </div>
-    @endif
-</div>
+    </div>
 
+    <div class="card border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="usuariosTable" style="color: #c5c5d2;">
+                <thead class="table-dark" style="background-color: #151521;">
+                    <tr>
+                        <th scope="col" class="border-0">Nombre</th>
+                        <th scope="col" class="border-0">Email</th>
+                        <th scope="col" class="border-0">Username</th>
+                        <th scope="col" class="border-0">Roles Asignados</th>
+                        <th scope="col" class="border-0 text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($usuarios as $u)
+                        <tr class="usuario-row" data-name="{{ strtolower($u->name) }}" data-email="{{ strtolower($u->email) }}" data-username="{{ strtolower(optional($u->profile)->username) }}">
+                            <td class="fw-bold text-white">{{ $u->name }}</td>
+                            <td>{{ $u->email }}</td>
+                            <td>{{ optional($u->profile)->username ?? '-' }}</td>
+                            <td>
+                                @forelse($u->roles as $r)
+                                    @php
+                                        $badgeClass = 'bg-secondary';
+                                        if ($r->nombre === 'Administrador') $badgeClass = 'bg-danger';
+                                        elseif ($r->nombre === 'Secretario') $badgeClass = 'bg-primary';
+                                        elseif ($r->nombre === 'Tesorero') $badgeClass = 'bg-warning text-dark';
+                                    @endphp
+                                    <span class="badge {{ $badgeClass }} me-1">{{ $r->nombre }}</span>
+                                @empty
+                                    <span class="badge bg-dark text-muted">Sin Roles</span>
+                                @endforelse
+                            </td>
+                            <td class="text-end">
+                                <a href="{{ route('asignar-roles.edit', $u->id) }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-shield-check me-1"></i> Asignar Roles
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No hay usuarios registrados.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        
+        @if($usuarios->hasPages())
+            <div class="card-footer border-0 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #151521;">
+                <div class="text-muted small">
+                    Mostrando {{ $usuarios->firstItem() }}–{{ $usuarios->lastItem() }} de {{ $usuarios->total() }} usuarios
+                </div>
+                <div>
+                    {{ $usuarios->links('pagination::bootstrap-5') }}
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Buscador en tiempo real
+        const searchInput = document.getElementById('realtimeSearch');
+        const rows = document.querySelectorAll('.usuario-row');
+
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value.toLowerCase().trim();
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name') || '';
+                const email = row.getAttribute('data-email') || '';
+                const username = row.getAttribute('data-username') || '';
+                
+                if (name.includes(query) || email.includes(query) || username.includes(query)) {
+                    row.style.setProperty('display', '', 'important');
+                } else {
+                    row.style.setProperty('display', 'none', 'important');
+                }
+            });
+        });
+    });
+</script>
 @endsection

@@ -15,6 +15,12 @@ class RoleMiddleware
     {
         $user = $request->user();
 
+        \Illuminate\Support\Facades\Log::info('RoleMiddleware Check', [
+            'user' => $user ? $user->email : 'null',
+            'user_role' => $user ? $user->role : 'null',
+            'allowed_roles' => $roles
+        ]);
+
         if (! $user) {
             abort(403);
         }

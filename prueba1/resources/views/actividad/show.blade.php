@@ -59,11 +59,88 @@
             <dd class="col-sm-9 text-muted">{{ $actividad->created_at->format('d/m/Y H:i') }}</dd>
             <dt class="col-sm-3 text-muted">Actualizado</dt>
             <dd class="col-sm-9 text-muted">{{ $actividad->updated_at->format('d/m/Y H:i') }}</dd>
+            <dt class="col-sm-3 text-muted">¿Es de pago?</dt>
+            <dd class="col-sm-9">
+                @if($actividad->es_pago)
+                    <span class="badge" style="background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.35);">Sí, es de pago</span>
+                @else
+                    <span class="badge" style="background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.35);">No, es gratis</span>
+                @endif
+            </dd>
         </dl>
     </div>
 </div>
 
-<div class="card shadow-sm border-danger border-opacity-50">
+<div class="card shadow-sm mb-3">
+    <div class="card-body p-4">
+        <h3 class="h5 mb-3">Participantes</h3>
+        @if($actividad->participantes->count() > 0)
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            @if($actividad->es_pago)
+                                <th>Estado de pago</th>
+                                <th>Acciones</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($actividad->participantes as $participante)
+                            <tr>
+                                <td>{{ $participante->nombre }}</td>
+                                @if($actividad->es_pago)
+                                    <td>
+                                        @if($participante->pivot->pago_realizado)
+                                            <span class="badge" style="background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.35);">Pagó</span>
+                                        @else
+                                            <span class="badge" style="background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.35);">No pagó</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="{{ route('actividad.actualizarPago', [$actividad, $participante]) }}" style="display:inline;">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="pago_realizado" value="{{ $participante->pivot->pago_realizado ? '0' : '1' }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                {{ $participante->pivot->pago_realizado ? 'Marcar no pagado' : 'Marcar como pagado' }}
+                                            </button>
+                                        </form>
+                                    </td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <p class="text-muted mb-0">Sin participantes asignados.</p>
+        @endif
+    </div>
+</div>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body p-4">
+        <h3 class="h5 mb-3">Asignar participantes</h3>
+        <form method="POST" action="{{ route('actividad.asignarParticipantes', $actividad) }}">
+            @csrf
+            <div class="mb-3">
+                <label for="miembro_ids" class="form-label">Miembros</label>
+                @php $participantesIds = $actividad->participantes->pluck('id')->toArray(); @endphp
+                <select id="miembro_ids" name="miembro_ids[]" class="form-select" multiple>
+                    @foreach($miembros as $miembro)
+                        <option value="{{ $miembro->id }}" @selected(in_array($miembro->id, $participantesIds))>
+                            {{ $miembro->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+                <small class="text-muted">Selecciona los miembros que participarán en esta actividad. Al guardar se reemplazarán los participantes anteriores.</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Actualizar participantes</button>
+        </form>
+    </div>
+</div>
     <div class="card-body p-4">
         <div class="text-muted small mb-2" style="letter-spacing:.18em; text-transform:uppercase;">Zona de peligro</div>
         <p class="text-muted mb-3">Una vez eliminada, esta acción no se puede deshacer.</p>

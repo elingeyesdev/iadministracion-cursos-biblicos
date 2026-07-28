@@ -3,33 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Actividad extends Model
 {
-    protected $table = 'actividad';
+    protected $table = 'actividades';
 
     protected $fillable = [
+        'id_ministerio',
         'nombre',
-        'descripcion',
-        'fecha_inicio',
-        'fecha_fin',
+        'fecha',
+        'lugar',
         'estado',
-        'id_categoria',
-        'id_responsable',
+        'descripcion'
     ];
 
-    protected $casts = [
-        'fecha_inicio' => 'date',
-        'fecha_fin' => 'date',
-    ];
-
-    public function categoria()
+    public function ministerio(): BelongsTo
     {
-        return $this->belongsTo(CategoriaActividad::class, 'id_categoria');
+        return $this->belongsTo(Ministerio::class, 'id_ministerio');
     }
 
-    public function responsable()
+    public function seguimientos(): HasMany
     {
-        return $this->belongsTo(Miembro::class, 'id_responsable');
+        return $this->hasMany(SeguimientoActividad::class, 'id_actividad');
     }
 }

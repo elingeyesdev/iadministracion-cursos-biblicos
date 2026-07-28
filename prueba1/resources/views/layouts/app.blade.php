@@ -3,15 +3,26 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Iglesia') — Sistema de Gestión</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom styling -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="church-dark">
     <div class="d-flex min-vh-100">
         {{-- Desktop sidebar --}}
-        <aside class="d-none d-lg-block sidebar">
+        <aside class="d-none d-lg-block sidebar flex-shrink-0">
             @include('layouts.sidebar')
         </aside>
 
@@ -22,47 +33,90 @@
             </div>
         </div>
 
-        <div class="flex-grow-1">
+        <div class="flex-grow-1 d-flex flex-column" style="min-width: 0;">
             <header class="border-bottom" style="border-color: var(--church-border) !important; background: var(--church-surface);">
                 <div class="container-fluid py-3 d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-2">
                         <button class="btn btn-outline-church d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-                            Menú
+                            <i class="bi bi-list"></i> Menú
                         </button>
-                        <div class="d-none d-lg-block text-muted small" style="letter-spacing:.18em; text-transform:uppercase;">
-                            Sistema de gestión eclesiástica
+                        <span class="fs-4 fw-bold text-white d-lg-none">Sistema Iglesia</span>
+                        <div class="d-none d-lg-block text-muted small fw-semibold" style="letter-spacing:.18em; text-transform:uppercase;">
+                            ⛪ Sistema de Gestión Eclesiástica
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center gap-3">
                         <div class="text-muted small d-none d-sm-block">
-                            {{ auth()->user()->email ?? '' }}
+                            <i class="bi bi-envelope me-1"></i> {{ auth()->user()->email ?? '' }}
+                        </div>
+                        <div class="d-flex gap-1">
+                            @forelse(auth()->user()->roles()->where('role_user.estado', 'activo')->get() as $role)
+                                <span class="badge bg-gold-500 text-dark fw-bold">{{ $role->nombre }}</span>
+                            @empty
+                                <span class="badge bg-secondary text-white fw-bold">Usuario</span>
+                            @endforelse
                         </div>
                     </div>
                 </div>
             </header>
 
-            <main class="container-fluid py-4">
-                @if(session('success'))
-                    <div class="alert alert-success border-0" role="alert">
-                        {{ session('success') }}
-                    </div>
-                @endif
-                @if(session('error'))
-                    <div class="alert alert-danger border-0" role="alert">
-                        {{ session('error') }}
-                    </div>
-                @endif
+            <main class="container-fluid py-4 flex-grow-1">
+                <!-- Breadcrumb -->
+                <div class="mb-4">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 py-2 px-3 rounded" style="background-color: var(--church-surface); border: 1px solid var(--church-border);">
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-gold-500 text-decoration-none"><i class="bi bi-house-door-fill me-1"></i>Inicio</a></li>
+                            @yield('breadcrumb')
+                        </ol>
+                    </nav>
+                </div>
 
                 @yield('content')
             </main>
 
-            <footer class="container-fluid pb-4 text-center">
+            <footer class="container-fluid py-3 text-center border-top mt-auto" style="border-color: var(--church-border) !important; background: var(--church-surface);">
                 <div class="text-muted small">
-                    ✝ Sistema de Gestión
+                    ✝ Sistema de Gestión Eclesiástica © {{ date('Y') }}
                 </div>
             </footer>
         </div>
     </div>
+
+    <!-- Bootstrap 5 Bundle JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Success and Error alerts from session -->
+    @if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: {!! json_encode(session('success')) !!},
+            timer: 2500,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            timerProgressBar: true
+        });
+    </script>
+    @endif
+    
+    @if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: {!! json_encode(session('error')) !!},
+            timer: 3500,
+            showConfirmButton: true
+        });
+    </script>
+    @endif
+
+    @yield('scripts')
 </body>
 </html>

@@ -3,26 +3,42 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Miembro extends Model
 {
-    protected $table = 'miembro';
+    use SoftDeletes;
+
+    protected $table = 'miembros';
 
     protected $fillable = [
         'nombre',
-        'apellido',
-        'correo',
+        'email',
         'telefono',
-        'rol',
+        'f_nacimiento',
         'estado',
+        'direccion',
+        'fecha_ingreso',
+        'sexo'
     ];
 
-    protected $casts = [
-        'estado' => 'boolean',
-    ];
-
-    public function actividades()
+    public function docente(): HasOne
     {
-        return $this->hasMany(Actividad::class, 'id_responsable');
+        return $this->hasOne(Docente::class, 'id_miembro');
+    }
+
+    public function sesiones(): BelongsToMany
+    {
+        return $this->belongsToMany(Sesion::class, 'registra', 'id_miembro', 'id_sesion')
+                    ->withPivot('estado', 'observacion')
+                    ->withTimestamps();
+    }
+
+    public function contratos(): HasMany
+    {
+        return $this->hasMany(Contrato::class, 'id_miembro');
     }
 }
