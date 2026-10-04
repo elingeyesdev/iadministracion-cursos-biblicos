@@ -28,6 +28,11 @@ class Curso extends Model
         return $this->hasMany(Sesion::class, 'id_curso');
     }
 
+    public function inscripciones(): HasMany
+    {
+        return $this->hasMany(Inscripcion::class, 'curso_id');
+    }
+
     public function docentes(): BelongsToMany
     {
         return $this->belongsToMany(Docente::class, 'docente_curso', 'id_curso', 'id_docente')

@@ -41,4 +41,14 @@ class Miembro extends Model
     {
         return $this->hasMany(Contrato::class, 'id_miembro');
     }
+
+    public function inscripciones(): HasMany
+    {
+        return $this->hasMany(Inscripcion::class, 'miembro_id');
+    }
+
+    public function asistencias(): HasMany
+    {
+        return $this->hasMany(Asistencia::class, 'miembro_id');
+    }
 }

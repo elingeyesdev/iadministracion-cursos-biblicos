@@ -18,20 +18,48 @@
 
     <div class="flex-grow-1 overflow-auto">
         <ul class="nav nav-pills flex-column gap-1">
+            <!-- PRINCIPAL -->
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    <i class="bi bi-speedometer2 me-2 text-warning"></i> Principal
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('biblia.index') ? 'active' : '' }}" href="{{ route('biblia.index') }}">
-                    <i class="bi bi-book-half me-2 text-warning"></i> Buscador Bíblico
+            <!-- ACCESO Y SEGURIDAD COLLAPSIBLE MENU -->
+            @if(auth()->user()->esAdmin())
+            <li class="nav-item mt-3" x-data="{ openSec: {{ request()->is('usuarios*', 'roles*', 'asignar-roles*') ? 'true' : 'false' }} }">
+                <a class="nav-link d-flex align-items-center justify-content-between text-white" 
+                   @click.prevent="openSec = !openSec"
+                   href="#" 
+                   style="background: rgba(255,255,255,0.03); cursor: pointer;">
+                    <span><i class="bi bi-shield-lock me-2 text-warning"></i> Acceso y Seguridad</span>
+                    <i class="bi" :class="openSec ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
                 </a>
+                
+                <div x-show="openSec" class="mt-1 ps-2">
+                    <ul class="nav nav-pills flex-column gap-1 mt-1 border-start border-secondary ps-2">
+                        <li class="nav-item">
+                            <a class="nav-link py-1 {{ request()->routeIs('usuarios.*') ? 'active' : '' }}" href="{{ route('usuarios.index') }}">
+                                <i class="bi bi-person-gear me-2"></i> Administrar Usuarios
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-1 {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
+                                <i class="bi bi-shield-check me-2"></i> Administrar Roles
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-1 {{ request()->routeIs('asignar-roles.*') ? 'active' : '' }}" href="{{ route('asignar-roles.index') }}">
+                                <i class="bi bi-shield-fill-check me-2"></i> Roles Usuario
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
+            @endif
 
-            <!-- PARAMETRIZACIÓN COLLAPSIBLE MENU (AlpineJS version without x-collapse) -->
-            <li class="nav-item mt-3" x-data="{ openParam: {{ request()->is('miembros*', 'docentes*', 'ministerios*', 'actividades*', 'seguimientos*', 'cursos*', 'sesiones*', 'ingresos*', 'contratos*', 'egresos*') ? 'true' : 'false' }} }">
+            <!-- PARAMETRIZACIÓN COLLAPSIBLE MENU -->
+            <li class="nav-item mt-3" x-data="{ openParam: {{ request()->is('miembros*', 'cultos*', 'actividades*', 'cursos*', 'cargos*', 'lideres*', 'ministerios*', 'docentes*', 'seguimientos*', 'contratos*') ? 'true' : 'false' }} }">
                 <a class="nav-link d-flex align-items-center justify-content-between text-white" 
                    @click.prevent="openParam = !openParam"
                    href="#" 
@@ -52,7 +80,13 @@
                             </a>
                         </li>
                         @endif
-                        
+
+                        <li class="nav-item">
+                            <a class="nav-link py-1 {{ request()->routeIs('lideres.*') ? 'active' : '' }}" href="{{ route('lideres.index') }}">
+                                <i class="bi bi-person-badge me-2"></i> Líderes Iglesia
+                            </a>
+                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('docentes.*') ? 'active' : '' }}" href="{{ route('docentes.index') }}">
                                 <i class="bi bi-mortarboard me-2"></i> Docentes
@@ -60,11 +94,15 @@
                         </li>
 
                         <!-- ORGANIZACIÓN -->
-                        @if(auth()->user()->tieneRol('Administrador') || auth()->user()->tieneRol('Secretario'))
                         <li class="nav-item text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Organización</li>
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('ministerios.*') ? 'active' : '' }}" href="{{ route('ministerios.index') }}">
                                 <i class="bi bi-diagram-3 me-2"></i> Ministerios
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-1 {{ request()->routeIs('cargos.*') ? 'active' : '' }}" href="{{ route('cargos.index') }}">
+                                <i class="bi bi-briefcase me-2"></i> Cargos
                             </a>
                         </li>
                         <li class="nav-item">
@@ -77,6 +115,20 @@
                                 <i class="bi bi-journal-check me-2"></i> Seguimientos
                             </a>
                         </li>
+
+                        <!-- FINANZAS PARAM -->
+                        @if(auth()->user()->tieneRol('Administrador') || auth()->user()->tieneRol('Tesorero'))
+                        <li class="nav-item text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Finanzas</li>
+                        <li class="nav-item">
+                            <a class="nav-link py-1 {{ request()->routeIs('cultos.*') ? 'active' : '' }}" href="{{ route('cultos.index') }}">
+                                <i class="bi bi-calendar-heart me-2"></i> Cultos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-1 {{ request()->routeIs('contratos.*') ? 'active' : '' }}" href="{{ route('contratos.index') }}">
+                                <i class="bi bi-file-earmark-text me-2"></i> Contratos
+                            </a>
+                        </li>
                         @endif
 
                         <!-- ACADÉMICO -->
@@ -86,9 +138,35 @@
                                 <i class="bi bi-book me-2"></i> Cursos
                             </a>
                         </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- TRANSACCIONAL COLLAPSIBLE MENU -->
+            <li class="nav-item mt-3" x-data="{ openTran: {{ request()->is('sesiones*', 'inscripciones*', 'asistencia*', 'ingresos*', 'egresos*') ? 'true' : 'false' }} }">
+                <a class="nav-link d-flex align-items-center justify-content-between text-white" 
+                   @click.prevent="openTran = !openTran"
+                   href="#" 
+                   style="background: rgba(255,255,255,0.03); cursor: pointer;">
+                    <span><i class="bi bi-arrow-left-right me-2 text-warning"></i> Transaccional</span>
+                    <i class="bi" :class="openTran ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
+                </a>
+                
+                <div x-show="openTran" class="mt-1 ps-2">
+                    <ul class="nav nav-pills flex-column gap-1 mt-1 border-start border-secondary ps-2">
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('sesiones.*') ? 'active' : '' }}" href="{{ route('sesiones.index') }}">
                                 <i class="bi bi-journal-text me-2"></i> Sesiones
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-1 {{ request()->routeIs('inscripciones.*') ? 'active' : '' }}" href="{{ route('inscripciones.index') }}">
+                                <i class="bi bi-journal-richtext me-2"></i> Inscripciones
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-1 {{ request()->routeIs('asistencia.*') ? 'active' : '' }}" href="{{ route('asistencia.index') }}">
+                                <i class="bi bi-clipboard-check me-2"></i> Asistencia
                             </a>
                         </li>
 
@@ -96,18 +174,8 @@
                         @if(auth()->user()->tieneRol('Administrador') || auth()->user()->tieneRol('Tesorero'))
                         <li class="nav-item text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Finanzas</li>
                         <li class="nav-item">
-                            <a class="nav-link py-1 {{ request()->routeIs('cultos.*') ? 'active' : '' }}" href="{{ route('cultos.index') }}">
-                                <i class="bi bi-calendar-heart me-2"></i> Cultos
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('ingresos.*') ? 'active' : '' }}" href="{{ route('ingresos.index') }}">
                                 <i class="bi bi-cash-coin me-2"></i> Ingresos
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link py-1 {{ request()->routeIs('contratos.*') ? 'active' : '' }}" href="{{ route('contratos.index') }}">
-                                <i class="bi bi-file-earmark-text me-2"></i> Contratos
                             </a>
                         </li>
                         <li class="nav-item">
@@ -120,38 +188,26 @@
                 </div>
             </li>
 
-            <!-- ACCESO Y SEGURIDAD COLLAPSIBLE MENU -->
-            @if(auth()->user()->esAdmin())
-            <li class="nav-item mt-3" x-data="{ openSec: {{ request()->is('usuarios*', 'roles*', 'asignar-roles*') ? 'true' : 'false' }} }">
+            <!-- REPORTE COLLAPSIBLE MENU -->
+            <li class="nav-item mt-3" x-data="{ openRep: {{ request()->is('reportes*') ? 'true' : 'false' }} }">
                 <a class="nav-link d-flex align-items-center justify-content-between text-white" 
-                   @click.prevent="openSec = !openSec"
+                   @click.prevent="openRep = !openRep"
                    href="#" 
                    style="background: rgba(255,255,255,0.03); cursor: pointer;">
-                    <span><i class="bi bi-shield-lock me-2 text-warning"></i> Acceso y Seguridad</span>
-                    <i class="bi" :class="openSec ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
+                    <span><i class="bi bi-graph-up me-2 text-warning"></i> Reporte</span>
+                    <i class="bi" :class="openRep ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
                 </a>
                 
-                <div x-show="openSec" class="mt-1 ps-2">
+                <div x-show="openRep" class="mt-1 ps-2">
                     <ul class="nav nav-pills flex-column gap-1 mt-1 border-start border-secondary ps-2">
                         <li class="nav-item">
-                            <a class="nav-link py-1 {{ request()->routeIs('usuarios.*') ? 'active' : '' }}" href="{{ route('usuarios.index') }}">
-                                <i class="bi bi-person-gear me-2"></i> Usuarios
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link py-1 {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
-                                <i class="bi bi-shield-check me-2"></i> Roles
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link py-1 {{ request()->routeIs('asignar-roles.*') ? 'active' : '' }}" href="{{ route('asignar-roles.index') }}">
-                                <i class="bi bi-shield-fill-check me-2"></i> Asignar Roles
+                            <a class="nav-link py-1 {{ request()->routeIs('reportes.*') ? 'active' : '' }}" href="{{ route('reportes.index') }}">
+                                <i class="bi bi-graph-up me-2"></i> Reportes
                             </a>
                         </li>
                     </ul>
                 </div>
             </li>
-            @endif
         </ul>
     </div>
 

@@ -1,0 +1,365 @@
+================================================================================
+INFORME DE SEGURIDAD — OWASP ASVS 4.0.3 (Nivel 1)
+================================================================================
+Proyecto analizado : C:\laragon\www\proyecto (Laravel 13.22.0)
+Estándar           : OWASP Application Security Verification Standard 4.0.3
+Nivel objetivo     : ASVS Nivel 1 (mínimo exigido para todas las aplicaciones)
+Fecha del informe  : 2026-09-08
+Herramientas       : php artisan test (9/9), verificación HTTP real (curl)
+
+Este informe documenta, para cada control implementado:
+  1) Qué exige el control ASVS.
+  2) Cómo funciona el código actual (flujo explicado).
+  3) Qué afecta / qué protege.
+  4) En qué líneas de código está implementado.
+
+================================================================================
+RESUMEN EJECUTIVO
+================================================================================
+Estado global del proyecto frente a ASVS Nivel 1:
+
+  V1  Arquitectura, Diseño y Modelado de Amenazas   -> PARCIAL (sin modelado)
+  V2  Autenticación                                  -> CUMPLE en lo esencial *
+  V3  Gestión de Sesiones                            -> CUMPLE (defaults Laravel) *
+  V4  Control de Acceso                               -> CUMPLE (middleware por rol)
+  V5  Validación, Desinfección y Codificación         -> PARCIAL (validación OK)
+  V6  Criptografía almacenada                         -> CUMPLE (bcrypt cost 12)
+  V7  Manejo y Registro de Errores                    -> PARCIAL (falta auditoría)
+  V8  Protección de Datos                             -> PARCIAL
+  V9  Comunicación (TLS)                              -> NO (requiere despliegue TLS)
+  V10 Código Malicioso                                -> PARCIAL (falta composer audit)
+  V11 Lógica de Negocio                               -> PARCIAL
+  V12 Archivos y Recursos                             -> N/A (sin subidas críticas)
+  V13 API y Servicios Web                             -> N/A (sin API pública)
+  V14 Configuración                                   -> CUMPLE en lo esencial *
+
+  (*) Con los refuerzos implementados en esta sesión (ver secciones 2.x).
+  Los controles obligatorios de Nivel 1 referentes a autenticación, control de
+  acceso y configuración están cubiertos. Pendientes Nivel 1 -> ver sección 9.
+
+================================================================================
+1. VALORES VERIFICADOS EN RUNTIME
+================================================================================
+  - Laravel ................. 13.22.0
+  - Hashing driver .......... bcrypt
+  - Coste bcrypt config .... 12  (config('hashing.bcrypt.rounds') = 12)
+  - Hash real en BD ........ $2y$12$bE9qmLTg... (60 caracteres, sal de 22
+                              caracteres ≈ 126 bits, única por credencial)
+  - Hash::check('admin12345', hash) -> true  (verificado)
+  - Comportamiento cast 'hashed':
+      * recibe texto plano  -> lo hashea y lo guarda
+      * recibe un hash bcrypt -> lo detecta (Hash::info) y NO lo re-hashea
+        (por eso Hash::make() + cast no produce doble cifrado)
+  - Suite de tests ......... 9/9 verdes (incluye tests/Feature/SecuritySmokeTest)
+
+================================================================================
+2. AUTENTICACIÓN (V2) — IMPLEMENTACIÓN Y CÓDIGO
+================================================================================
+
+--------------------------------------------------------------
+2.1 ASVS 2.1.1 — Contraseñas de al menos 12 caracteres  [NUEVO]
+--------------------------------------------------------------
+  Qué exige: las contraseñas deben tener al menos 12 caracteres de longitud.
+
+  Qué cambié: la regla de validación en los tres puntos donde se define o
+  cambia una contraseña subió a 'min:12'.
+
+  Código afectado (líneas actuales):
+    - app/Http/Controllers/Auth/RegisterController.php      :28
+        'password' => ['required', 'string', 'min:12', 'confirmed'],
+    - app/Http/Controllers/UserController.php               :29  (crear usuario)
+        'password' => 'required|string|min:12|confirmed',
+    - app/Http/Controllers/UserController.php               :67  (editar usuario)
+        'password' => 'nullable|string|min:12|confirmed',
+
+  Cómo funciona: Laravel ejecuta estas reglas de validación durante el
+  'validate()' del controlador ANTES de tocar la base de datos. Si la
+  contraseña es menor a 12 caracteres, el request se rechaza con el error de
+  validación estándar y NO llega a generarse el hash.
+
+  Qué afecta: ningún usuario puede usar contraseñas débiles (< 12). También
+  aplica al cambio de contraseña de un usuario existente (campo opcional; si
+  viene vacío no se valida — se conserva la contraseña actual).
+
+--------------------------------------------------------------
+2.2 ASVS 2.4.1 / 2.4.2 / 2.4.4 — Almacenamiento seguro de contraseñas
+--------------------------------------------------------------
+  Qué exige: hash con sal, de una sola vía, con factor de costo (bcrypt),
+  sal >= 32 bits única por credencial, work factor bcrypt >= 10.
+
+  Código afectado (líneas actuales):
+    - app/Models/User.php:32
+        'password' => 'hashed',   // cast: hashea en el setter del modelo
+    - app/Models/User.php:17
+        #[Hidden(['password', 'remember_token'])]  // nunca se serializa
+    - app/Http/Controllers/Auth/RegisterController.php:34
+        'password' => Hash::make($request->password),
+    - app/Http/Controllers/UserController.php:35  y :74
+        'password' => Hash::make(...),
+    - app/Http/Controllers/Auth/LoginController.php:25
+        Auth::attempt($credentials, ...)  // verificación (nunca almacena)
+    - database/migrations/0001_01_01_000000_create_users_table.php:19
+        $table->string('password');  // columna varchar(255) en BD
+
+  Cómo funciona el flujo completo:
+      "admin12345" (texto plano, nunca se persiste)
+         |
+         | Hash::make()           (RegisterController:34 / UserController:35,74)
+         v
+      "$2y$12$bE9..." (bcrypt; sal 126 bits; 2^12 iteraciones)
+         |
+         | cast 'hashed' detecta que YA es hash -> lo guarda tal cual (User.php:32)
+         v
+      BD users.password   (oculto en respuestas por User.php:17)
+         |
+         | Auth::attempt()  -> Hash::check(entrada, hash)   (LoginController:25)
+         v
+      true / false
+
+  Qué afecta: si la base de datos se filtra, un atacante no puede recuperar
+  contraseñas en claro ni aplicar diccionarios/rainbow tables de forma
+  efectiva (cada hash tiene sal única y cuesta ~2^12 operaciones). Cumple:
+    - 2.4.1  hash con sal, una vía, costo          -> CUMPLE
+    - 2.4.2  sal >= 32 bits única por credencial  -> CUMPLE (≈126 bits)
+    - 2.4.4  work factor bcrypt >= 10             -> CUMPLE (coste 12)
+
+--------------------------------------------------------------
+2.3 ASVS 2.4.3/2.4.4 — Rehash bajo demanda  [NUEVO]
+--------------------------------------------------------------
+  Qué exige: si el coste del algoritmo aumenta en el futuro, las contraseñas
+  existentes deben migrarse al nuevo coste sin pedir al usuario que cambie su
+  contraseña.
+
+  Qué cambié: en el login correcto, si el hash almacenado usa un coste menor al
+  configurado, se re-hashea con el nuevo y se guarda.
+
+  Código afectado (líneas actuales):
+    - app/Http/Controllers/Auth/LoginController.php:27-31
+        if (Hash::needsRehash(auth()->user()->password)) {
+            auth()->user()->update(['password' => Hash::make($request->password)]);
+        }
+
+  Cómo funciona: Laravel compara el "cost" contenido dentro del propio hash
+  (el '$12' de "$2y$12$...") contra el coste de config('hashing.bcrypt.rounds').
+  Si el coste actual es menor, se regenera el hash con la contraseña recién
+  verificada (nunca con texto plano nuevo) y se persiste. Si el coste ya es el
+  configurado, no se hace nada (cero sobrecarga).
+
+  Qué afecta: futuras subidas del coste en config/hashing.php migran toda la
+  base de usuarios automáticamente en su siguiente login, sin afectar al
+  rendimiento del resto del tiempo. Sin este bloque, subir el coste dejaría
+  antiguas contraseñas con cifrado más débil indefinidamente.
+
+--------------------------------------------------------------
+2.4 ASVS 2.2.1 — Anti-automatización / fuerza bruta
+--------------------------------------------------------------
+  Qué exige: controles anti-automatización que mitiguen pruebas de
+  credenciales, fuerza bruta y bloqueo de cuentas.
+
+  Código afectado (líneas actuales):
+    - app/Providers/AppServiceProvider.php:30-38
+        RateLimiter::for('login', function (Request $request) {
+            return Limit::perMinute(5)
+                ->by($request->input('email') . '|' . ($request->ip() ?? 'anon'));
+        });
+        RateLimiter::for('register', function (Request $request) {
+            return Limit::perHour(5)
+                ->by($request->ip() ?? 'anon');
+        });
+    - routes/web.php:36  -> Route::post('/login', ...)->middleware('throttle:login');
+    - routes/web.php:38  -> Route::post('/register', ...)->middleware('throttle:register');
+
+  Cómo funciona: el middleware 'throttle:login' consulta el RateLimiter
+  'login'. La clave es email+IP del cliente; se permiten 5 intentos por
+  minuto. Al superarlo, Laravel responde HTTP 429 "Too Many Requests".
+
+  Verificación real: intentos 1-5 -> 302 (credenciales incorrectas);
+  intentos 6 y 7 -> 429 (bloqueado).
+
+  Qué afecta: un atacante no puede probar contraseñas masivamente; al sexto
+  intento por dirección IP+usuario queda limitado. Nota ASVS 2.2.1: el tope
+  literal del estándar es "menos de 100 intentos fallidos por hora por cuenta"
+  (5/min = ~300/h); si se requiere cumplimiento estricto, bajar a
+  perMinute(1).
+
+--------------------------------------------------------------
+2.5 ASVS 2.3.1 — Control del ciclo de vida del registrador (registro cerrado)
+--------------------------------------------------------------
+  Qué exige: las cuentas no deben poder crearse automáticamente con
+  privilegios elevados sin evidencia de identidad.
+
+  Código afectado (líneas actuales):
+    - app/Http/Controllers/Auth/RegisterController.php:52-57
+        private function ensureRegistrationOpen(): void
+        {
+            if (User::count() > 0) {
+                abort(403, 'El registro público está deshabilitado.');
+            }
+        }
+    - Registro GET -> RegisterController.php:16  (llamada a ensureRegistrationOpen)
+    - Registro POST -> RegisterController.php:23 (idem)
+    - Rol del primer usuario -> RegisterController.php:39-40 ('Administrador')
+    - app/Http/Controllers/Auth/LoginController.php:14
+        'registrationOpen' => \App\Models\User::count() === 0,
+    - resources/views/auth/login.blade.php:61  -> oculta el enlace "Regístrate"
+
+  Cómo funciona: si ya existe al menos un usuario, GET o POST /register
+  devuelven HTTP 403. El único momento en que el registro funciona es el
+  "bootstrap" inicial (base de datos vacía), y ese primer usuario es el que
+  obtiene el rol Administrador. El formulario de login sólo ofrece enlace de
+  registro mientras no haya usuarios.
+
+  Qué afecta: elimina la escalada de privilegios por "registro abierto" (el
+  antiguo comportamiento otorgaba rol Admin en RegisterController), y limita
+  la creación de cuentas al panel de administración.
+
+================================================================================
+3. CONTROL DE ACCESO (V4) — IMPLEMENTACIÓN Y CÓDIGO
+================================================================================
+--------------------------------------------------------------
+3.1 ASVS 4.1.1 / 4.1.3 — Reglas en capa de confianza y privilegios mínimos
+--------------------------------------------------------------
+  Qué exige: las decisiones de autorización deben aplicarse en el servidor
+  (no en el cliente) y los usuarios sólo deben poder acceder a lo que su rol
+  les autoriza.
+
+  Código afectado (líneas actuales):
+    - routes/web.php:56   Route::middleware('role:Administrador')->group(  // users, roles
+    - routes/web.php:68   Route::middleware('role:Administrador,Secretario')->group( // cargos, lideres, miembros,
+                                ministerios, actividades, seguimiento, cursos, inscripciones, pagos, docentes, sesiones, asistencia)
+    - routes/web.php:130  Route::middleware('role:Administrador,Tesorero')->group( // cultos, ingresos, egresos, contratos
+    - resources/views/layouts/app.blade.php:31    -> categoria "Acceso y Seguridad" solo Administrador
+    - resources/views/layouts/app.blade.php:61    -> item "Cultos" solo Admin|Tesorero
+    - resources/views/layouts/app.blade.php:87    -> item "Contratos" solo Admin|Tesorero
+    - resources/views/layouts/app.blade.php:111   -> items "Ingresos/Egresos" solo Admin|Tesorero
+
+  Cómo funciona: el middleware 'role' (app/Http/Middleware/RoleMiddleware.php,
+  alias registrado en bootstrap/app.php) se ejecuta en el servidor para cada
+  request. Comprueba el rol del usuario autenticado contra la lista definida
+  en la ruta; si no coincide -> HTTP 403. El menú (app.blade.php) además
+  oculta las opciones no permitidas.
+
+  Verificación real:
+    - admin@proyecto.com  -> /users 200, /cultos 200, /cargos 200
+    - secretario         -> /cargos 200, pero /cultos 403, /ingresos 403, /users 403
+    - tesorero           -> /cultos 200, pero /miembros 403, /cargos 403
+
+  Qué afecta: incluso si un usuario adivina la URL de un módulo prohibido,
+  recibe 403. No basta ocultar el menú: la regla se aplica en la ruta.
+
+--------------------------------------------------------------
+3.2 Roles estándar y asignación por defecto (base de 4.1.3)
+--------------------------------------------------------------
+  Código afectado:
+    - database/migrations/2026_09_08_100000_estandarizar_roles.php
+        Renombra 'Admin' -> 'Administrador'; crea 'Secretario' y 'Tesorero'.
+    - database/seeders/DatabaseSeeder.php
+        Crea los tres roles con nivel_acceso 1/2/3.
+    - app/Http/Controllers/UserController.php:40-43
+        Nuevo usuario creado por el panel recibe rol 'Secretario' por defecto.
+    - app/Http/Controllers/Auth/RegisterController.php:39-40
+        El primer usuario (bootstrap) recibe 'Administrador'.
+
+  Qué afecta: ningún usuario nuevo nace con privilegios de administrador; los
+  roles se ajustan desde el módulo "Administrar Rol Usuario".
+
+================================================================================
+4. GESTIÓN DE SESIONES (V3) — LO QUE YA PROTEGÍA LARAVEL
+================================================================================
+  - 3.1.1  Token de sesión nunca en URL            -> cookie (no query string)
+  - 3.2.1  Regeneración de token al autenticar     -> LoginController:26
+            $request->session()->regenerate();
+  - 3.2.2  Entropía >= 64 bits                     -> id de sesión de Laravel (random)
+  - 3.4.2  Cookie HttpOnly                          -> default de Laravel
+  - 3.4.3  Cookie SameSite                          -> default 'lax'
+  - 8.2.1  No almacenar en caché                    -> middleware PreventBackHistory
+                                                        (Cache-Control: no-store)
+  - Refuerzo: SESSION_ENCRYPT=true en .env          -> cookies de sesión cifradas
+
+================================================================================
+5. VALIDACIÓN DE ENTRADAS / SALIDA (V5)
+================================================================================
+  - 5.1.3 Validación positiva de entradas           -> Form Requests y reglas de
+        validación de los controladores (p. ej. RegisterController:25-29,
+        UserController:26-30,64-68).
+  - 5.3.3 Escapado automático XSS                    -> Blade escapa toda salida
+        (no se usa {!! !!} en las vistas).
+  - 5.3.4 Consultas parametrizadas                   -> Eloquent query builder en
+        todo el código (nunca concatenación SQL).
+  - 4.2.2 Anti-CSRF                                 -> token @csrf en todos los
+        formularios (middleware web de Laravel).
+
+================================================================================
+6. ERRORES Y CONFIGURACIÓN (V7 y V14)
+================================================================================
+--------------------------------------------------------------
+6.1 ASVS 14.3.2 — Modo debug deshabilitado en producción
+--------------------------------------------------------------
+  En .env: APP_DEBUG=false. Laravel deja de exponer stack traces, credenciales
+  de BD y rutas internas. Complementa 7.4.1 (mensaje de error genérico al
+  usuario con logs y monitoreo interno).
+
+--------------------------------------------------------------
+6.2 ASVS 14.4.4 / 14.4.6 / 14.4.7 — Cabeceras de seguridad HTTP
+--------------------------------------------------------------
+  Código afectado:
+    - app/Http/Middleware/SecureHeaders.php  (middleware creado, 26 líneas)
+        :19  X-Frame-Options: SAMEORIGIN          (14.4.7 clickjacking)
+        :20  X-Content-Type-Options: nosniff      (14.4.4 sniffing)
+        :21  Referrer-Policy: strict-origin-when-cross-origin (14.4.6)
+        :22  Permissions-Policy: camera=(), microphone=(), geolocation=()
+    - bootstrap/app.php:21 -> se registra en el grupo web:
+        $middleware->web(append: [
+            \App\Http\Middleware\SecureHeaders::class,
+        ]);
+
+  Verificación real: /login y / devuelven las cuatro cabeceras.
+
+--------------------------------------------------------------
+6.3 Pendientes de configuración (Nivel 1)
+--------------------------------------------------------------
+  - 14.4.3 Content-Security-Policy (CSP)        -> NO implementado
+  - 14.4.5 Strict-Transport-Security (HSTS)     -> NO (requiere TLS en el servidor)
+  - 3.4.1 cookie Secure                         -> requiere TLS en producción
+  - 14.3.3 ocultar versión de componentes       -> revisable en producción
+
+================================================================================
+7. MIGRACIONES / DESPLIEGUE (V14.1)
+================================================================================
+  - database/migrations/2026_08_29_000001_add_horario_to_cursos_table.php
+    Se añadió guard:
+        if (Schema::hasColumn('cursos', 'dias_semana')) { return; }
+    para impedir la duplicación de columnas que rompía instalaciones frescas
+    y la suite de tests. Se migró con 'php artisan migrate --force'.
+
+================================================================================
+8. EVIDENCIA AUTOMATIZADA
+================================================================================
+  tests/Feature/SecuritySmokeTest.php (101 líneas, 7 tests), ejecutados con
+  DatabaseMigrations en SQLite en memoria:
+    - test_guest_no_accede_a_dashboard
+    - test_registro_publico_deshabilitado
+    - test_administrador_accede_a_todo
+    - test_secretario_sin_acceso_a_admin_y_finanzas
+    - test_tesorero_sin_acceso_a_personas
+    - test_cabeceras_de_seguridad_presentes
+    - test_login_envia_mensaje_por_credenciales_incorrectas
+
+  Resultado: php artisan test -> 9/9 verdes (24 assertions).
+
+================================================================================
+9. PENDIENTES NIVEL 1 (para consideración futura, ordenado por impacto)
+================================================================================
+  P1. Habilitar TLS (HTTPS) en producción  -> cubre 9.1.1, 3.4.1, 14.4.5 (HSTS).
+  P2. Añadir Content-Security-Policy (CSP) -> cubre 14.4.3.
+  P3. Auditoría/registro de eventos de seguridad (login, fallos de acceso,
+      validación) -> cubre 7.1.3, 7.2.1, 7.2.2 (A10 Top 10).
+  P4. composer audit / SBOM de dependencias -> cubre 14.2.1, 14.2.5, 10.x.
+  P5. Ajuste estricto de 2.2.1 (< 100 fallos/hora) bajando el limiter de
+      login a perMinute(1) si el límite literal es un requisito.
+  P6. Cuenta "admin@proyecto.com" con rol Administrador: en producción usar
+      una cuenta con nombre distintivo (cubre 2.5.4 en espíritu).
+
+================================================================================
+FIN DEL INFORME
+================================================================================

@@ -20,7 +20,7 @@ class MiembroController extends Controller
         $validated = $request->validate([
             'nombre' => 'required|string|max:100',
             'email' => 'required|email|unique:miembros,email',
-            'telefono' => 'nullable|string|max:20|regex:/^[0-9+\s\-()]+$/',
+            'telefono' => 'nullable|string|max:8|regex:/^[0-9+\s\-()]+$/',
             'f_nacimiento' => 'nullable|date|before_or_equal:today',
             'estado' => 'nullable|in:activo,inactivo,visita',
             'direccion' => 'nullable|string|max:200',
@@ -49,7 +49,7 @@ class MiembroController extends Controller
         $validated = $request->validate([
             'nombre' => 'sometimes|string|max:100',
             'email' => 'sometimes|email|unique:miembros,email,' . $id,
-            'telefono' => 'nullable|string|max:20|regex:/^[0-9+\s\-()]+$/',
+            'telefono' => 'nullable|string|max:8|regex:/^[0-9+\s\-()]+$/',
             'f_nacimiento' => 'nullable|date|before_or_equal:today',
             'estado' => 'sometimes|in:activo,inactivo,visita',
             'direccion' => 'nullable|string|max:200',

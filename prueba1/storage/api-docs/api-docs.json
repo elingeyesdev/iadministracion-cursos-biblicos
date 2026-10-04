@@ -1,0 +1,70 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "I Administracion Cursos Biblicos API",
+    "version": "1.0.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "sanctum": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Token",
+        "description": "Usar: Bearer {token} (Personal Access Token de Sanctum)"
+      }
+    }
+  },
+  "paths": {
+    "/api/miembros": {
+      "get": {
+        "summary": "Listar miembros",
+        "responses": {
+          "200": { "description": "OK" }
+        }
+      },
+      "post": {
+        "summary": "Crear miembro",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created" }
+        }
+      }
+    },
+    "/api/miembros/{id}": {
+      "get": {
+        "summary": "Obtener miembro por id",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      },
+      "put": {
+        "summary": "Actualizar miembro",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object" } } } },
+        "responses": { "200": { "description": "Updated" }, "404": { "description": "Not Found" } }
+      },
+      "delete": {
+        "summary": "Eliminar miembro",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": { "204": { "description": "No Content" }, "404": { "description": "Not Found" } }
+      }
+    }
+  },
+  "security": [
+    {
+      "sanctum": []
+    }
+  ]
+}

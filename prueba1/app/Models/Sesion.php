@@ -23,6 +23,11 @@ class Sesion extends Model
         return $this->belongsTo(Curso::class, 'id_curso');
     }
 
+    public function docente(): BelongsTo
+    {
+        return $this->belongsTo(Docente::class, 'id_docente');
+    }
+
     public function miembros(): BelongsToMany
     {
         return $this->belongsToMany(Miembro::class, 'registra', 'id_sesion', 'id_miembro')
