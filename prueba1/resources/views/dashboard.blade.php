@@ -31,15 +31,15 @@
     @if(isset($data['versiculo_dia']))
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #1e1e2d 0%, #2b2b40 100%); border-left: 4px solid #d4af37 !important;">
-                <div class="card-body p-4 text-white">
-                    <div class="d-flex align-items-center gap-2 mb-2 text-warning">
-                        <i class="bi bi-book-half text-warning"></i>
-                        <span class="text-uppercase fw-bold text-warning" style="font-size: 0.75rem; letter-spacing: 0.1em;">Versículo del Día</span>
+            <div class="card border-0 shadow-sm verse-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center gap-2 mb-2 verse-card-label">
+                        <i class="bi bi-book-half"></i>
+                        <span class="text-uppercase fw-bold" style="font-size: 0.75rem; letter-spacing: 0.1em;">Versículo del Día</span>
                     </div>
                     <blockquote class="blockquote mb-0">
-                        <p class="mb-2 fs-5" style="color: #f8f9fa;">“{{ $data['versiculo_dia']['texto'] }}”</p>
-                        <footer class="blockquote-footer text-muted fs-6 mt-1">{{ $data['versiculo_dia']['referencia'] }}</footer>
+                        <p class="mb-2 fs-5">“{{ $data['versiculo_dia']['texto'] }}”</p>
+                        <footer class="blockquote-footer fs-6 mt-1">{{ $data['versiculo_dia']['referencia'] }}</footer>
                     </blockquote>
                 </div>
             </div>
@@ -196,8 +196,8 @@
                     Últimas Actividades
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-hover align-middle mb-0" style="color: #c5c5d2;">
-                        <thead class="table-dark" style="background-color: #151521;">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
                             <tr>
                                 <th>Nombre</th>
                                 <th>Ministerio</th>

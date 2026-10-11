@@ -1,4 +1,49 @@
+/* Tokens base del tema. El MODO CLARO es el predeterminado; la clase
+   "church-dark" (aplicada en <html>) redefine todo para el modo oscuro.
+   El marcador de tema es una sola clase en <html>: "church-light" o
+   "church-dark". Ver resources/js/theme.js. */
 :root{
+  /* Color-scheme y tokens de la paleta (claro) */
+  color-scheme:light;
+  background:var(--church-bg);
+  color:var(--church-text);
+  --church-bg:#f6f4ee;
+  --church-surface:#ffffff;
+  --church-surface-2:#f2efe9;
+  --church-border:rgba(34,30,25,.12);
+  --church-text:#221e19;
+  --church-muted:rgba(34,30,25,.58);
+  --church-gold:#b8860b;
+  --church-gold-2:#8a6508;
+  /* Alinear Bootstrap 5.3 con la paleta */
+  --bs-body-bg:var(--church-bg);
+  --bs-body-bg-rgb:246,244,238;
+  --bs-body-color:var(--church-text);
+  --bs-body-color-rgb:34,30,25;
+  --bs-emphasis-color:var(--church-text);
+  --bs-emphasis-color-rgb:34,30,25;
+  --bs-secondary-color:var(--church-muted);
+  --bs-secondary-color-rgb:34,30,25;
+  --bs-secondary-bg:var(--church-surface-2);
+  --bs-secondary-bg-rgb:242,239,233;
+  --bs-tertiary-color:rgba(34,30,25,.5);
+  --bs-tertiary-color-rgb:34,30,25;
+  --bs-tertiary-bg:var(--church-surface);
+  --bs-tertiary-bg-rgb:255,255,255;
+  --bs-heading-color:var(--church-text);
+  --bs-link-color:var(--church-gold-2);
+  --bs-link-color-rgb:138,101,8;
+  --bs-link-hover-color:#6b4e06;
+  --bs-link-hover-color-rgb:107,78,6;
+  --bs-border-color:rgba(34,30,25,.15);
+  --bs-border-color-translucent:rgba(34,30,25,.1);
+  --bs-focus-ring-color:rgba(184,134,11,.3);
+}
+
+html,body{height:100%}
+
+/* Alinear Bootstrap 5.3 con el tema (evita tablas/listas/buscadores heredando --bs-body-bg #fff de :root) */
+.church-dark{
   --church-bg:#0e0e12;
   --church-surface:#16161c;
   --church-surface-2:#1f1f28;
@@ -7,12 +52,6 @@
   --church-muted:rgba(240,234,214,.55);
   --church-gold:#d4af53;
   --church-gold-2:#b8952f;
-}
-
-html,body{height:100%}
-
-/* Alinear Bootstrap 5.3 con el tema (evita tablas/listas/buscadores heredando --bs-body-bg #fff de :root) */
-body.church-dark{
   background:var(--church-bg);
   color:var(--church-text);
   color-scheme:dark;
@@ -39,6 +78,11 @@ body.church-dark{
   --bs-border-color-translucent:rgba(255,255,255,.08);
   --bs-focus-ring-color:rgba(212,175,83,.35);
 }
+
+/* Botón para alternar entre tema claro y oscuro */
+.theme-toggle .theme-icon-sun{display:none}
+.church-light .theme-toggle .theme-icon-sun{display:inline-block}
+.church-light .theme-toggle .theme-icon-moon{display:none}
 
 /* Bootstrap theme overrides */
 .church-dark .text-muted{color:var(--church-muted)!important}
@@ -216,6 +260,16 @@ body.church-dark{
   letter-spacing:.04em;
 }
 
+/* Versículo del día (dashboard): usa las variables del tema para adaptarse
+   a claro u oscuro en lugar de un gradiente fijo. */
+.verse-card{
+  background:linear-gradient(135deg, var(--church-surface) 0%, var(--church-surface-2) 100%);
+  border-left:4px solid var(--church-gold) !important;
+  color:var(--church-text);
+  --bs-blockquote-footer-color:var(--church-muted);
+}
+.verse-card-label{color:var(--church-gold)}
+
 /* Compatibility utilities (old Tailwind-like classes used in views) */
 .font-display{font-family:"Cormorant Garamond","Georgia",serif}
 .text-stone-900{color:#221e19!important}
@@ -247,34 +301,34 @@ body.church-dark{
 .border-gold-200{border-color:#f4e49e!important}
 
 /* Misma paleta sobre fondo oscuro (vistas con clases stone / bg-white mezcladas) */
-body.church-dark .text-stone-900,
-body.church-dark .text-stone-800,
-body.church-dark .text-stone-700,
-body.church-dark .text-stone-600{color:rgba(240,234,214,.94)!important}
-body.church-dark .text-stone-500{color:var(--church-muted)!important}
-body.church-dark .text-stone-400{color:rgba(240,234,214,.48)!important}
-body.church-dark .text-stone-300{color:rgba(240,234,214,.62)!important}
+.church-dark .text-stone-900,
+.church-dark .text-stone-800,
+.church-dark .text-stone-700,
+.church-dark .text-stone-600{color:rgba(240,234,214,.94)!important}
+.church-dark .text-stone-500{color:var(--church-muted)!important}
+.church-dark .text-stone-400{color:rgba(240,234,214,.48)!important}
+.church-dark .text-stone-300{color:rgba(240,234,214,.62)!important}
 
-body.church-dark .text-gold-700{color:var(--church-gold-2)!important}
-body.church-dark .text-gold-600{color:var(--church-gold)!important}
-body.church-dark .text-gold-500{color:var(--church-gold)!important}
-body.church-dark .text-gold-400{color:#e8c86a!important}
-body.church-dark .text-gold-300{color:#f0dc98!important}
+.church-dark .text-gold-700{color:var(--church-gold-2)!important}
+.church-dark .text-gold-600{color:var(--church-gold)!important}
+.church-dark .text-gold-500{color:var(--church-gold)!important}
+.church-dark .text-gold-400{color:#e8c86a!important}
+.church-dark .text-gold-300{color:#f0dc98!important}
 
-body.church-dark .bg-white{background-color:var(--church-surface)!important}
-body.church-dark .bg-stone-50{background-color:rgba(0,0,0,.25)!important}
-body.church-dark .bg-stone-100{background-color:var(--church-surface-2)!important}
-body.church-dark .bg-stone-800{background-color:var(--church-surface-2)!important}
-body.church-dark .bg-stone-900{background-color:var(--church-bg)!important}
+.church-dark .bg-white{background-color:var(--church-surface)!important}
+.church-dark .bg-stone-50{background-color:rgba(0,0,0,.25)!important}
+.church-dark .bg-stone-100{background-color:var(--church-surface-2)!important}
+.church-dark .bg-stone-800{background-color:var(--church-surface-2)!important}
+.church-dark .bg-stone-900{background-color:var(--church-bg)!important}
 
-body.church-dark .bg-gold-50{background-color:rgba(212,175,83,.1)!important}
-body.church-dark .bg-gold-100{background-color:rgba(212,175,83,.14)!important}
+.church-dark .bg-gold-50{background-color:rgba(212,175,83,.1)!important}
+.church-dark .bg-gold-100{background-color:rgba(212,175,83,.14)!important}
 
-body.church-dark .border-stone-100,
-body.church-dark .border-stone-200{border-color:var(--church-border)!important}
-body.church-dark .border-gold-200{border-color:rgba(212,175,83,.35)!important}
+.church-dark .border-stone-100,
+.church-dark .border-stone-200{border-color:var(--church-border)!important}
+.church-dark .border-gold-200{border-color:rgba(212,175,83,.35)!important}
 
-body.church-dark .shadow-sm{
+.church-dark .shadow-sm{
   box-shadow:0 .125rem .35rem rgba(0,0,0,.45)!important;
 }
 
@@ -289,4 +343,151 @@ body.church-dark .shadow-sm{
 .church-dark .dropdown-divider{
   border-top-color:var(--church-border);
 }
+
+/* ============================================================
+   AJUSTES DEL MODO CLARO
+   El modo claro es el predeterminado (clase "church-light" en <html>).
+   Aquí se corrigen los componentes que usan colores fijos (no variables)
+   y las clases utilitarias con colores "de tema oscuro" escritas en las
+   vistas (text-white, bg-dark, border-secondary, etc.).
+   ============================================================ */
+
+/* Tablas */
+.church-light .table{
+  --bs-table-striped-bg:rgba(34,30,25,.03);
+  --bs-table-hover-bg:rgba(184,134,11,.08);
+  --bs-table-active-bg:rgba(184,134,11,.12);
+}
+.church-light .table thead th,
+.church-light .table-dark th{
+  color:rgba(34,30,25,.72)!important;
+  /* Fondo opaco: tapamos los .table-dark / background en línea de las vistas */
+  background-color:var(--church-surface-2)!important;
+  border-color:var(--church-border)!important;
+}
+/* Encabezados que traen un color de fondo oscuro en línea (#151521, etc.) */
+.church-light thead.table-dark[style]{background-color:transparent!important}
+
+/* Formularios */
+.church-light .form-control::placeholder{color:rgba(34,30,25,.4)}
+.church-light .form-check-input{border-color:rgba(34,30,25,.35)}
+.church-light .btn-outline-secondary{
+  --bs-btn-color:#564b41;
+  --bs-btn-border-color:rgba(34,30,25,.2);
+  --bs-btn-hover-bg:rgba(34,30,25,.06);
+  --bs-btn-hover-border-color:rgba(34,30,25,.3);
+  --bs-btn-hover-color:#221e19;
+  --bs-btn-active-bg:rgba(34,30,25,.1);
+  --bs-btn-active-border-color:rgba(34,30,25,.35);
+  --bs-btn-active-color:#221e19;
+}
+
+/* Alertas */
+.church-light .alert-success{
+  --bs-alert-bg:#e7f4ea;
+  --bs-alert-border-color:#a8d8b5;
+  --bs-alert-color:#14623a;
+}
+.church-light .alert-danger{
+  --bs-alert-bg:#fdecea;
+  --bs-alert-border-color:#f0b4ad;
+  --bs-alert-color:#8a1f1a;
+}
+.church-light .alert-warning{
+  --bs-alert-bg:#fdf4e3;
+  --bs-alert-border-color:#f0d79a;
+  --bs-alert-color:#7a5608;
+}
+
+/* Sombras más suaves sobre fondo claro */
+.church-light .shadow-sm{box-shadow:0 .125rem .35rem rgba(34,30,25,.08)!important}
+
+/* Clases utilitarias de tema oscuro usadas directamente en las vistas */
+.church-light .text-white{color:var(--church-text)!important}
+.church-light .badge.text-white{color:#fff!important}
+.church-light .text-white.bg-primary,
+.church-light .text-white.bg-secondary,
+.church-light .text-white.bg-success,
+.church-light .text-white.bg-danger,
+.church-light .text-white.bg-info{color:#fff!important}
+
+.church-light .bg-dark{
+  background-color:var(--church-surface-2)!important;
+  color:var(--church-text);
+}
+.church-light .bg-black{background-color:var(--church-surface-2)!important}
+.church-light .border-secondary{border-color:var(--church-border)!important}
+.church-light .text-muted{color:var(--church-muted)!important}
+
+.church-light .text-stone-900,
+.church-light .text-stone-800,
+.church-light .text-stone-700,
+.church-light .text-stone-600{color:rgba(34,30,25,.92)!important}
+.church-light .text-stone-500{color:var(--church-muted)!important}
+.church-light .text-stone-400{color:rgba(34,30,25,.55)!important}
+.church-light .text-stone-300{color:rgba(34,30,25,.45)!important}
+
+.church-light .text-gold-700{color:#7d5c09!important}
+.church-light .text-gold-600{color:#a67c0c!important}
+.church-light .text-gold-500{color:var(--church-gold-2)!important}
+.church-light .text-gold-400{color:#a67c0c!important}
+.church-light .text-gold-300{color:var(--church-gold)!important}
+
+.church-light .bg-stone-50{background-color:#faf9f7!important}
+.church-light .bg-gold-50{background-color:rgba(184,134,11,.1)!important}
+.church-light .bg-gold-100{background-color:rgba(184,134,11,.14)!important}
+.church-light .border-gold-200{border-color:rgba(184,134,11,.4)!important}
+
+/* El amarillo de Bootstrap es poco legible sobre fondo claro: usar el dorado */
+.church-light .text-warning{color:var(--church-gold)!important}
+
+/* Sidebar */
+.church-light .sidebar{
+  background:linear-gradient(180deg,#ffffff 0%,#f2efe9 100%);
+  border-right:1px solid var(--church-border);
+}
+.church-light .sidebar .nav-link{color:rgba(34,30,25,.78)}
+.church-light .sidebar .nav-link:hover{background:rgba(34,30,25,.05); color:var(--church-text)}
+.church-light .sidebar .nav-link.active{background:rgba(184,134,11,.14); color:var(--church-gold-2)}
+.church-light .sidebar .nav-link[style]{background:rgba(34,30,25,.04)!important}
+.church-light .sidebar .text-warning{color:var(--church-gold)!important}
+.church-light .sidebar .btn-outline-light{
+  --bs-btn-color:#564b41;
+  --bs-btn-border-color:rgba(34,30,25,.2);
+  --bs-btn-hover-bg:rgba(34,30,25,.06);
+  --bs-btn-hover-color:#221e19;
+  --bs-btn-hover-border-color:rgba(34,30,25,.3);
+  --bs-btn-active-color:#221e19;
+}
+
+/* ============================================================
+   COLORES FIJOS DE LAS VISTAS
+   Muchos listados definen a mano colores del tema oscuro (texto
+   #c5c5d2, thead / footer #151521, opciones #1e1e2d, etc.). En el
+   modo claro los recolocamos en la paleta clara. Se usa !important
+   porque en varios casos vienen como style="" en línea.
+   ============================================================ */
+
+/* Texto claro (#c5c5d2) usado en tablas de listados */
+.church-light .table[style]{color:var(--church-text)!important}
+
+/* Pie de tarjeta con fondo oscuro fijo */
+.church-light .card-footer[style]{background-color:var(--church-surface-2)!important}
+
+/* Filas con fondo oscuro fijo (p. ej. fila de totales) */
+.church-light tr[style*="#151521"]{background-color:transparent!important}
+
+/* Opciones de <select> con fondo/texto oscuro fijo */
+.church-light option[style]{
+  background-color:var(--church-surface)!important;
+  color:var(--church-text)!important;
+}
+
+/* Modales de SweetAlert2 con fondo oscuro forzado desde JS */
+.church-light .swal2-popup{
+  background-color:var(--church-surface)!important;
+  color:var(--church-text)!important;
+}
+.church-light .swal2-title,
+.church-light .swal2-html-container{color:var(--church-text)!important}
 

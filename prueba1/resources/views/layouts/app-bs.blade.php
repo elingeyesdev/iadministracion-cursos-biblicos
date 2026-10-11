@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="church-light">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Iglesia') — Sistema de Gestión</title>
+    @include('layouts.partials.theme-script')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
-<body class="church-dark">
+<body>
     <div class="d-flex min-vh-100">
         {{-- Desktop sidebar --}}
         <aside class="d-none d-lg-block sidebar">
@@ -36,6 +37,7 @@
                     </div>
 
                     <div class="d-flex align-items-center gap-2">
+                        @include('layouts.partials.theme-toggle')
                         <div class="text-muted small d-none d-sm-block">
                             {{ auth()->user()->email ?? '' }}
                         </div>

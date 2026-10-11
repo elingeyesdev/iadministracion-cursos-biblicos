@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="church-light">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Iglesia') — Sistema de Gestión</title>
-    
+
+    @include('layouts.partials.theme-script')
+
     <!-- Bootstrap 5 CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     
@@ -19,7 +21,7 @@
     <!-- Custom styling -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="church-dark">
+<body>
     <div class="d-flex min-vh-100">
         {{-- Desktop sidebar --}}
         <aside class="d-none d-lg-block sidebar flex-shrink-0">
@@ -47,6 +49,7 @@
                     </div>
 
                     <div class="d-flex align-items-center gap-3">
+                        @include('layouts.partials.theme-toggle')
                         <div class="text-muted small d-none d-sm-block">
                             <i class="bi bi-envelope me-1"></i> {{ auth()->user()->email ?? '' }}
                         </div>
