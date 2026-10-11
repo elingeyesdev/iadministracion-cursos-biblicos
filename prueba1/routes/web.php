@@ -9,10 +9,12 @@ Route::get('/', function () {
 
 use App\Http\Controllers\Web\DashboardController;
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
+// El perfil queda accesible con solo estar autenticado: así un usuario que aún
+// no verifica su correo puede igualmente gestionar su cuenta o cerrar sesión.
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -39,8 +41,10 @@ use App\Http\Controllers\Web\InscripcionController;
 use App\Http\Controllers\Web\AsistenciaController;
 use App\Http\Controllers\Web\ReporteController;
 
+// Todas las rutas internas exigen el correo verificado (middleware 'verified').
+
 // Solo Administrador
-Route::middleware(['auth','rol:Administrador'])->group(function () {
+Route::middleware(['auth', 'verified', 'rol:Administrador'])->group(function () {
     Route::resource('usuarios', UsuarioController::class);
     Route::resource('roles', RolController::class);
     Route::resource('asignar-roles', AsignarRolController::class)->only(['index', 'edit', 'update']);
@@ -50,7 +54,7 @@ Route::middleware(['auth','rol:Administrador'])->group(function () {
 });
 
 // Administrador o Secretario
-Route::middleware(['auth','rol:Administrador,Secretario'])->group(function () {
+Route::middleware(['auth', 'verified', 'rol:Administrador,Secretario'])->group(function () {
     Route::resource('miembros', MiembroController::class);
     Route::resource('ministerios', MinisterioController::class);
     Route::resource('actividades', ActividadController::class);
@@ -58,7 +62,7 @@ Route::middleware(['auth','rol:Administrador,Secretario'])->group(function () {
 });
 
 // Administrador o Tesorero
-Route::middleware(['auth','rol:Administrador,Tesorero'])->group(function () {
+Route::middleware(['auth', 'verified', 'rol:Administrador,Tesorero'])->group(function () {
     Route::resource('cultos', CultoController::class);
     Route::resource('ingresos', IngresoController::class);
     Route::resource('egresos', EgresoController::class);
@@ -66,7 +70,7 @@ Route::middleware(['auth','rol:Administrador,Tesorero'])->group(function () {
 });
 
 // Todos los autenticados
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('cursos', CursoController::class);
     Route::resource('sesiones', SesionController::class);
     Route::resource('docentes', DocenteController::class);
@@ -77,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Inscripciones
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('inscripciones', [InscripcionController::class, 'index'])->name('inscripciones.index');
     Route::get('inscripciones/{curso}/gestionar', [InscripcionController::class, 'gestion'])->name('inscripciones.gestion');
     Route::post('cursos/{curso}/inscripciones', [InscripcionController::class, 'store'])->name('inscripciones.store');
@@ -88,14 +92,14 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Asistencia
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('asistencia', [AsistenciaController::class, 'index'])->name('asistencia.index');
     Route::get('asistencia/registrar', [AsistenciaController::class, 'registrar'])->name('asistencia.registrar');
     Route::post('asistencia/registrar/{sesion}', [AsistenciaController::class, 'store'])->name('asistencia.store');
 });
 
 // Reportes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('reportes', [ReporteController::class, 'index'])->name('reportes.index');
     Route::get('reportes/miembros', [ReporteController::class, 'miembros'])->name('reportes.miembros');
     Route::get('reportes/asistencia', [ReporteController::class, 'asistencia'])->name('reportes.asistencia');

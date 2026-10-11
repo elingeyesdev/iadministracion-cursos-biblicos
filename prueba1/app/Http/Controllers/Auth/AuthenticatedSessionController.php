@@ -42,6 +42,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
+        // Permite volver a la pantalla de login (por ejemplo desde la pantalla
+        // de verificación de correo) sin cambiar el destino por defecto (la portada).
+        if ($request->input('redirect') === 'login') {
+            return redirect()->route('login');
+        }
+
         return redirect('/');
     }
 }

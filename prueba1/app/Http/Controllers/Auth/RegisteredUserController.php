@@ -42,10 +42,21 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
-
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Se envía el correo de verificación. Si el servidor de correo falla,
+        // el registro no debe romperse: se registra el error y se muestra la
+        // pantalla de verificación igualmente.
+        try {
+            event(new Registered($user));
+        } catch (\Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('verification.notice')
+                ->with('status', 'verification-mail-failed');
+        }
+
+        return redirect()->route('verification.notice');
     }
 }

@@ -22,6 +22,35 @@ class EmailVerificationTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_email_verification_screen_has_back_to_login_button(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $response = $this->actingAs($user)->get('/verify-email');
+
+        $response->assertStatus(200)
+            ->assertSee('Volver a inicio')
+            ->assertSee('name="redirect" value="login"', false);
+    }
+
+    public function test_unverified_user_is_redirected_from_internal_pages(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($user)
+            ->get(route('reportes.index'))
+            ->assertRedirect(route('verification.notice'));
+    }
+
+    public function test_verified_user_can_access_internal_pages(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('reportes.index'))
+            ->assertOk();
+    }
+
     public function test_email_can_be_verified(): void
     {
         $user = User::factory()->unverified()->create();

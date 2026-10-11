@@ -33,6 +33,12 @@ class UsuarioController extends Controller {
             'password' => Hash::make($request->password),
         ]);
 
+        // Los usuarios creados desde el panel de administración se consideran
+        // verificados: el administrador los da de alta directamente y no pasan
+        // por el registro público con enlace de Gmail. Se usa el método del
+        // framework porque 'email_verified_at' no es asignable en masa.
+        $user->markEmailAsVerified();
+
         $user->profile()->create([
             'username'       => $request->username,
             'telefono'       => $request->telefono,

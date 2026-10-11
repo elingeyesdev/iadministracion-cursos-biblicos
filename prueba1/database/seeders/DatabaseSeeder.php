@@ -42,6 +42,12 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // El administrador principal no pasa por el registro público: se marca
+        // como verificado ('email_verified_at' no es asignable en masa).
+        if (! $userMain->hasVerifiedEmail()) {
+            $userMain->markEmailAsVerified();
+        }
+
         $userMain->profile()->updateOrCreate(
             ['user_id' => $userMain->id],
             [
@@ -67,6 +73,10 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('admin123'),
             ]
         );
+
+        if (! $userAdmin->hasVerifiedEmail()) {
+            $userAdmin->markEmailAsVerified();
+        }
 
         $userAdmin->profile()->updateOrCreate(
             ['user_id' => $userAdmin->id],
