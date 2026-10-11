@@ -249,6 +249,18 @@ html,body{height:100%}
   background:linear-gradient(180deg, rgba(22,22,28,1) 0%, rgba(14,14,18,1) 100%);
   border-right:1px solid var(--church-border);
 }
+
+/* Sidebar de escritorio fijo: permanece visible mientras se hace scroll en
+   el contenido. La navegación se desplaza internamente y el pie con
+   "Cerrar sesión" queda siempre a la vista. */
+@media (min-width: 992px){
+  aside.sidebar{
+    position:sticky;
+    top:0;
+    align-self:flex-start;
+    height:100vh;
+  }
+}
 .sidebar .nav-link{
   color:rgba(240,234,214,.75);
   border-radius:.6rem;
@@ -258,6 +270,28 @@ html,body{height:100%}
 .sidebar .sidebar-title{
   font-family:"Cormorant Garamond","Georgia",serif;
   letter-spacing:.04em;
+}
+
+/* Menú de usuario en el pie del sidebar (correo + cerrar sesión) */
+.user-menu-toggle{
+  color:var(--church-text);
+  background:transparent;
+  border:1px solid var(--church-border);
+  text-align:left;
+}
+.user-menu-toggle:hover,
+.user-menu-toggle:focus,
+.user-menu-toggle:active,
+.user-menu-toggle.show{
+  color:var(--church-text);
+  background:rgba(255,255,255,.06);
+  border-color:var(--church-border);
+}
+.church-light .user-menu-toggle:hover,
+.church-light .user-menu-toggle:focus,
+.church-light .user-menu-toggle:active,
+.church-light .user-menu-toggle.show{
+  background:rgba(34,30,25,.05);
 }
 
 /* Versículo del día (dashboard): usa las variables del tema para adaptarse
@@ -490,4 +524,93 @@ html,body{height:100%}
 }
 .church-light .swal2-title,
 .church-light .swal2-html-container{color:var(--church-text)!important}
+
+/* ============================================================
+   MENÚ LATERAL: EXPANDIDO / CONTRAÍDO (estilo ChatGPT)
+   El estado se guarda con la clase "sidebar-collapsed" en <html>
+   (ver resources/js/sidebar.js). Solo se aplica en escritorio; en
+   móvil el menú sigue siendo el offcanvas de Bootstrap.
+   ============================================================ */
+
+/* La anchura se anima y el contenido principal se reajusta solo. */
+.sidebar{transition:width .25s ease;}
+
+/* Botón de plegado en la cabecera del menú (solo escritorio) */
+.sidebar-toggle-btn{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  color:var(--church-muted);
+  background:transparent;
+  border:1px solid transparent;
+  padding:.15rem .35rem;
+  line-height:1;
+  transition:color .15s ease, background-color .15s ease, border-color .15s ease;
+}
+.sidebar-toggle-btn:hover,
+.sidebar-toggle-btn:focus-visible{
+  color:var(--church-text);
+  background:rgba(255,255,255,.07);
+  border-color:var(--church-border);
+}
+.sidebar-toggle-btn:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 .2rem var(--bs-focus-ring-color);
+}
+.church-light .sidebar-toggle-btn:hover,
+.church-light .sidebar-toggle-btn:focus-visible{
+  background:rgba(34,30,25,.07);
+}
+
+@media (min-width: 992px){
+  .sidebar-toggle-btn{display:inline-flex;}
+
+  /* Anchura contraída (el aside y su interior comparten la clase .sidebar) */
+  html.sidebar-collapsed .sidebar{width:72px;}
+  /* Menos relleno interior para que quepan los iconos centrados */
+  html.sidebar-collapsed .sidebar.p-3{
+    padding-left:.5rem!important;
+    padding-right:.5rem!important;
+  }
+
+  /* Cabecera: logo arriba y botón debajo, todo centrado */
+  html.sidebar-collapsed .sidebar-header{
+    flex-direction:column;
+    align-items:center;
+    gap:.5rem;
+  }
+  html.sidebar-collapsed .sidebar-brand{justify-content:center;}
+  html.sidebar-collapsed .sidebar-brand-text{display:none;}
+
+  /* Enlaces: solo el icono, centrado */
+  html.sidebar-collapsed .sidebar .nav-link{
+    font-size:0;
+    justify-content:center!important;
+    text-align:center;
+    padding-left:.25rem;
+    padding-right:.25rem;
+  }
+  html.sidebar-collapsed .sidebar .nav-link i{
+    font-size:1rem;
+    margin-right:0!important;
+  }
+
+  /* Secciones secundarias, títulos y chevrones fuera */
+  html.sidebar-collapsed .sidebar .sidebar-caret,
+  html.sidebar-collapsed .sidebar .sidebar-submenu,
+  html.sidebar-collapsed .sidebar .sidebar-group-title{
+    display:none!important;
+  }
+
+  /* Pie de usuario: solo el avatar */
+  html.sidebar-collapsed .sidebar .user-menu-toggle{
+    justify-content:center;
+    padding:.4rem;
+  }
+  html.sidebar-collapsed .sidebar .user-menu-text,
+  html.sidebar-collapsed .sidebar .user-menu-toggle::after{
+    display:none!important;
+  }
+  html.sidebar-collapsed .sidebar .dropdown-menu{min-width:200px;}
+}
 

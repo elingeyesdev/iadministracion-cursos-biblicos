@@ -1,15 +1,20 @@
 <div class="d-flex flex-column h-100 sidebar p-3">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <div class="d-flex align-items-center gap-2">
-            <span class="fs-4 text-warning">✝</span>
-            <div>
+    <div class="sidebar-header d-flex align-items-center justify-content-between mb-3">
+        <div class="sidebar-brand d-flex align-items-center gap-2">
+            <span class="sidebar-logo fs-4 text-warning">✝</span>
+            <div class="sidebar-brand-text">
                 <div class="sidebar-title fs-5 fw-bold lh-1 text-white">
                     Sistema Iglesia
                 </div>
                 <div class="text-muted small" style="letter-spacing:.1em; text-transform:uppercase; font-size: 0.75rem;">Administración</div>
             </div>
         </div>
-        <button class="btn btn-sm btn-outline-light d-lg-none" type="button" data-bs-dismiss="offcanvas" aria-label="Close">
+        {{-- Contraer / expandir (solo escritorio) --}}
+        <button class="btn btn-sm sidebar-toggle-btn" type="button" data-sidebar-toggle
+                title="Contraer menú" aria-label="Contraer menú" aria-pressed="false">
+            <i class="bi bi-chevron-double-left"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-light d-lg-none" type="button" data-bs-dismiss="offcanvas" aria-label="Cerrar menú">
             <i class="bi bi-x-lg"></i>
         </button>
     </div>
@@ -28,15 +33,15 @@
             <!-- ACCESO Y SEGURIDAD COLLAPSIBLE MENU -->
             @if(auth()->user()->esAdmin())
             <li class="nav-item mt-3" x-data="{ openSec: {{ request()->is('usuarios*', 'roles*', 'asignar-roles*') ? 'true' : 'false' }} }">
-                <a class="nav-link d-flex align-items-center justify-content-between text-white" 
+                <a class="nav-link sidebar-section-toggle d-flex align-items-center justify-content-between text-white" 
                    @click.prevent="openSec = !openSec"
                    href="#" 
                    style="background: rgba(255,255,255,0.03); cursor: pointer;">
                     <span><i class="bi bi-shield-lock me-2 text-warning"></i> Acceso y Seguridad</span>
-                    <i class="bi" :class="openSec ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
+                    <i class="bi sidebar-caret" :class="openSec ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
                 </a>
                 
-                <div x-show="openSec" class="mt-1 ps-2">
+                <div x-show="openSec" class="mt-1 ps-2 sidebar-submenu">
                     <ul class="nav nav-pills flex-column gap-1 mt-1 border-start border-secondary ps-2">
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('usuarios.*') ? 'active' : '' }}" href="{{ route('usuarios.index') }}">
@@ -60,18 +65,18 @@
 
             <!-- PARAMETRIZACIÓN COLLAPSIBLE MENU -->
             <li class="nav-item mt-3" x-data="{ openParam: {{ request()->is('miembros*', 'cultos*', 'actividades*', 'cursos*', 'cargos*', 'lideres*', 'ministerios*', 'docentes*', 'seguimientos*', 'contratos*') ? 'true' : 'false' }} }">
-                <a class="nav-link d-flex align-items-center justify-content-between text-white" 
+                <a class="nav-link sidebar-section-toggle d-flex align-items-center justify-content-between text-white" 
                    @click.prevent="openParam = !openParam"
                    href="#" 
                    style="background: rgba(255,255,255,0.03); cursor: pointer;">
                     <span><i class="bi bi-sliders me-2 text-warning"></i> Parametrización</span>
-                    <i class="bi" :class="openParam ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
+                    <i class="bi sidebar-caret" :class="openParam ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
                 </a>
                 
-                <div x-show="openParam" class="mt-1 ps-2">
+                <div x-show="openParam" class="mt-1 ps-2 sidebar-submenu">
                     <ul class="nav nav-pills flex-column gap-1 mt-1 border-start border-secondary ps-2">
                         <!-- PERSONAS -->
-                        <li class="nav-item text-muted text-uppercase fw-bold mt-2 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Personas</li>
+                        <li class="nav-item sidebar-group-title text-muted text-uppercase fw-bold mt-2 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Personas</li>
                         
                         @if(auth()->user()->tieneRol('Administrador') || auth()->user()->tieneRol('Secretario'))
                         <li class="nav-item">
@@ -94,7 +99,7 @@
                         </li>
 
                         <!-- ORGANIZACIÓN -->
-                        <li class="nav-item text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Organización</li>
+                        <li class="nav-item sidebar-group-title text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Organización</li>
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('ministerios.*') ? 'active' : '' }}" href="{{ route('ministerios.index') }}">
                                 <i class="bi bi-diagram-3 me-2"></i> Ministerios
@@ -118,7 +123,7 @@
 
                         <!-- FINANZAS PARAM -->
                         @if(auth()->user()->tieneRol('Administrador') || auth()->user()->tieneRol('Tesorero'))
-                        <li class="nav-item text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Finanzas</li>
+                        <li class="nav-item sidebar-group-title text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Finanzas</li>
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('cultos.*') ? 'active' : '' }}" href="{{ route('cultos.index') }}">
                                 <i class="bi bi-calendar-heart me-2"></i> Cultos
@@ -132,7 +137,7 @@
                         @endif
 
                         <!-- ACADÉMICO -->
-                        <li class="nav-item text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Académico</li>
+                        <li class="nav-item sidebar-group-title text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Académico</li>
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('cursos.*') ? 'active' : '' }}" href="{{ route('cursos.index') }}">
                                 <i class="bi bi-book me-2"></i> Cursos
@@ -144,15 +149,15 @@
 
             <!-- TRANSACCIONAL COLLAPSIBLE MENU -->
             <li class="nav-item mt-3" x-data="{ openTran: {{ request()->is('sesiones*', 'inscripciones*', 'asistencia*', 'ingresos*', 'egresos*') ? 'true' : 'false' }} }">
-                <a class="nav-link d-flex align-items-center justify-content-between text-white" 
+                <a class="nav-link sidebar-section-toggle d-flex align-items-center justify-content-between text-white" 
                    @click.prevent="openTran = !openTran"
                    href="#" 
                    style="background: rgba(255,255,255,0.03); cursor: pointer;">
                     <span><i class="bi bi-arrow-left-right me-2 text-warning"></i> Transaccional</span>
-                    <i class="bi" :class="openTran ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
+                    <i class="bi sidebar-caret" :class="openTran ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
                 </a>
                 
-                <div x-show="openTran" class="mt-1 ps-2">
+                <div x-show="openTran" class="mt-1 ps-2 sidebar-submenu">
                     <ul class="nav nav-pills flex-column gap-1 mt-1 border-start border-secondary ps-2">
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('sesiones.*') ? 'active' : '' }}" href="{{ route('sesiones.index') }}">
@@ -172,7 +177,7 @@
 
                         <!-- FINANZAS -->
                         @if(auth()->user()->tieneRol('Administrador') || auth()->user()->tieneRol('Tesorero'))
-                        <li class="nav-item text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Finanzas</li>
+                        <li class="nav-item sidebar-group-title text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Finanzas</li>
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('ingresos.*') ? 'active' : '' }}" href="{{ route('ingresos.index') }}">
                                 <i class="bi bi-cash-coin me-2"></i> Ingresos
@@ -190,15 +195,15 @@
 
             <!-- REPORTE COLLAPSIBLE MENU -->
             <li class="nav-item mt-3" x-data="{ openRep: {{ request()->is('reportes*') ? 'true' : 'false' }} }">
-                <a class="nav-link d-flex align-items-center justify-content-between text-white" 
+                <a class="nav-link sidebar-section-toggle d-flex align-items-center justify-content-between text-white" 
                    @click.prevent="openRep = !openRep"
                    href="#" 
                    style="background: rgba(255,255,255,0.03); cursor: pointer;">
                     <span><i class="bi bi-graph-up me-2 text-warning"></i> Reporte</span>
-                    <i class="bi" :class="openRep ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
+                    <i class="bi sidebar-caret" :class="openRep ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
                 </a>
                 
-                <div x-show="openRep" class="mt-1 ps-2">
+                <div x-show="openRep" class="mt-1 ps-2 sidebar-submenu">
                     <ul class="nav nav-pills flex-column gap-1 mt-1 border-start border-secondary ps-2">
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('reportes.*') ? 'active' : '' }}" href="{{ route('reportes.index') }}">
@@ -212,14 +217,28 @@
     </div>
 
     <div class="mt-auto pt-3 border-top border-secondary">
-        <div class="text-muted small mb-2">
-            <i class="bi bi-person-circle me-1"></i> {{ auth()->user()->name ?? 'Usuario' }}
-        </div>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-outline-danger w-100 btn-sm">
-                <i class="bi bi-box-arrow-right me-1"></i> Salir
+        <div class="dropup">
+            <button class="btn btn-sm w-100 user-menu-toggle d-flex align-items-center gap-2 dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    data-sidebar-tooltip="{{ auth()->user()->name ?? 'Cuenta' }}"
+                    aria-expanded="false">
+                <i class="bi bi-person-circle fs-5"></i>
+                <span class="user-menu-text flex-grow-1 text-start" style="min-width:0;">
+                    <span class="d-block fw-semibold text-truncate">{{ auth()->user()->name ?? 'Usuario' }}</span>
+                    <span class="d-block text-muted text-truncate" style="font-size:.72rem;">{{ auth()->user()->email ?? '' }}</span>
+                </span>
             </button>
-        </form>
+            <ul class="dropdown-menu w-100">
+                <li>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>

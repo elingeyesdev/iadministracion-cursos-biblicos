@@ -7,6 +7,7 @@
     <title>@yield('title', 'Iglesia') — Sistema de Gestión</title>
 
     @include('layouts.partials.theme-script')
+    @include('layouts.partials.sidebar-script')
 
     <!-- Bootstrap 5 CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -50,16 +51,6 @@
 
                     <div class="d-flex align-items-center gap-3">
                         @include('layouts.partials.theme-toggle')
-                        <div class="text-muted small d-none d-sm-block">
-                            <i class="bi bi-envelope me-1"></i> {{ auth()->user()->email ?? '' }}
-                        </div>
-                        <div class="d-flex gap-1">
-                            @forelse(auth()->user()->roles()->where('role_user.estado', 'activo')->get() as $role)
-                                <span class="badge bg-gold-500 text-dark fw-bold">{{ $role->nombre }}</span>
-                            @empty
-                                <span class="badge bg-secondary text-white fw-bold">Usuario</span>
-                            @endforelse
-                        </div>
                     </div>
                 </div>
             </header>
