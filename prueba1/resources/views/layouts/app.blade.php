@@ -22,22 +22,22 @@
     <!-- Custom styling -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
+<body class="@yield('body_class')">
     <div class="d-flex min-vh-100">
         {{-- Desktop sidebar --}}
-        <aside class="d-none d-lg-block sidebar flex-shrink-0">
+        <aside class="app-chrome d-none d-lg-block sidebar flex-shrink-0">
             @include('layouts.sidebar')
         </aside>
 
         {{-- Mobile offcanvas sidebar --}}
-        <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
+        <div class="app-chrome offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
             <div class="offcanvas-body p-0">
                 @include('layouts.sidebar')
             </div>
         </div>
 
         <div class="flex-grow-1 d-flex flex-column" style="min-width: 0;">
-            <header class="border-bottom" style="border-color: var(--church-border) !important; background: var(--church-surface);">
+            <header class="app-chrome border-bottom" style="border-color: var(--church-border) !important; background: var(--church-surface);">
                 <div class="container-fluid py-3 d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-2">
                         <button class="btn btn-outline-church d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
@@ -57,7 +57,7 @@
 
             <main class="container-fluid py-4 flex-grow-1">
                 <!-- Breadcrumb -->
-                <div class="mb-4">
+                <div class="app-chrome mb-4">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 py-2 px-3 rounded" style="background-color: var(--church-surface); border: 1px solid var(--church-border);">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-gold-500 text-decoration-none"><i class="bi bi-house-door-fill me-1"></i>Inicio</a></li>
@@ -69,7 +69,7 @@
                 @yield('content')
             </main>
 
-            <footer class="container-fluid py-3 text-center border-top mt-auto" style="border-color: var(--church-border) !important; background: var(--church-surface);">
+            <footer class="app-chrome container-fluid py-3 text-center border-top mt-auto" style="border-color: var(--church-border) !important; background: var(--church-surface);">
                 <div class="text-muted small">
                     ✝ Sistema de Gestión Eclesiástica © {{ date('Y') }}
                 </div>

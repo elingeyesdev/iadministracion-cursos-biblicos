@@ -216,29 +216,57 @@
         </ul>
     </div>
 
+    {{-- Menú de usuario flotante. La lógica de estado y posicionamiento está
+         en resources/js/sidebar.js (componente Alpine "userMenu"). --}}
     <div class="mt-auto pt-3 border-top border-secondary">
-        <div class="dropup">
-            <button class="btn btn-sm w-100 user-menu-toggle d-flex align-items-center gap-2 dropdown-toggle"
-                    type="button"
-                    data-bs-toggle="dropdown"
+        <div class="user-menu-wrap"
+             x-data="userMenu"
+             @click.outside="close()"
+             @keydown.escape.window="close()">
+            <button type="button"
+                    x-ref="btn"
+                    class="btn btn-sm w-100 user-menu-toggle d-flex align-items-center gap-2"
                     data-sidebar-tooltip="{{ auth()->user()->name ?? 'Cuenta' }}"
-                    aria-expanded="false">
-                <i class="bi bi-person-circle fs-5"></i>
+                    aria-haspopup="true"
+                    :aria-expanded="open ? 'true' : 'false'"
+                    @click="toggle()">
+                <span class="user-menu-avatar">
+                    <i class="bi bi-person-fill"></i>
+                </span>
                 <span class="user-menu-text flex-grow-1 text-start" style="min-width:0;">
                     <span class="d-block fw-semibold text-truncate">{{ auth()->user()->name ?? 'Usuario' }}</span>
                     <span class="d-block text-muted text-truncate" style="font-size:.72rem;">{{ auth()->user()->email ?? '' }}</span>
                 </span>
             </button>
-            <ul class="dropdown-menu w-100">
-                <li>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="dropdown-item text-danger">
-                            <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
-                        </button>
-                    </form>
-                </li>
-            </ul>
+
+            {{-- Panel: pensado para ir añadiendo más opciones (Perfil, Ajustes…) --}}
+            <div class="user-menu"
+                 x-ref="menu"
+                 x-show="open"
+                 x-cloak
+                 :style="style"
+                 x-transition:enter="user-menu-transition"
+                 x-transition:enter-start="user-menu-enter-start"
+                 x-transition:enter-end="user-menu-enter-end"
+                 x-transition:leave="user-menu-transition"
+                 x-transition:leave-start="user-menu-leave-start"
+                 x-transition:leave-end="user-menu-leave-end"
+                 role="menu"
+                 aria-label="Menú de usuario">
+                <div class="user-menu-header">
+                    <span class="d-block fw-semibold text-truncate">{{ auth()->user()->name ?? 'Usuario' }}</span>
+                    <span class="d-block text-muted small text-truncate">{{ auth()->user()->email ?? '' }}</span>
+                </div>
+                <div class="user-menu-divider"></div>
+                {{-- Cierre de sesión: usa la misma ruta/POST y @csrf que ya existían --}}
+                <form method="POST" action="{{ route('logout') }}" class="m-0">
+                    @csrf
+                    <button type="submit" class="user-menu-item text-danger" role="menuitem">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Cerrar sesión</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

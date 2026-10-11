@@ -11,6 +11,80 @@
  * Se generan a partir del texto del propio enlace para no duplicar datos.
  */
 import { Tooltip, Offcanvas } from 'bootstrap';
+import Alpine from 'alpinejs';
+
+/**
+ * Menú de usuario flotante del avatar (pie del sidebar).
+ *
+ * Se apoya en Alpine (ya presente en el proyecto) y posiciona el panel con
+ * "position:fixed" para que ningún contenedor con overflow lo recorte.
+ * Prefiere abrir a la derecha del avatar y, si no cabe, se voltea a la
+ * izquierda. No altera la anchura ni el estado del sidebar.
+ */
+document.addEventListener('alpine:init', () => {
+    Alpine.data('userMenu', () => ({
+        open: false,
+        style: 'left:-9999px;top:-9999px;',
+
+        init() {
+            this._reposition = () => {
+                if (this.open) {
+                    this.position();
+                }
+            };
+
+            window.addEventListener('resize', this._reposition);
+            window.addEventListener('scroll', this._reposition, true);
+        },
+
+        destroy() {
+            window.removeEventListener('resize', this._reposition);
+            window.removeEventListener('scroll', this._reposition, true);
+        },
+
+        position() {
+            const button = this.$refs.btn;
+            const menu = this.$refs.menu;
+
+            if (!button || !menu) {
+                return;
+            }
+
+            const gap = 10;
+            const margin = 8;
+            const rect = button.getBoundingClientRect();
+            const width = menu.offsetWidth || 220;
+            const height = menu.offsetHeight || 120;
+
+            // A la derecha del avatar; si no cabe, a la izquierda.
+            let left = rect.right + gap;
+
+            if (left + width > window.innerWidth - margin) {
+                left = rect.left - gap - width;
+            }
+
+            left = Math.max(margin, Math.min(left, window.innerWidth - width - margin));
+
+            let top = rect.top + rect.height / 2 - height / 2;
+            top = Math.max(margin, Math.min(top, window.innerHeight - height - margin));
+
+            this.style = `left:${Math.round(left)}px;top:${Math.round(top)}px;`;
+        },
+
+        toggle() {
+            this.open = !this.open;
+
+            if (this.open) {
+                // x-show acaba de mostrar el panel: ya se puede medir.
+                this.$nextTick(() => this.position());
+            }
+        },
+
+        close() {
+            this.open = false;
+        },
+    }));
+});
 
 const STORAGE_KEY = 'church-sidebar';
 const COLLAPSED_CLASS = 'sidebar-collapsed';
@@ -54,7 +128,7 @@ function refreshTooltips() {
     }
 
     document
-        .querySelectorAll('.sidebar .nav-link, .sidebar .user-menu-toggle')
+        .querySelectorAll('.sidebar .nav-link')
         .forEach((link) => {
             const label = labelFor(link);
 

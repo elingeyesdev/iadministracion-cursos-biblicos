@@ -259,6 +259,12 @@ html,body{height:100%}
     top:0;
     align-self:flex-start;
     height:100vh;
+    /* El sidebar (sticky) crea un contexto de apilamiento. Bootstrap marca
+       las .card como position:relative, así que sin z-index las tarjetas del
+       contenido se pintarían por encima del menú flotante del usuario.
+       Con este z-index el contexto del sidebar (y su submenú) queda por
+       encima del contenido. */
+    z-index:1030;
   }
 }
 .sidebar .nav-link{
@@ -607,10 +613,115 @@ html,body{height:100%}
     justify-content:center;
     padding:.4rem;
   }
-  html.sidebar-collapsed .sidebar .user-menu-text,
-  html.sidebar-collapsed .sidebar .user-menu-toggle::after{
+  html.sidebar-collapsed .sidebar .user-menu-text{
     display:none!important;
   }
-  html.sidebar-collapsed .sidebar .dropdown-menu{min-width:200px;}
+}
+
+/* ============================================================
+   SUBMENÚ FLOTANTE DE USUARIO (avatar del pie del sidebar)
+   Panel con "position:fixed" para que no lo recorte ningún
+   contenedor con overflow. Prefiere abrir a la derecha del
+   avatar; el posicionamiento lo calcula resources/js/sidebar.js.
+   ============================================================ */
+.user-menu-avatar{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  width:2rem;
+  height:2rem;
+  border-radius:50%;
+  background:var(--church-gold);
+  color:#0e0e12;
+  font-size:1rem;
+  line-height:1;
+}
+
+.user-menu{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:1080;
+  min-width:13rem;
+  max-width:min(18rem, calc(100vw - 1rem));
+  padding:.35rem;
+  border:1px solid var(--church-border);
+  border-radius:.85rem;
+  background:var(--church-surface-2);
+  color:var(--church-text);
+  box-shadow:0 12px 32px rgba(0,0,0,.35);
+}
+.church-light .user-menu{
+  box-shadow:0 12px 30px rgba(34,30,25,.18);
+}
+
+.user-menu-header{
+  padding:.5rem .65rem .45rem;
+  min-width:0;
+}
+.user-menu-divider{
+  height:1px;
+  margin:.25rem .35rem;
+  background:var(--church-border);
+}
+
+.user-menu-item{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  width:100%;
+  padding:.55rem .65rem;
+  border:0;
+  border-radius:.6rem;
+  background:transparent;
+  color:var(--church-text);
+  font-size:.875rem;
+  text-align:left;
+  transition:background-color .15s ease, color .15s ease;
+}
+.user-menu-item i{
+  font-size:1rem;
+  line-height:1;
+}
+.user-menu-item:hover,
+.user-menu-item:focus-visible{
+  background:rgba(184,134,11,.12);
+  outline:none;
+}
+.church-dark .user-menu-item:hover,
+.church-dark .user-menu-item:focus-visible{
+  background:rgba(212,175,83,.16);
+}
+
+/* Cerrar sesión: claramente identificable (rojo) y con hover propio */
+.user-menu-item.text-danger{
+  color:var(--bs-danger);
+}
+.user-menu-item.text-danger:hover,
+.user-menu-item.text-danger:focus-visible{
+  background:rgba(220,53,69,.12);
+}
+.church-dark .user-menu-item.text-danger{
+  color:#f08a94!important;
+}
+.church-dark .user-menu-item.text-danger:hover,
+.church-dark .user-menu-item.text-danger:focus-visible{
+  background:rgba(220,53,69,.2);
+}
+
+/* Animación suave de apertura y cierre (la controla Alpine) */
+.user-menu-transition{
+  transition:opacity .18s ease, transform .18s ease;
+}
+.user-menu-enter-start,
+.user-menu-leave-end{
+  opacity:0;
+  transform:scale(.97);
+}
+
+/* Evita el destello del panel antes de que Alpine lo inicialice */
+[x-cloak]{
+  display:none!important;
 }
 

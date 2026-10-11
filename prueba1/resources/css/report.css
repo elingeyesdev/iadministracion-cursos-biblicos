@@ -1,0 +1,393 @@
+/* ============================================================
+   REPORTES · Documento profesional (pantalla + impresión)
+   ------------------------------------------------------------
+   Este archivo se aplica a las páginas de reportes (marcadas con
+   body.report-page). El documento imprimible vive en .report-document;
+   la interfaz de la aplicación (menú, cabecera, migas, filtros...) está
+   marcada con .app-chrome / .report-controls y se oculta solo al imprimir
+   o en el modo de vista previa. No afecta al resto de páginas.
+   ============================================================ */
+
+/* Página con nombre para el documento del reporte. @page solo actúa al
+   imprimir, por lo que no influye en la vista de pantalla, y al estar
+   asociado únicamente a .report-document no altera la impresión de otras
+   páginas de la aplicación. */
+@page reporte {
+    size: A4 portrait;
+    margin: 15mm 14mm;
+
+    /* Numeración de página y texto institucional en el margen inferior.
+       Es una mejora progresiva: los motores que no soportan las cajas de
+       margen de @page (p. ej. Chrome) simplemente las ignoran. */
+    @bottom-left {
+        content: "Sistema Iglesia";
+        font-size: 9px;
+        color: #6b7280;
+    }
+
+    @bottom-right {
+        content: "Página " counter(page) " de " counter(pages);
+        font-size: 9px;
+        color: #6b7280;
+    }
+}
+
+/* ------------------------------------------------------------
+   Panel de control (interfaz de la aplicación)
+   ------------------------------------------------------------ */
+.report-controls {
+    background: var(--church-surface);
+    border: 1px solid var(--church-border);
+    border-radius: .75rem;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.report-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.report-actions .btn {
+    white-space: nowrap;
+}
+
+/* ------------------------------------------------------------
+   Hoja del documento (vista previa en pantalla)
+   ------------------------------------------------------------ */
+.report-document {
+    background: #ffffff;
+    color: #1a1a1a;
+    border: 1px solid rgba(0, 0, 0, .12);
+    border-radius: .5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .14);
+    padding: 2rem;
+    max-width: 210mm;
+    margin: 0 auto;
+}
+
+.report-document * {
+    box-shadow: none;
+}
+
+/* Encabezado institucional */
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding-bottom: .9rem;
+    margin-bottom: 1.2rem;
+    border-bottom: 2px solid #1f2937;
+}
+
+.report-header-brand {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+}
+
+.report-header-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: #1f2937;
+    color: #d4af53;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.report-header-org {
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: .04em;
+    color: #111827;
+}
+
+.report-header-org-sub {
+    font-size: .68rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+}
+
+.report-header-title {
+    text-align: right;
+    min-width: 0;
+}
+
+.report-header-title h1 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #111827;
+}
+
+.report-header-title p {
+    margin: .2rem 0 0;
+    font-size: .78rem;
+    color: #4b5563;
+}
+
+.report-header-meta {
+    margin-top: .45rem;
+    font-size: .72rem;
+    color: #4b5563;
+}
+
+.report-header-meta span {
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Resumen estadístico */
+.report-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin-bottom: 1.2rem;
+}
+
+.report-summary-item {
+    flex: 1 1 0;
+    min-width: 7rem;
+    padding: .55rem .85rem;
+    text-align: center;
+    border: 1px solid #d1d5db;
+    border-radius: .4rem;
+    background: #f9fafb;
+}
+
+.report-summary-label {
+    font-size: .64rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #6b7280;
+}
+
+.report-summary-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #111827;
+}
+
+.report-summary-value.is-success { color: #15803d; }
+.report-summary-value.is-danger { color: #b91c1c; }
+.report-summary-value.is-info { color: #0369a1; }
+.report-summary-value.is-warning { color: #b45309; }
+
+/* Tabla profesional */
+.report-table-wrapper {
+    width: 100%;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .82rem;
+}
+
+.report-table thead th {
+    padding: .5rem .6rem;
+    background: #1f2937;
+    color: #ffffff;
+    border: 1px solid #1f2937;
+    font-size: .67rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.report-table tbody td {
+    padding: .45rem .6rem;
+    border: 1px solid #e5e7eb;
+    color: #1f2937;
+    vertical-align: top;
+}
+
+.report-table tbody tr:nth-child(even) td {
+    background: #f9fafb;
+}
+
+.report-table .num {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.report-table .center {
+    text-align: center;
+}
+
+.report-table .cell-strong {
+    font-weight: 600;
+    color: #111827;
+}
+
+.report-table .cell-num {
+    text-align: center;
+    color: #6b7280;
+    font-variant-numeric: tabular-nums;
+}
+
+.report-empty {
+    padding: 1.2rem;
+    text-align: center;
+    color: #6b7280;
+}
+
+/* Etiquetas de estado */
+.report-badge {
+    display: inline-block;
+    padding: .12rem .45rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    font-size: .64rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.report-badge.is-success { background: #dcfce7; color: #166534; border-color: #86efac; }
+.report-badge.is-secondary { background: #e5e7eb; color: #374151; border-color: #d1d5db; }
+.report-badge.is-info { background: #e0f2fe; color: #075985; border-color: #7dd3fc; }
+.report-badge.is-warning { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+.report-badge.is-danger { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+
+/* Bloques auxiliares del documento */
+.report-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+}
+
+.report-block-title {
+    margin: 0 0 .5rem;
+    font-size: .82rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.report-note {
+    margin-top: .6rem;
+    font-size: .72rem;
+    color: #4b5563;
+}
+
+.report-note strong {
+    color: #374151;
+}
+
+/* Pie del documento */
+.report-footer {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: 1.25rem;
+    padding-top: .6rem;
+    border-top: 1px solid #d1d5db;
+    font-size: .68rem;
+    color: #6b7280;
+}
+
+/* ------------------------------------------------------------
+   Impresión
+   ------------------------------------------------------------ */
+@media print {
+    /* Todo lo de impresión está acotado a las páginas de reporte
+       (body.report-page) para no afectar a la impresión del resto de la app. */
+    body.report-page {
+        background: #ffffff !important;
+    }
+
+    /* Evitar que el contenedor de la app (min-vh-100) fuerce una página extra. */
+    body.report-page .min-vh-100 {
+        min-height: 0 !important;
+    }
+
+    /* Nada de la interfaz de la aplicación debe imprimirse. */
+    body.report-page .app-chrome,
+    body.report-page .report-controls {
+        display: none !important;
+    }
+
+    /* El contenido ocupa todo el ancho imprimible, sin tarjetas. */
+    body.report-page main,
+    body.report-page main.container-fluid {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* El documento usa una página A4 con nombre, solo para los reportes. */
+    body.report-page .report-document {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        page: reporte;
+    }
+
+    /* Tablas: no recortar, repetir cabecera y evitar filas partidas. */
+    body.report-page .report-table-wrapper {
+        overflow: visible !important;
+        max-height: none !important;
+    }
+
+    body.report-page .report-table {
+        font-size: 9.5pt;
+    }
+
+    body.report-page .report-table thead {
+        display: table-header-group;
+    }
+
+    body.report-page .report-table tr {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    body.report-page .report-table thead th {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Mantener juntos encabezado, resumen y pie. */
+    body.report-page .report-header,
+    body.report-page .report-summary,
+    body.report-page .report-footer,
+    body.report-page .report-block {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    body.report-page .report-summary {
+        gap: .4rem;
+    }
+
+    /* En papel los bloques del reporte financiero se apilan. */
+    body.report-page .report-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2mm;
+    }
+
+    body.report-page .report-footer {
+        margin-top: 8mm;
+    }
+}
