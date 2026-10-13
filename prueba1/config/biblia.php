@@ -13,6 +13,27 @@ return [
     'graphql_url' => env('BIBLIA_DIGITAL_GRAPHQL_URL', 'https://www.seudominio.com.br/graphql'),
 
     /**
+     * API pública GetBible (con traducciones en español, sin API key).
+     */
+    'api_url' => env('BIBLIA_API_URL', 'https://api.getbible.net/v2'),
+
+    /**
+     * Traducción a usar en GetBible (por ejemplo: valera).
+     */
+    'translation' => env('BIBLIA_TRANSLATION', 'valera'),
+
+    /**
+     * Nombre visible de la traducción.
+     */
+    'translation_name' => env('BIBLIA_TRANSLATION_NAME', 'Reina Valera 1909'),
+
+    /**
+     * Verificar el certificado SSL de la API. En local (Laragon/Windows) puede
+     * que PHP no tenga CA bundle, por lo que se puede desactivar.
+     */
+    'verify_ssl' => env('BIBLIA_VERIFY_SSL', true),
+
+    /**
      * Tiempo de expiración del caché (en segundos)
      */
     'cache_expiration' => env('BIBLIA_CACHE_EXPIRATION', 86400), // 24 horas

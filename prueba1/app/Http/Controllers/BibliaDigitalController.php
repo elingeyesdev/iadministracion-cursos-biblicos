@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BibliaApiService;
 use App\Services\BibliaDigitalService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Http;
 
 class BibliaDigitalController extends Controller
 {
-    public function __construct(protected BibliaDigitalService $bibliaService)
-    {
+    public function __construct(
+        protected BibliaDigitalService $bibliaService,
+        protected BibliaApiService $bibliaApi,
+    ) {
     }
 
     /**
@@ -26,48 +28,95 @@ class BibliaDigitalController extends Controller
      */
     public function buscar(Request $request): JsonResponse
     {
-        $q = $request->query('q');
-        if (!$q) {
+        $q = trim((string) $request->query('q'));
+
+        if ($q === '') {
             return response()->json(['error' => 'Debe ingresar una referencia o palabra.'], 400);
         }
 
-        // 1. Intentar buscar como referencia usando bible-api.com (soporta Valera en español)
-        try {
-            $response = Http::timeout(5)->get("https://bible-api.com/" . urlencode($q) . "?translation=valera");
-            if ($response->successful()) {
-                return response()->json($response->json());
-            }
-        } catch (\Exception $e) {
-            // Continuar al fallback si falla la API externa
+        // 1. Interpretar como referencia bíblica en español (Juan 3:16, Salmos 23,
+        //    1 Corintios 13:4-7...) y resolverla con GetBible (traducción valera).
+        $reference = $this->bibliaApi->parseReference($q);
+
+        if ($reference) {
+            return $this->responderReferencia($reference);
         }
 
-        // 2. Si falla o no es una referencia, buscar por palabra clave usando BibliaDigitalService
+        // 2. Si no es una referencia reconocida, intentar búsqueda por palabra clave.
         try {
             $results = $this->bibliaService->searchVerses($q);
+
             if (isset($results['data']['search']) && !empty($results['data']['search'])) {
                 $searchList = $results['data']['search'];
-                
+
                 // Formatear la respuesta para que coincida con los campos que espera el JS de la vista
                 $formattedVerses = [];
                 foreach ($searchList as $index => $item) {
-                  $formattedVerses[] = [
-                      'verse' => $index + 1,
-                      'text' => "[" . $item['book']['name'] . " " . $item['chapter'] . ":" . $item['verse'] . "] " . $item['text'] . "\n"
-                  ];
+                    $formattedVerses[] = [
+                        'verse' => $index + 1,
+                        'text' => '['.$item['book']['name'].' '.$item['chapter'].':'.$item['verse'].'] '.$item['text'].PHP_EOL,
+                    ];
                 }
 
                 return response()->json([
-                    'reference' => 'Resultados para la palabra: "' . $q . '"',
+                    'reference' => 'Resultados para la palabra: "'.$q.'"',
                     'translation_name' => 'A Bíblia Digital',
                     'verses' => $formattedVerses,
-                    'text' => ''
+                    'text' => '',
                 ]);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al buscar en el servicio de Biblia: ' . $e->getMessage()], 500);
+            report($e);
         }
 
-        return response()->json(['error' => 'No se encontraron resultados para la referencia o palabra clave dada.'], 404);
+        return response()->json([
+            'error' => 'No se reconoció la referencia. Usa por ejemplo: Juan 3:16, Salmos 23 o 1 Corintios 13:4-7.',
+        ], 404);
+    }
+
+    /**
+     * Devuelve el capítulo (o versículo/rango) solicitado.
+     *
+     * @param  array{book:int, book_name:string, chapter:int, verse:?int, verse_end:?int, reference:string}  $reference
+     */
+    protected function responderReferencia(array $reference): JsonResponse
+    {
+        $verses = $this->bibliaApi->getChapter($reference['book'], $reference['chapter']);
+
+        if (empty($verses)) {
+            return response()->json([
+                'error' => 'No se encontró el capítulo indicado (' . $reference['book_name'] . ' ' . $reference['chapter'] . ').',
+            ], 404);
+        }
+
+        // Si se pidió un versículo o rango, recortar el capítulo.
+        if ($reference['verse'] !== null) {
+            $start = $reference['verse'];
+            $end = $reference['verse_end'] ?? $start;
+
+            $verses = array_filter(
+                $verses,
+                fn ($number) => $number >= $start && $number <= $end,
+                ARRAY_FILTER_USE_KEY
+            );
+        }
+
+        $formatted = [];
+        foreach ($verses as $number => $text) {
+            $formatted[] = ['verse' => $number, 'text' => $text];
+        }
+
+        $text = implode(PHP_EOL, array_map(
+            fn ($verse) => $verse['verse'].'. '.$verse['text'],
+            $formatted
+        ));
+
+        return response()->json([
+            'reference' => $reference['reference'],
+            'translation_name' => $this->bibliaApi->translationName(),
+            'verses' => $formatted,
+            'text' => $text,
+        ]);
     }
 
     /**

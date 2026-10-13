@@ -5,7 +5,7 @@
 @section('content')
 <div class="mb-4">
     <h1 class="sidebar-title" style="font-size:2rem;">Buscador bíblico</h1>
-    <p class="text-muted mb-0">Busca versículos usando la API pública de Bible API.</p>
+    <p class="text-muted mb-0">Busca referencias bíblicas en español (Reina-Valera 1909).</p>
 </div>
 
 <div class="row">
@@ -15,7 +15,7 @@
                 <form id="search-form" class="row g-3">
                     <div class="col-12">
                         <label for="query" class="form-label">Referencia bíblica</label>
-                        <input id="query" name="q" type="text" class="form-control" placeholder="Ej: John 3:16 o Mateo 5:9" autocomplete="off">
+                        <input id="query" name="q" type="text" class="form-control" placeholder="Ej: Juan 3:16, Salmos 23 o 1 Corintios 13:4-7" autocomplete="off">
                     </div>
                     <div class="col-12 d-grid">
                         <button type="submit" class="btn btn-primary">Buscar</button>
