@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Permiso;
+use App\Models\Role;
 use App\Models\User;
 use App\Services\BibliaDigitalService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -63,7 +65,18 @@ class BibliaBusquedaTest extends TestCase
 
     private function usuario(): User
     {
-        return User::factory()->create();
+        $user = User::factory()->create();
+
+        $rol = Role::firstOrCreate(['nombre' => 'Consulta'], ['estado' => 'activo']);
+        $permiso = Permiso::firstOrCreate(
+            ['nombre' => 'biblia.ver'],
+            ['descripcion' => 'Consultar la Biblia digital', 'modulo' => 'Biblia']
+        );
+
+        $rol->permisos()->syncWithoutDetaching([$permiso->id]);
+        $user->roles()->attach($rol->id, ['fecha_asignacion' => now(), 'estado' => 'activo']);
+
+        return $user;
     }
 
     public function test_devuelve_el_versiculo_solicitado(): void

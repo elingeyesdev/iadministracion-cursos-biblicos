@@ -2,27 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
 use App\Http\Controllers\Web\DashboardController;
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-});
-
-// El perfil queda accesible con solo estar autenticado: así un usuario que aún
-// no verifica su correo puede igualmente gestionar su cuenta o cerrar sesión.
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
 use App\Http\Controllers\Web\UsuarioController;
 use App\Http\Controllers\Web\RolController;
+use App\Http\Controllers\Web\PermisoController;
 use App\Http\Controllers\Web\AsignarRolController;
 use App\Http\Controllers\Web\MiembroController;
 use App\Http\Controllers\Web\MinisterioController;
@@ -41,69 +24,115 @@ use App\Http\Controllers\Web\InscripcionController;
 use App\Http\Controllers\Web\AsistenciaController;
 use App\Http\Controllers\Web\ReporteController;
 
-// Todas las rutas internas exigen el correo verificado (middleware 'verified').
+Route::get('/', function () {
+    return view('welcome');
+});
 
-// Solo Administrador
-Route::middleware(['auth', 'verified', 'rol:Administrador'])->group(function () {
-    Route::resource('usuarios', UsuarioController::class);
-    Route::resource('roles', RolController::class);
-    Route::resource('asignar-roles', AsignarRolController::class)->only(['index', 'edit', 'update']);
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+// El perfil queda accesible con solo estar autenticado: así un usuario que aún
+// no verifica su correo puede igualmente gestionar su cuenta o cerrar sesión.
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+/**
+ * Registra un recurso protegido por permisos:
+ *   - index / show        → permiso <modulo>.ver
+ *   - create/store/...    → permiso <modulo>.gestionar
+ */
+$recurso = function (string $uri, string $controlador, string $modulo): void {
+    Route::resource($uri, $controlador)
+        ->middlewareFor(['index', 'show'], "permiso:{$modulo}.ver")
+        ->middlewareFor(['create', 'store', 'edit', 'update', 'destroy'], "permiso:{$modulo}.gestionar");
+};
+
+// Todas las rutas internas exigen el correo verificado (middleware 'verified').
+Route::middleware(['auth', 'verified'])->group(function () use ($recurso) {
+
+    // ── Acceso y seguridad ─────────────────────────────────
+    $recurso('usuarios', UsuarioController::class, 'usuarios');
+    $recurso('roles', RolController::class, 'roles');
+
+    Route::get('permisos', [PermisoController::class, 'index'])
+        ->middleware('permiso:permisos.ver')
+        ->name('permisos.index');
+    Route::put('permisos/{rol}', [PermisoController::class, 'update'])
+        ->middleware('permiso:permisos.gestionar')
+        ->name('permisos.roles.update');
+
+    Route::resource('asignar-roles', AsignarRolController::class)
+        ->only(['index', 'edit', 'update'])
+        ->middlewareFor(['index'], 'permiso:asignar-roles.ver')
+        ->middlewareFor(['edit', 'update'], 'permiso:asignar-roles.gestionar');
+
     Route::patch('usuarios/{usuario}/roles/{rol}/estado',
         [UsuarioController::class, 'cambiarEstadoRol'])
+        ->middleware('permiso:usuarios.gestionar')
         ->name('usuarios.roles.estado');
-});
 
-// Administrador o Secretario
-Route::middleware(['auth', 'verified', 'rol:Administrador,Secretario'])->group(function () {
-    Route::resource('miembros', MiembroController::class);
-    Route::resource('ministerios', MinisterioController::class);
-    Route::resource('actividades', ActividadController::class);
-    Route::resource('seguimientos', SeguimientoActividadController::class);
-});
+    // ── Personas y organización ────────────────────────────
+    $recurso('miembros', MiembroController::class, 'miembros');
+    $recurso('ministerios', MinisterioController::class, 'ministerios');
+    $recurso('actividades', ActividadController::class, 'actividades');
+    $recurso('seguimientos', SeguimientoActividadController::class, 'seguimientos');
+    $recurso('docentes', DocenteController::class, 'docentes');
+    $recurso('cargos', CargoController::class, 'cargos');
+    $recurso('lideres', LiderIglesiaController::class, 'lideres');
 
-// Administrador o Tesorero
-Route::middleware(['auth', 'verified', 'rol:Administrador,Tesorero'])->group(function () {
-    Route::resource('cultos', CultoController::class);
-    Route::resource('ingresos', IngresoController::class);
-    Route::resource('egresos', EgresoController::class);
-    Route::resource('contratos', ContratoController::class);
-});
+    // ── Finanzas ───────────────────────────────────────────
+    $recurso('cultos', CultoController::class, 'cultos');
+    $recurso('ingresos', IngresoController::class, 'ingresos');
+    $recurso('egresos', EgresoController::class, 'egresos');
+    $recurso('contratos', ContratoController::class, 'contratos');
 
-// Todos los autenticados
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('cursos', CursoController::class);
-    Route::resource('sesiones', SesionController::class);
-    Route::resource('docentes', DocenteController::class);
-    Route::resource('cargos', CargoController::class);
-    Route::resource('lideres', LiderIglesiaController::class);
-    Route::get('/biblia', [App\Http\Controllers\BibliaDigitalController::class, 'index'])->name('biblia.index');
-    Route::get('/biblia/buscar/versiculos', [App\Http\Controllers\BibliaDigitalController::class, 'buscar'])->name('biblia.buscar');
-});
+    // ── Académico ──────────────────────────────────────────
+    $recurso('cursos', CursoController::class, 'cursos');
+    $recurso('sesiones', SesionController::class, 'sesiones');
 
-// Inscripciones
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('inscripciones', [InscripcionController::class, 'index'])->name('inscripciones.index');
-    Route::get('inscripciones/{curso}/gestionar', [InscripcionController::class, 'gestion'])->name('inscripciones.gestion');
-    Route::post('cursos/{curso}/inscripciones', [InscripcionController::class, 'store'])->name('inscripciones.store');
-    Route::get('inscripciones/{inscripcion}/edit', [InscripcionController::class, 'edit'])->name('inscripciones.edit');
-    Route::put('inscripciones/{inscripcion}', [InscripcionController::class, 'update'])->name('inscripciones.update');
-    Route::delete('inscripciones/{inscripcion}', [InscripcionController::class, 'destroy'])->name('inscripciones.destroy');
-    Route::post('inscripciones/{id}/restore', [InscripcionController::class, 'restore'])->name('inscripciones.restore');
-});
+    // Inscripciones
+    Route::get('inscripciones', [InscripcionController::class, 'index'])
+        ->middleware('permiso:inscripciones.ver')->name('inscripciones.index');
+    Route::get('inscripciones/{curso}/gestionar', [InscripcionController::class, 'gestion'])
+        ->middleware('permiso:inscripciones.ver')->name('inscripciones.gestion');
+    Route::post('cursos/{curso}/inscripciones', [InscripcionController::class, 'store'])
+        ->middleware('permiso:inscripciones.gestionar')->name('inscripciones.store');
+    Route::get('inscripciones/{inscripcion}/edit', [InscripcionController::class, 'edit'])
+        ->middleware('permiso:inscripciones.gestionar')->name('inscripciones.edit');
+    Route::put('inscripciones/{inscripcion}', [InscripcionController::class, 'update'])
+        ->middleware('permiso:inscripciones.gestionar')->name('inscripciones.update');
+    Route::delete('inscripciones/{inscripcion}', [InscripcionController::class, 'destroy'])
+        ->middleware('permiso:inscripciones.gestionar')->name('inscripciones.destroy');
+    Route::post('inscripciones/{id}/restore', [InscripcionController::class, 'restore'])
+        ->middleware('permiso:inscripciones.gestionar')->name('inscripciones.restore');
 
-// Asistencia
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('asistencia', [AsistenciaController::class, 'index'])->name('asistencia.index');
-    Route::get('asistencia/registrar', [AsistenciaController::class, 'registrar'])->name('asistencia.registrar');
-    Route::post('asistencia/registrar/{sesion}', [AsistenciaController::class, 'store'])->name('asistencia.store');
-});
+    // Asistencia
+    Route::get('asistencia', [AsistenciaController::class, 'index'])
+        ->middleware('permiso:asistencia.ver')->name('asistencia.index');
+    Route::get('asistencia/registrar', [AsistenciaController::class, 'registrar'])
+        ->middleware('permiso:asistencia.ver')->name('asistencia.registrar');
+    Route::post('asistencia/registrar/{sesion}', [AsistenciaController::class, 'store'])
+        ->middleware('permiso:asistencia.gestionar')->name('asistencia.store');
 
-// Reportes
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('reportes', [ReporteController::class, 'index'])->name('reportes.index');
-    Route::get('reportes/miembros', [ReporteController::class, 'miembros'])->name('reportes.miembros');
-    Route::get('reportes/asistencia', [ReporteController::class, 'asistencia'])->name('reportes.asistencia');
-    Route::get('reportes/financiero', [ReporteController::class, 'financiero'])->name('reportes.financiero');
+    // ── Reportes ───────────────────────────────────────────
+    Route::get('reportes', [ReporteController::class, 'index'])
+        ->middleware('permiso:reportes.ver')->name('reportes.index');
+    Route::get('reportes/miembros', [ReporteController::class, 'miembros'])
+        ->middleware('permiso:reportes.ver')->name('reportes.miembros');
+    Route::get('reportes/asistencia', [ReporteController::class, 'asistencia'])
+        ->middleware('permiso:reportes.ver')->name('reportes.asistencia');
+    Route::get('reportes/financiero', [ReporteController::class, 'financiero'])
+        ->middleware('permiso:reportes.ver')->name('reportes.financiero');
+
+    // ── Biblia digital ─────────────────────────────────────
+    Route::get('/biblia', [App\Http\Controllers\BibliaDigitalController::class, 'index'])
+        ->middleware('permiso:biblia.ver')->name('biblia.index');
+    Route::get('/biblia/buscar/versiculos', [App\Http\Controllers\BibliaDigitalController::class, 'buscar'])
+        ->middleware('permiso:biblia.ver')->name('biblia.buscar');
 });
 
 require __DIR__.'/auth.php';

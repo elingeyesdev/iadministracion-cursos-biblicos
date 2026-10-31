@@ -18,9 +18,11 @@
             <a href="{{ route('roles.index') }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left me-1"></i> Volver al listado
             </a>
-            <a href="{{ route('roles.edit', $rol->id) }}" class="btn btn-warning">
-                <i class="bi bi-pencil-fill me-1"></i> Editar Rol
-            </a>
+            @permiso('roles.gestionar')
+                <a href="{{ route('roles.edit', $rol->id) }}" class="btn btn-warning">
+                    <i class="bi bi-pencil-fill me-1"></i> Editar Rol
+                </a>
+            @endpermiso
         </div>
     </div>
 
@@ -61,6 +63,34 @@
                         <label class="text-muted small fw-semibold d-block mb-1">Fecha Creación</label>
                         <span class="text-white">{{ $rol->created_at->format('d/m/Y H:i') }}</span>
                     </div>
+                </div>
+            </div>
+
+            <!-- Permisos del rol -->
+            <div class="card border-0 shadow-sm mt-4" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
+                <div class="card-header border-0 bg-dark py-3 d-flex align-items-center justify-content-between">
+                    <h5 class="card-title text-white mb-0">
+                        <i class="bi bi-key-fill text-gold-500 me-2"></i>Permisos
+                    </h5>
+                    <span class="badge bg-info text-dark">{{ $rol->permisos->count() }}</span>
+                </div>
+                <div class="card-body">
+                    @forelse($rol->permisos->groupBy('modulo') as $modulo => $permisos)
+                        <div class="mb-3">
+                            <div class="text-muted small fw-bold text-uppercase mb-2" style="letter-spacing:.05em;">
+                                <i class="bi {{ config('permisos.modulos.'.$modulo.'.icono', 'bi-key') }} me-1"></i>{{ $modulo }}
+                            </div>
+                            <div class="d-flex flex-wrap gap-1">
+                                @foreach($permisos as $permiso)
+                                    <span class="badge bg-dark text-white border border-secondary" title="{{ $permiso->descripcion }}">
+                                        {{ $permiso->nombre }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-muted mb-0">Este rol no tiene permisos asignados.</p>
+                    @endforelse
                 </div>
             </div>
         </div>

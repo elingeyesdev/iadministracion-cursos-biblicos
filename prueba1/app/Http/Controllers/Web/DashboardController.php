@@ -46,7 +46,7 @@ class DashboardController extends Controller {
         $data['total_sesiones']   = \App\Models\Sesion::count();
 
         // ── BLOQUE SECRETARIO / ADMINISTRADOR ───────────────
-        if ($user->tieneRol('Administrador') || $user->tieneRol('Secretario')) {
+        if ($user->tienePermiso('actividades.ver', 'ministerios.ver')) {
             $data['total_ministerios']      = Ministerio::count();
             $data['total_actividades']      = Actividad::count();
             $data['actividades_planificadas']= Actividad::where('estado','planificada')->count();
@@ -59,7 +59,7 @@ class DashboardController extends Controller {
         }
 
         // ── BLOQUE TESORERO / ADMINISTRADOR ─────────────────
-        if ($user->tieneRol('Administrador') || $user->tieneRol('Tesorero')) {
+        if ($user->tienePermiso('ingresos.ver', 'egresos.ver')) {
             $data['total_ingresos']    = Ingreso::sum('monto_total');
             $data['total_egresos']     = Egreso::sum('monto');
             $data['balance']           = $data['total_ingresos'] - $data['total_egresos'];
@@ -88,7 +88,7 @@ class DashboardController extends Controller {
         }
 
         // ── BLOQUE SOLO ADMINISTRADOR ────────────────────────
-        if ($user->esAdmin()) {
+        if ($user->tienePermiso('usuarios.ver', 'roles.ver')) {
             $data['total_usuarios'] = User::count();
             $data['total_roles']    = Role::count();
             $data['ultimos_usuarios']= User::with(['roles','profile'])

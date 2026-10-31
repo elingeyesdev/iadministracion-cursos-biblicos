@@ -33,6 +33,9 @@ class DatabaseSeeder extends Seeder
             ['descripcion' => 'Gestión financiera', 'estado' => 'activo']
         );
 
+        // Catálogo de permisos y permisos iniciales de cada rol.
+        $this->call(PermisoSeeder::class);
+
         // 1. Crear usuario Administrador principal para no perder acceso
         $userMain = User::updateOrCreate(
             ['email' => 'theanimeempire2024@gmail.com'],

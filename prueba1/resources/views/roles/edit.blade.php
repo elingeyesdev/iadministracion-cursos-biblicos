@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Editar Rol</h1>
-            <p class="text-muted mb-0">Actualiza los detalles del rol en el sistema.</p>
+            <p class="text-muted mb-0">Actualiza los detalles del rol. Sus permisos se editan desde Administrar Permisos.</p>
         </div>
         <a href="{{ route('roles.index') }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-1"></i> Volver
@@ -58,6 +58,16 @@
                         <option value="inactivo" {{ old('estado', $rol->estado) === 'inactivo' ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">Inactivo</option>
                     </select>
                     @error('estado') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="alert alert-info border-0 mb-4">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Los permisos de este rol se editan desde
+                    @permiso('permisos.ver')
+                        <a href="{{ route('permisos.index', ['rol' => $rol->id]) }}" class="alert-link">Administrar Permisos</a>.
+                    @else
+                        la pantalla Administrar Permisos.
+                    @endpermiso
                 </div>
 
                 <div class="mt-4 d-flex gap-3">

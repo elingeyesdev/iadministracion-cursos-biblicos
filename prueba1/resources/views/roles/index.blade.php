@@ -13,9 +13,18 @@
             <h1 class="h2 text-white mb-1">Roles</h1>
             <p class="text-muted mb-0">Administra los roles del sistema que controlan los permisos de acceso.</p>
         </div>
-        <a href="{{ route('roles.create') }}" class="btn btn-success">
-            <i class="bi bi-shield-plus me-1"></i> Nuevo Rol
-        </a>
+        <div class="d-flex gap-2">
+            @permiso('permisos.ver')
+                <a href="{{ route('permisos.index') }}" class="btn btn-outline-light">
+                    <i class="bi bi-key me-1"></i> Permisos
+                </a>
+            @endpermiso
+            @permiso('roles.gestionar')
+                <a href="{{ route('roles.create') }}" class="btn btn-success">
+                    <i class="bi bi-shield-plus me-1"></i> Nuevo Rol
+                </a>
+            @endpermiso
+        </div>
     </div>
 
     <!-- Buscador en tiempo real -->
@@ -38,6 +47,7 @@
                         <th scope="col" class="border-0">Nombre</th>
                         <th scope="col" class="border-0">Descripción</th>
                         <th scope="col" class="border-0">Estado</th>
+                        <th scope="col" class="border-0">Permisos</th>
                         <th scope="col" class="border-0">Usuarios Asignados</th>
                         <th scope="col" class="border-0 text-end">Acciones</th>
                     </tr>
@@ -63,6 +73,9 @@
                                 @endif
                             </td>
                             <td>
+                                <span class="badge bg-info text-dark fw-bold" title="Permisos asignados">{{ $rol->permisos_count ?? 0 }}</span>
+                            </td>
+                            <td>
                                 <span class="badge bg-dark text-white fw-bold">{{ $rol->users_count ?? 0 }}</span>
                             </td>
                             <td class="text-end">
@@ -70,22 +83,24 @@
                                     <a href="{{ route('roles.show', $rol->id) }}" class="btn btn-sm btn-outline-info" title="Ver Detalle">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
-                                    <a href="{{ route('roles.edit', $rol->id) }}" class="btn btn-sm btn-outline-warning" title="Editar">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger btn-delete-rol" data-id="{{ $rol->id }}" data-nombre="{{ $rol->nombre }}" title="Eliminar">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
-                                    <form id="delete-form-{{ $rol->id }}" action="{{ route('roles.destroy', $rol->id) }}" method="POST" class="d-none">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
+                                    @permiso('roles.gestionar')
+                                        <a href="{{ route('roles.edit', $rol->id) }}" class="btn btn-sm btn-outline-warning" title="Editar">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger btn-delete-rol" data-id="{{ $rol->id }}" data-nombre="{{ $rol->nombre }}" title="Eliminar">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                        <form id="delete-form-{{ $rol->id }}" action="{{ route('roles.destroy', $rol->id) }}" method="POST" class="d-none">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                    @endpermiso
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-4">No hay roles registrados.</td>
+                            <td colspan="6" class="text-center text-muted py-4">No hay roles registrados.</td>
                         </tr>
                     @endforelse
                 </tbody>

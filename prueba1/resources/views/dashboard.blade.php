@@ -130,7 +130,7 @@
     {{-- ══════════════════════════════════════════════ --}}
     {{-- BLOQUE 2: SECRETARIO / ADMINISTRADOR          --}}
     {{-- ══════════════════════════════════════════════ --}}
-    @if(auth()->user()->tieneRol('Administrador') || auth()->user()->tieneRol('Secretario'))
+    @if(auth()->user()->tienePermiso('actividades.ver', 'ministerios.ver'))
 
     {{-- Cards de Actividades --}}
     <div class="row g-3 mb-4">
@@ -282,7 +282,7 @@
     {{-- ══════════════════════════════════════════════ --}}
     {{-- BLOQUE 3: TESORERO / ADMINISTRADOR            --}}
     {{-- ══════════════════════════════════════════════ --}}
-    @if(auth()->user()->tieneRol('Administrador') || auth()->user()->tieneRol('Tesorero'))
+    @if(auth()->user()->tienePermiso('ingresos.ver', 'egresos.ver'))
 
     <div class="col-12 mb-2 mt-4">
         <h6 class="text-muted text-uppercase fw-bold">
@@ -518,7 +518,7 @@
     {{-- ══════════════════════════════════════════════ --}}
     {{-- BLOQUE 4: SOLO ADMINISTRADOR                  --}}
     {{-- ══════════════════════════════════════════════ --}}
-    @if(auth()->user()->esAdmin())
+    @if(auth()->user()->tienePermiso('usuarios.ver', 'roles.ver'))
 
     <div class="col-12 mb-2 mt-4">
         <h6 class="text-muted text-uppercase fw-bold">

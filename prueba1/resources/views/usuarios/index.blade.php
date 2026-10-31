@@ -13,9 +13,11 @@
             <h1 class="h2 text-white mb-1">Usuarios</h1>
             <p class="text-muted mb-0">Administra las cuentas de usuario, perfiles y asignación de roles.</p>
         </div>
-        <a href="{{ route('usuarios.create') }}" class="btn btn-success">
-            <i class="bi bi-person-plus-fill me-1"></i> Nuevo Usuario
-        </a>
+        @permiso('usuarios.gestionar')
+            <a href="{{ route('usuarios.create') }}" class="btn btn-success">
+                <i class="bi bi-person-plus-fill me-1"></i> Nuevo Usuario
+            </a>
+        @endpermiso
     </div>
 
     <!-- Buscador en tiempo real -->
@@ -76,22 +78,24 @@
                                     <a href="{{ route('usuarios.show', $u->id) }}" class="btn btn-sm btn-outline-info" title="Ver Detalle">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
-                                    <a href="{{ route('usuarios.edit', $u->id) }}" class="btn btn-sm btn-outline-warning" title="Editar">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </a>
-                                    @if(auth()->id() !== $u->id)
-                                        <button type="button" class="btn btn-sm btn-outline-danger btn-delete-usuario" data-id="{{ $u->id }}" data-name="{{ $u->name }}" title="Eliminar">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                        <form id="delete-form-{{ $u->id }}" action="{{ route('usuarios.destroy', $u->id) }}" method="POST" class="d-none">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                    @else
-                                        <button type="button" class="btn btn-sm btn-outline-danger disabled" title="No puedes eliminarte a ti mismo" disabled>
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                    @endif
+                                    @permiso('usuarios.gestionar')
+                                        <a href="{{ route('usuarios.edit', $u->id) }}" class="btn btn-sm btn-outline-warning" title="Editar">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        @if(auth()->id() !== $u->id)
+                                            <button type="button" class="btn btn-sm btn-outline-danger btn-delete-usuario" data-id="{{ $u->id }}" data-name="{{ $u->name }}" title="Eliminar">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                            <form id="delete-form-{{ $u->id }}" action="{{ route('usuarios.destroy', $u->id) }}" method="POST" class="d-none">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        @else
+                                            <button type="button" class="btn btn-sm btn-outline-danger disabled" title="No puedes eliminarte a ti mismo" disabled>
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        @endif
+                                    @endpermiso
                                 </div>
                             </td>
                         </tr>

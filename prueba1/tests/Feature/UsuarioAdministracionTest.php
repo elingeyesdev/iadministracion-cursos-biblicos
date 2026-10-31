@@ -47,7 +47,7 @@ class UsuarioAdministracionTest extends TestCase
         // Al quedar verificado, puede entrar al sistema sin pasar por el
         // enlace de Gmail.
         $this->actingAs($nuevo)
-            ->get(route('reportes.index'))
+            ->get(route('dashboard'))
             ->assertOk();
     }
 }

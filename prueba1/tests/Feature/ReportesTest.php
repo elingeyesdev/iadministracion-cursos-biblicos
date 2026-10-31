@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Permiso;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -12,7 +14,18 @@ class ReportesTest extends TestCase
 
     private function usuario(): User
     {
-        return User::factory()->create();
+        $user = User::factory()->create();
+
+        $rol = Role::firstOrCreate(['nombre' => 'Consulta'], ['estado' => 'activo']);
+        $permiso = Permiso::firstOrCreate(
+            ['nombre' => 'reportes.ver'],
+            ['descripcion' => 'Ver reportes', 'modulo' => 'Reportes']
+        );
+
+        $rol->permisos()->syncWithoutDetaching([$permiso->id]);
+        $user->roles()->attach($rol->id, ['fecha_asignacion' => now(), 'estado' => 'activo']);
+
+        return $user;
     }
 
     public function test_indice_de_reportes_se_renderiza(): void

@@ -47,7 +47,7 @@ class EmailVerificationTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->get(route('reportes.index'))
+            ->get(route('dashboard'))
             ->assertOk();
     }
 
