@@ -1,0 +1,4 @@
+# Ignorar todo lo que no sea la carpeta prueba1
+/*
+!/.gitignore
+!/prueba1/
