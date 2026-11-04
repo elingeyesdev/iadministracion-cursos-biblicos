@@ -15,13 +15,48 @@
 |
 | Un permiso ".gestionar" incluye automáticamente el ".ver" del mismo módulo.
 |
+| Para la pantalla de Administrar Permisos, los permisos se agrupan en las
+| categorías definidas en "categorias" (Acceso y Seguridad, Parametrización,
+| Transaccional y Reportes). Cada módulo indica su categoría por defecto en
+| "categoria" y, si un módulo mezcla permisos de varias categorías, se puede
+| ajustar permiso por permiso en "categorias_permisos".
+|
 */
 
 return [
 
+    'categorias' => [
+
+        'acceso-seguridad' => [
+            'nombre' => 'Acceso y Seguridad',
+            'icono'  => 'bi-shield-lock',
+            'orden'  => 1,
+        ],
+
+        'parametrizacion' => [
+            'nombre' => 'Parametrización',
+            'icono'  => 'bi-sliders',
+            'orden'  => 2,
+        ],
+
+        'transaccional' => [
+            'nombre' => 'Transaccional',
+            'icono'  => 'bi-arrow-left-right',
+            'orden'  => 3,
+        ],
+
+        'reportes' => [
+            'nombre' => 'Reportes',
+            'icono'  => 'bi-graph-up',
+            'orden'  => 4,
+        ],
+
+    ],
+
     'modulos' => [
 
         'Seguridad' => [
+            'categoria' => 'acceso-seguridad',
             'icono' => 'bi-shield-lock',
             'permisos' => [
                 'usuarios.ver'        => 'Ver listado y detalle de usuarios',
@@ -36,6 +71,7 @@ return [
         ],
 
         'Personas' => [
+            'categoria' => 'parametrizacion',
             'icono' => 'bi-people',
             'permisos' => [
                 'miembros.ver'       => 'Ver miembros',
@@ -50,6 +86,7 @@ return [
         ],
 
         'Organización' => [
+            'categoria' => 'parametrizacion',
             'icono' => 'bi-diagram-3',
             'permisos' => [
                 'ministerios.ver'       => 'Ver ministerios',
@@ -62,6 +99,7 @@ return [
         ],
 
         'Finanzas' => [
+            'categoria' => 'transaccional',
             'icono' => 'bi-cash-coin',
             'permisos' => [
                 'cultos.ver'       => 'Ver cultos',
@@ -76,6 +114,7 @@ return [
         ],
 
         'Académico' => [
+            'categoria' => 'transaccional',
             'icono' => 'bi-book',
             'permisos' => [
                 'cursos.ver'       => 'Ver cursos',
@@ -90,6 +129,7 @@ return [
         ],
 
         'Reportes' => [
+            'categoria' => 'reportes',
             'icono' => 'bi-graph-up',
             'permisos' => [
                 'reportes.ver' => 'Ver reportes de miembros, asistencia y finanzas',
@@ -97,12 +137,27 @@ return [
         ],
 
         'Biblia' => [
+            'categoria' => 'reportes',
             'icono' => 'bi-book-half',
             'permisos' => [
                 'biblia.ver' => 'Consultar la Biblia digital',
             ],
         ],
 
+    ],
+
+    /*
+    | Permisos que pertenecen a una categoría distinta a la de su módulo.
+    | Se usa cuando un módulo mezcla configuración (parametrización) con
+    | operaciones del día a día (transaccional), como Finanzas o Académico.
+    */
+    'categorias_permisos' => [
+        'cultos.ver'       => 'parametrizacion',
+        'cultos.gestionar' => 'parametrizacion',
+        'contratos.ver'       => 'parametrizacion',
+        'contratos.gestionar' => 'parametrizacion',
+        'cursos.ver'       => 'parametrizacion',
+        'cursos.gestionar' => 'parametrizacion',
     ],
 
 ];

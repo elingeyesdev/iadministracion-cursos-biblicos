@@ -19,14 +19,45 @@ class PermisoController extends Controller
             ->orderBy('nombre')
             ->get();
 
-        $permisosPorModulo = Permiso::query()
+        // Categorías en el orden definido en config/permisos.php.
+        $categorias = collect(config('permisos.categorias', []))
+            ->sortBy('orden');
+
+        // Ordena los permisos siguiendo el orden de los módulos en la config.
+        $ordenModulos = collect(config('permisos.modulos', []))->keys()->flip();
+
+        $permisos = Permiso::query()
             ->orderBy('id')
             ->get()
-            ->groupBy('modulo');
+            ->sortBy(fn (Permiso $permiso) => sprintf(
+                '%03d-%03d',
+                $ordenModulos[$permiso->modulo] ?? 999,
+                $permiso->id
+            ))
+            ->values();
 
-        $totalPermisos = Permiso::count();
+        $permisosPorCategoria = $categorias->map(fn (array $datos, string $clave) => [
+            'nombre'   => $datos['nombre'],
+            'icono'    => $datos['icono'] ?? 'bi-key',
+            'permisos' => $permisos->filter(fn (Permiso $permiso) => $permiso->categoria() === $clave)->values(),
+        ]);
 
-        return view('permisos.index', compact('roles', 'permisosPorModulo', 'totalPermisos'));
+        // Permisos sin categoría conocida (por ejemplo, creados manualmente).
+        $sinCategoria = $permisos->reject(
+            fn (Permiso $permiso) => $categorias->has($permiso->categoria())
+        )->values();
+
+        if ($sinCategoria->isNotEmpty()) {
+            $permisosPorCategoria->put('otros', [
+                'nombre'   => 'Otros',
+                'icono'    => 'bi-key',
+                'permisos' => $sinCategoria,
+            ]);
+        }
+
+        $totalPermisos = $permisos->count();
+
+        return view('permisos.index', compact('roles', 'permisosPorCategoria', 'totalPermisos'));
     }
 
     /**

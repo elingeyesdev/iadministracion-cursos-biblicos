@@ -110,7 +110,7 @@
 
                                             @include('permisos.partials.editor', [
                                                 'uid' => $rol->id,
-                                                'permisosPorModulo' => $permisosPorModulo,
+                                                'permisosPorCategoria' => $permisosPorCategoria,
                                                 'asignados' => $rol->permisos->pluck('id')->all(),
                                             ])
 
@@ -145,24 +145,24 @@
     document.addEventListener('DOMContentLoaded', function () {
         const editorDe = (el) => el.closest('.permisos-editor');
 
-        function sincronizarModulo(editor, indice) {
-            const delModulo = editor.querySelectorAll('.js-permiso-check[data-modulo="' + indice + '"]');
-            const toggle = editor.querySelector('.js-permiso-modulo[data-modulo="' + indice + '"]');
+        function sincronizarGrupo(editor, indice) {
+            const delGrupo = editor.querySelectorAll('.js-permiso-check[data-grupo="' + indice + '"]');
+            const toggle = editor.querySelector('.js-permiso-grupo[data-grupo="' + indice + '"]');
 
-            if (! toggle || delModulo.length === 0) return;
+            if (! toggle || delGrupo.length === 0) return;
 
-            const marcados = Array.from(delModulo).filter(c => c.checked).length;
-            toggle.checked = marcados === delModulo.length;
-            toggle.indeterminate = marcados > 0 && marcados < delModulo.length;
+            const marcados = Array.from(delGrupo).filter(c => c.checked).length;
+            toggle.checked = marcados === delGrupo.length;
+            toggle.indeterminate = marcados > 0 && marcados < delGrupo.length;
         }
 
         function sincronizarTodo(editor) {
-            editor.querySelectorAll('.js-permiso-modulo').forEach(toggle => {
-                sincronizarModulo(editor, toggle.dataset.modulo);
+            editor.querySelectorAll('.js-permiso-grupo').forEach(toggle => {
+                sincronizarGrupo(editor, toggle.dataset.grupo);
             });
         }
 
-        // Estado inicial de los interruptores por módulo (también en paneles ocultos).
+        // Estado inicial de los interruptores por categoría (también en paneles ocultos).
         document.querySelectorAll('.permisos-editor').forEach(sincronizarTodo);
 
         document.addEventListener('change', function (evento) {
@@ -170,15 +170,15 @@
 
             if (check.classList.contains('js-permiso-check')) {
                 const editor = editorDe(check);
-                if (editor) sincronizarModulo(editor, check.dataset.modulo);
+                if (editor) sincronizarGrupo(editor, check.dataset.grupo);
                 return;
             }
 
-            if (check.classList.contains('js-permiso-modulo')) {
+            if (check.classList.contains('js-permiso-grupo')) {
                 const editor = editorDe(check);
                 if (! editor) return;
 
-                editor.querySelectorAll('.js-permiso-check[data-modulo="' + check.dataset.modulo + '"]')
+                editor.querySelectorAll('.js-permiso-check[data-grupo="' + check.dataset.grupo + '"]')
                     .forEach(item => { item.checked = check.checked; });
                 check.indeterminate = false;
             }

@@ -75,22 +75,48 @@
                     <span class="badge bg-info text-dark">{{ $rol->permisos->count() }}</span>
                 </div>
                 <div class="card-body">
-                    @forelse($rol->permisos->groupBy('modulo') as $modulo => $permisos)
-                        <div class="mb-3">
-                            <div class="text-muted small fw-bold text-uppercase mb-2" style="letter-spacing:.05em;">
-                                <i class="bi {{ config('permisos.modulos.'.$modulo.'.icono', 'bi-key') }} me-1"></i>{{ $modulo }}
-                            </div>
-                            <div class="d-flex flex-wrap gap-1">
-                                @foreach($permisos as $permiso)
-                                    <span class="badge bg-dark text-white border border-secondary" title="{{ $permiso->descripcion }}">
-                                        {{ $permiso->nombre }}
-                                    </span>
-                                @endforeach
-                            </div>
-                        </div>
-                    @empty
+                    @if($rol->permisos->isEmpty())
                         <p class="text-muted mb-0">Este rol no tiene permisos asignados.</p>
-                    @endforelse
+                    @else
+                        @php
+                            $categoriasConfig = collect(config('permisos.categorias', []))->sortBy('orden');
+                            $permisosPorCategoria = $rol->permisos->groupBy(fn ($permiso) => $permiso->categoria());
+                        @endphp
+
+                        @foreach($categoriasConfig as $claveCategoria => $categoria)
+                            @php $permisosCategoria = $permisosPorCategoria->get($claveCategoria, collect()); @endphp
+                            @continue($permisosCategoria->isEmpty())
+
+                            <div class="mb-3">
+                                <div class="text-muted small fw-bold text-uppercase mb-2" style="letter-spacing:.05em;">
+                                    <i class="bi {{ $categoria['icono'] ?? 'bi-key' }} me-1"></i>{{ $categoria['nombre'] }}
+                                </div>
+                                <div class="d-flex flex-wrap gap-1">
+                                    @foreach($permisosCategoria as $permiso)
+                                        <span class="badge bg-dark text-white border border-secondary" title="{{ $permiso->descripcion }}">
+                                            {{ $permiso->nombre }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+
+                        @php $permisosOtros = $permisosPorCategoria->get('otros', collect()); @endphp
+                        @if($permisosOtros->isNotEmpty())
+                            <div class="mb-3">
+                                <div class="text-muted small fw-bold text-uppercase mb-2" style="letter-spacing:.05em;">
+                                    <i class="bi bi-key me-1"></i>Otros
+                                </div>
+                                <div class="d-flex flex-wrap gap-1">
+                                    @foreach($permisosOtros as $permiso)
+                                        <span class="badge bg-dark text-white border border-secondary" title="{{ $permiso->descripcion }}">
+                                            {{ $permiso->nombre }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    @endif
                 </div>
             </div>
         </div>
