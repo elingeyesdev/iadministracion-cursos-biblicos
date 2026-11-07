@@ -3,33 +3,29 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    /** @var array<int, string>|null */
-    protected ?array $rolesActivosCache = null;
-
-    /** @var array<int, string>|null */
-    protected ?array $permisosCache = null;
-
-    public function isAdmin(): bool
-    {
-        return $this->esAdmin();
-    }
+    /**
+     * Caché en memoria de los permisos resueltos del usuario.
+     *
+     * @var array<string, bool>|null
+     */
+    protected ?array $permisosResueltos = null;
 
     /**
      * Get the attributes that should be cast.
@@ -40,78 +36,139 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
 
-    // Perfil extendido 1:1
-    public function profile(): HasOne
-    {
-        return $this->hasOne(UserProfile::class);
-    }
-
-    // Roles N:M
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'role_user')
-            ->withPivot('fecha_asignacion', 'estado')
-            ->withTimestamps();
+        return $this->belongsToMany(Role::class)
+            ->withPivot('deleted_at')
+            ->withTimestamps()
+            ->wherePivotNull('deleted_at');
     }
 
-    // ── Roles ─────────────────────────────────────────────
+    public function docente(): HasOne
+    {
+        return $this->hasOne(Docente::class, 'user_id');
+    }
+
+    public function hasRole(string $roleName): bool
+    {
+        return $this->roles()->where('nombre', $roleName)->exists();
+    }
+
+    public function esDocente(): bool
+    {
+        return $this->hasRole('Docente');
+    }
+
+    public function docenteActivo(): bool
+    {
+        return (bool) $this->docente?->activo;
+    }
+
+    public function esAdministrador(): bool
+    {
+        return $this->hasRole('Administrador');
+    }
 
     /**
-     * Nombres de los roles activos del usuario (rol activo y asignación activa).
-     *
-     * @return array<int, string>
+     * Alias heredado usado por módulos anteriores (API/Biblia).
      */
-    public function nombresRolesActivos(): array
-    {
-        if ($this->rolesActivosCache === null) {
-            $this->rolesActivosCache = $this->roles()
-                ->wherePivot('estado', 'activo')
-                ->where('roles.estado', 'activo')
-                ->pluck('roles.nombre')
-                ->all();
-        }
-
-        return $this->rolesActivosCache;
-    }
-
-    public function tieneRol(string $nombre): bool
-    {
-        return in_array($nombre, $this->nombresRolesActivos(), true);
-    }
-
     public function esAdmin(): bool
     {
-        return $this->tieneRol('Administrador');
+        return $this->esAdministrador();
     }
 
-    // ── Permisos ───────────────────────────────────────────
+    public function isAdmin(): bool
+    {
+        return $this->esAdministrador();
+    }
 
     /**
-     * Permisos efectivos del usuario, obtenidos de sus roles activos.
+     * Indica si el usuario (a través de alguno de sus roles) puede realizar
+     * la acción indicada sobre el módulo. El rol Administrador siempre puede.
+     *
+     * Acepta dos formas:
+     *   puede('miembros', 'ver')  -> módulo + acción (esquema nuevo)
+     *   puede('miembros.ver')     -> permiso completo (módulos heredados)
+     */
+    public function puede(string $modulo, string ...$acciones): bool
+    {
+        $permisos = $this->resolverPermisos();
+
+        if (! empty($permisos['*'])) {
+            return true;
+        }
+
+        if ($acciones === []) {
+            if (! empty($permisos[$modulo])) {
+                return true;
+            }
+
+            // "modulo.gestionar" equivale a crear, editar o eliminar.
+            if (str_ends_with($modulo, '.gestionar')) {
+                $base = substr($modulo, 0, -strlen('.gestionar'));
+
+                foreach (['crear', 'editar', 'eliminar'] as $accion) {
+                    if (! empty($permisos["{$base}.{$accion}"])) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        foreach ($acciones as $accion) {
+            if (! empty($permisos["{$modulo}.{$accion}"])) {
+                return true;
+            }
+
+            // Compatibilidad: un permiso ".gestionar" heredado concede acciones
+            // de escritura sobre el módulo.
+            if (in_array($accion, ['crear', 'editar', 'eliminar'], true)
+                && ! empty($permisos["{$modulo}.gestionar"])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Compatibilidad con los módulos que usan permisos como cadenas
+     * ("miembros.ver", "miembros.gestionar", ...).
+     */
+    public function tienePermiso(string ...$permisos): bool
+    {
+        if ($permisos === []) {
+            return false;
+        }
+
+        foreach ($permisos as $permiso) {
+            if ($this->puede($permiso)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Lista de permisos efectivos en formato "modulo.accion".
      *
      * @return array<int, string>
      */
     public function permisos(): array
     {
-        if ($this->permisosCache !== null) {
-            return $this->permisosCache;
-        }
-
-        $this->permisosCache = $this->roles()
-            ->wherePivot('estado', 'activo')
-            ->where('roles.estado', 'activo')
-            ->with('permisos:id,nombre')
-            ->get()
-            ->flatMap(fn (Role $rol) => $rol->permisos->pluck('nombre'))
-            ->unique()
+        return collect($this->resolverPermisos())
+            ->except('*')
+            ->keys()
             ->values()
             ->all();
-
-        return $this->permisosCache;
     }
 
     /**
@@ -125,54 +182,43 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Indica si el usuario tiene al menos uno de los permisos indicados.
-     *
-     * Un permiso ".gestionar" concede también el ".ver" del mismo módulo.
+     * Limpia la caché de permisos (útil si los roles cambian en la petición).
      */
-    public function tienePermiso(string ...$permisos): bool
+    public function limpiarPermisos(): void
     {
-        if ($this->esAdmin()) {
-            return true;
+        $this->permisosResueltos = null;
+    }
+
+    public function olvidarPermisos(): void
+    {
+        $this->limpiarPermisos();
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    private function resolverPermisos(): array
+    {
+        if ($this->permisosResueltos !== null) {
+            return $this->permisosResueltos;
         }
 
-        if ($permisos === []) {
-            return false;
-        }
+        $mapa = [];
 
-        $asignados = $this->permisos();
-
-        foreach ($permisos as $permiso) {
-            if (in_array($permiso, $asignados, true)) {
-                return true;
+        foreach ($this->roles()->with('permisos')->get() as $role) {
+            if ($role->nombre === 'Administrador') {
+                return $this->permisosResueltos = ['*' => true];
             }
 
-            // "modulo.gestionar" incluye "modulo.ver".
-            if (str_ends_with($permiso, '.ver')) {
-                $gestionar = substr($permiso, 0, -4).'.gestionar';
-
-                if (in_array($gestionar, $asignados, true)) {
-                    return true;
+            foreach ($role->permisos as $permiso) {
+                foreach (['ver', 'crear', 'editar', 'eliminar', 'buscar'] as $accion) {
+                    if ($permiso->{$accion}) {
+                        $mapa["{$permiso->modulo}.{$accion}"] = true;
+                    }
                 }
             }
         }
 
-        return false;
-    }
-
-    /**
-     * Alias semántico de tienePermiso() para usar en controladores y vistas.
-     */
-    public function puede(string ...$permisos): bool
-    {
-        return $this->tienePermiso(...$permisos);
-    }
-
-    /**
-     * Limpia la caché en memoria de roles y permisos.
-     */
-    public function olvidarPermisos(): void
-    {
-        $this->rolesActivosCache = null;
-        $this->permisosCache = null;
+        return $this->permisosResueltos = $mapa;
     }
 }

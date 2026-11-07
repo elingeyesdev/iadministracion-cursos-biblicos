@@ -3,64 +3,74 @@
 @section('title', 'Editar Seguimiento')
 
 @section('content')
+<div class="glass-panel" style="padding: 30px; max-width: 600px; margin: 0 auto;">
+    <h2 style="font-weight: 700; margin-bottom: 20px; color: var(--text-primary);">Editar Seguimiento</h2>
 
-<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
-    <div>
-        <h1 class="sidebar-title" style="font-size:2rem;">Editar seguimiento</h1>
-        <p class="text-muted mb-0">Actualiza el avance registrado.</p>
-    </div>
-    <a href="{{ route('seguimiento.index') }}" class="btn btn-outline-church">← Volver</a>
-</div>
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
 
-<div class="card shadow-sm">
-    <div class="card-body p-4">
-        <form method="POST" action="{{ route('seguimiento.update', $seguimiento) }}">
-            @csrf
-            @method('PUT')
-            <div class="row g-3">
-                <div class="col-12">
-                    <label for="id_actividad" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Actividad</label>
-                    <select id="id_actividad" name="id_actividad" class="form-select @error('id_actividad') is-invalid @enderror">
-                        <option value="">Seleccionar…</option>
-                        @foreach($actividades as $act)
-                            <option value="{{ $act->id }}" @selected(old('id_actividad', $seguimiento->id_actividad) == $act->id)>{{ $act->nombre }}</option>
-                        @endforeach
-                    </select>
-                    @error('id_actividad') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
-                <div class="col-12 col-md-6">
-                    <label for="fecha" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Fecha</label>
-                    <input type="date" id="fecha" name="fecha" value="{{ old('fecha', $seguimiento->fecha->format('Y-m-d')) }}"
-                           class="form-control @error('fecha') is-invalid @enderror">
-                    @error('fecha') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
-                <div class="col-12 col-md-6">
-                    <label for="porcentaje_avance" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Porcentaje de avance</label>
-                    <input type="number" min="0" max="100" id="porcentaje_avance" name="porcentaje_avance" value="{{ old('porcentaje_avance', $seguimiento->porcentaje_avance) }}"
-                           class="form-control @error('porcentaje_avance') is-invalid @enderror">
-                    @error('porcentaje_avance') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
-                <div class="col-12">
-                    <label for="estado" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Estado</label>
-                    <select id="estado" name="estado" class="form-select @error('estado') is-invalid @enderror">
-                        @foreach(['pendiente' => 'Pendiente', 'en_proceso' => 'En proceso', 'finalizada' => 'Finalizada'] as $k => $label)
-                            <option value="{{ $k }}" @selected(old('estado', $seguimiento->estado) === $k)>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                    @error('estado') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
-                <div class="col-12">
-                    <label for="comentario" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Comentario (opcional)</label>
-                    <textarea id="comentario" name="comentario" rows="4" class="form-control @error('comentario') is-invalid @enderror">{{ old('comentario', $seguimiento->comentario) }}</textarea>
-                    @error('comentario') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
+                    <li>{{ $error }}</li>
+                
+@endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('seguimiento.update', $seguimiento->id) }}">
+        @csrf
+        @method('PUT')
+
+        <div class="form-group">
+            <label for="id_actividad" class="form-label">Actividad *</label>
+            <select id="id_actividad" name="id_actividad" class="form-control" required>
+                <option value="">Seleccione una actividad...</option>
+                @foreach($actividades as $actividad)
+
+                    <option value="{{ $actividad->id }}" {{ old('id_actividad', $seguimiento->id_actividad) == $actividad->id ? 'selected' : '' }}>
+                        {{ $actividad->nombre }}
+                    </option>
+                
+@endforeach
+            </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label for="fecha_registro" class="form-label">Fecha de Registro *</label>
+                <input id="fecha_registro" type="date" name="fecha_registro" class="form-control" value="{{ old('fecha_registro', \Carbon\Carbon::parse($seguimiento->fecha_registro)->format('Y-m-d')) }}" required>
             </div>
-            <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="btn btn-church">Actualizar</button>
-                <a href="{{ route('seguimiento.index') }}" class="btn btn-outline-secondary">Cancelar</a>
-            </div>
-        </form>
-    </div>
-</div>
 
+            <div class="form-group">
+                <label for="porcentaje_avance" class="form-label">Porcentaje de Avance (%) *</label>
+                <input id="porcentaje_avance" type="number" name="porcentaje_avance" class="form-control" value="{{ old('porcentaje_avance', $seguimiento->porcentaje_avance) }}" min="0" max="100" step="1" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="responsable" class="form-label">Responsable *</label>
+            <input id="responsable" type="text" name="responsable" class="form-control" value="{{ old('responsable', $seguimiento->responsable) }}" pattern="[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]+" title="Solo letras y espacios" oninput="soloLetras(this)" required>
+        </div>
+
+        <div class="form-group">
+            <label for="estado" class="form-label">Estado *</label>
+            <select id="estado" name="estado" class="form-control" required>
+                @foreach(\App\Enums\EstadoSeguimiento::opciones() as $valor => $etiqueta)
+                    <option value="{{ $valor }}" {{ old('estado', $seguimiento->estado?->value) === $valor ? 'selected' : '' }}>{{ $etiqueta }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="observacion" class="form-label">Observación</label>
+            <textarea id="observacion" name="observacion" class="form-control" rows="4">{{ old('observacion', $seguimiento->observacion) }}</textarea>
+        </div>
+
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+            <button type="submit" class="btn">Actualizar Seguimiento</button>
+            <a href="{{ route('seguimiento.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
+        </div>
+    </form>
+</div>
 @endsection

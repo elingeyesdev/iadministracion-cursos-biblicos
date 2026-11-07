@@ -2,71 +2,42 @@
 
 @section('title', 'Detalle del Ingreso')
 
-@section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('ingresos.index') }}" class="text-gold-500 text-decoration-none">Ingresos</a></li>
-    <li class="breadcrumb-item active text-white" aria-current="page">Detalle</li>
-@endsection
-
 @section('content')
-<div class="container-fluid px-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
-        <div>
-            <h1 class="h2 text-white mb-1">Detalle del Ingreso</h1>
-            <p class="text-muted mb-0">Información detallada del ingreso o diezmo registrado.</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a href="{{ route('ingresos.index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left me-1"></i> Volver al listado
-            </a>
-            <a href="{{ route('ingresos.edit', $ingreso->id) }}" class="btn btn-warning">
-                <i class="bi bi-pencil-fill me-1"></i> Editar Ingreso
-            </a>
+<div class="glass-panel" style="padding: 30px; max-width: 700px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-weight: 700; color: var(--text-primary);">Detalle del Ingreso</h2>
+        <div style="display: flex; gap: 10px;">
+            @if(auth()->user()->puede('ingresos', 'editar'))
+            <a href="{{ route('ingresos.edit', $ingreso->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
+            @endif
+            <a href="{{ route('ingresos.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-12 col-lg-8">
-            <div class="card border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
-                <div class="card-header border-0 bg-dark py-3">
-                    <h5 class="card-title text-white mb-0"><i class="bi bi-cash-coin text-gold-500 me-2"></i>Información de Transacción</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-4 text-muted fw-semibold">Culto:</div>
-                        <div class="col-md-8 text-white fw-bold">
-                            @if($ingreso->culto)
-                                <a href="{{ route('cultos.show', $ingreso->id_culto) }}" class="text-gold-500 text-decoration-none">
-                                    {{ $ingreso->culto->nombre }} ({{ ucfirst($ingreso->culto->dia_semana) }})
-                                </a>
-                            @else
-                                —
-                            @endif
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-4 text-muted fw-semibold">Monto Total:</div>
-                        <div class="col-md-8 text-success fw-bold fs-5">Bs. {{ number_format($ingreso->monto_total, 2) }}</div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4 text-muted fw-semibold">Fecha de Recaudación:</div>
-                        <div class="col-md-8 text-white">{{ \Carbon\Carbon::parse($ingreso->fecha)->format('d/m/Y') }}</div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4 text-muted fw-semibold">Concepto / Tipo:</div>
-                        <div class="col-md-8 text-white">{{ $ingreso->tipo ?? 'Ingreso General' }}</div>
-                    </div>
-
-                    <div class="row mb-0">
-                        <div class="col-md-4 text-muted fw-semibold">Método de Pago:</div>
-                        <div class="col-md-8 text-capitalize">
-                            <span class="badge bg-secondary">{{ $ingreso->metodo_pago }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div style="border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Monto Total</span>
+            <span style="font-weight: 700; color: var(--success);">Bs {{ number_format($ingreso->monto_total, 2) }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Fecha</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ \Carbon\Carbon::parse($ingreso->fecha)->format('d/m/Y') }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Tipo</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $ingreso->tipo?->value }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Método de Pago</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $ingreso->metodo_pago?->value }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Actividad</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $ingreso->actividad?->nombre ?? 'N/A' }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px;">
+            <span style="color: var(--text-secondary);">Culto</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $ingreso->culto?->nombre ?? 'N/A' }}</span>
         </div>
     </div>
 </div>

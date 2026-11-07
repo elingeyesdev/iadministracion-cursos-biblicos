@@ -1,22 +1,47 @@
 <?php
-namespace App\Models;
-use Illuminate\Database\Eloquent\Model;
 
-class Culto extends Model {
-    protected $table    = 'cultos';
-    protected $primaryKey = 'id_culto';
+namespace App\Models;
+
+use App\Casts\EnumTolerante;
+use App\Enums\DiaSemana;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Culto extends Model
+{
+    use SoftDeletes;
+
+    protected $table = 'cultos';
 
     protected $fillable = [
-        'nombre', 'dia_semana', 'hora', 'descripcion'
+        'id_lider_iglesia',
+        'nombre',
+        'dia_semana',
+        'hora',
+        'descripcion',
     ];
 
-    // Un culto tiene muchos ingresos
-    public function ingresos() {
-        return $this->hasMany(Ingreso::class, 'id_culto', 'id_culto');
+    protected function casts(): array
+    {
+        return [
+            'dia_semana' => EnumTolerante::class.':'.DiaSemana::class,
+        ];
     }
 
-    // Total recaudado en este culto
-    public function totalRecaudado(): float {
-        return $this->ingresos()->sum('monto_total');
+    public function liderIglesia(): BelongsTo
+    {
+        return $this->belongsTo(LiderIglesia::class, 'id_lider_iglesia');
+    }
+
+    public function ingresos(): HasMany
+    {
+        return $this->hasMany(Ingreso::class, 'id_culto');
+    }
+
+    public function asistencias(): HasMany
+    {
+        return $this->hasMany(AsistenciaCulto::class, 'culto_id');
     }
 }

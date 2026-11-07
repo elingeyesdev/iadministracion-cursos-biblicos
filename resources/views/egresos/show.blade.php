@@ -1,75 +1,54 @@
 @extends('layouts.app')
 
-@section('title', 'Detalle del Egreso')
-
-@section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('egresos.index') }}" class="text-gold-500 text-decoration-none">Egresos</a></li>
-    <li class="breadcrumb-item active text-muted" aria-current="page">Detalle</li>
-@endsection
+@section('title', 'Detalle de Egreso')
 
 @section('content')
-<div class="card p-4 shadow-sm">
-    <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-cash-stack me-2"></i>Detalle de Egreso o Gasto</h3>
-
-    <div class="row g-4">
-        <div class="col-md-6">
-            <table class="table table-borderless">
-                <tr>
-                    <th class="ps-0 py-2 text-muted" style="width: 35%;">Monto:</th>
-                    <td class="py-2 text-danger fw-bold fs-5">${{ number_format($egreso->monto, 2) }}</td>
-                </tr>
-                <tr>
-                    <th class="ps-0 py-2 text-muted">Fecha del Gasto:</th>
-                    <td class="py-2">{{ \Carbon\Carbon::parse($egreso->fecha)->format('d/m/Y') }}</td>
-                </tr>
-                <tr>
-                    <th class="ps-0 py-2 text-muted">Concepto/Tipo:</th>
-                    <td class="py-2"><strong>{{ $egreso->tipo_egreso }}</strong></td>
-                </tr>
-                <tr>
-                    <th class="ps-0 py-2 text-muted">Responsable:</th>
-                    <td class="py-2">{{ $egreso->responsable ?? 'No registrado' }}</td>
-                </tr>
-                <tr>
-                    <th class="ps-0 py-2 text-muted">N° Comprobante:</th>
-                    <td class="py-2">{{ $egreso->comprobante ?? 'Sin comprobante' }}</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="col-md-6">
-            <table class="table table-borderless">
-                <tr>
-                    <th class="ps-0 py-2 text-muted" style="width: 35%;">Ministerio:</th>
-                    <td class="py-2">{{ $egreso->ministerio->nombre ?? 'Gasto General (Ninguno)' }}</td>
-                </tr>
-                <tr>
-                    <th class="ps-0 py-2 text-muted">Contrato Vinculado:</th>
-                    <td class="py-2">
-                        @if($egreso->contrato)
-                            <a href="{{ route('contratos.show', $egreso->contrato->id) }}" class="text-gold-500 text-decoration-none">
-                                Contrato #{{ $egreso->contrato->id }} ({{ $egreso->contrato->miembro->nombre ?? '' }})
-                            </a>
-                        @else
-                            Ninguno
-                        @endif
-                    </td>
-                </tr>
-                <tr>
-                    <th class="ps-0 py-2 text-muted">Descripción:</th>
-                    <td class="py-2">{{ $egreso->descripcion ?? 'Sin descripción adicional' }}</td>
-                </tr>
-            </table>
+<div class="glass-panel" style="padding: 30px; max-width: 900px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-weight: 700; color: var(--text-primary);">Detalle de Egreso</h2>
+        <div style="display: flex; gap: 10px;">
+            @if(!$egreso->trashed())
+                @if(auth()->user()->puede('egresos', 'editar'))
+                <a href="{{ route('egresos.edit', $egreso->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
+                @endif
+            @endif
+            <a href="{{ route('egresos.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
         </div>
     </div>
 
-    <div class="mt-4 border-top pt-3 d-flex gap-2">
-        <a href="{{ route('egresos.edit', $egreso->id) }}" class="btn btn-church">
-            <i class="bi bi-pencil me-1"></i> Editar
-        </a>
-        <a href="{{ route('egresos.index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i> Volver
-        </a>
+    <div style="border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Monto</span>
+            <span style="font-weight: 700; color: var(--success);">Bs {{ number_format($egreso->monto, 2) }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Fecha</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ \Carbon\Carbon::parse($egreso->fecha)->format('d/m/Y') }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Tipo de Egreso</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $egreso->tipo_egreso?->value }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Responsable</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $egreso->responsable }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Contrato Asociado</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $egreso->contrato?->miembro?->nombre ?? 'Ninguno' }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Pago Directo a Líder</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $egreso->lider?->nombre ?? 'Ninguno' }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Comprobante / Recibo</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $egreso->comprobante ?? 'N/A' }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px;">
+            <span style="color: var(--text-secondary);">Descripción</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $egreso->descripcion ?? 'N/A' }}</span>
+        </div>
     </div>
 </div>
 @endsection

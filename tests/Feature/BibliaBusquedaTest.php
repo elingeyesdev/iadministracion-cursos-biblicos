@@ -67,14 +67,13 @@ class BibliaBusquedaTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $rol = Role::firstOrCreate(['nombre' => 'Consulta'], ['estado' => 'activo']);
-        $permiso = Permiso::firstOrCreate(
-            ['nombre' => 'biblia.ver'],
-            ['descripcion' => 'Consultar la Biblia digital', 'modulo' => 'Biblia']
+        $rol = Role::firstOrCreate(['nombre' => 'Consulta'], ['estado' => 'Activo']);
+        Permiso::firstOrCreate(
+            ['role_id' => $rol->id, 'modulo' => 'biblia'],
+            ['ver' => true]
         );
 
-        $rol->permisos()->syncWithoutDetaching([$permiso->id]);
-        $user->roles()->attach($rol->id, ['fecha_asignacion' => now(), 'estado' => 'activo']);
+        $user->roles()->attach($rol->id);
 
         return $user;
     }

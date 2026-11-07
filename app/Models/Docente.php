@@ -2,23 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\TieneRegistroUnico;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Docente extends Model
 {
+    use SoftDeletes, TieneRegistroUnico;
+
     protected $table = 'docentes';
 
     protected $fillable = [
         'id_miembro',
+        'user_id',
         'especialidad',
         'titulo',
-        'activo'
-    ];
-
-    protected $casts = [
-        'activo' => 'boolean'
+        'activo',
     ];
 
     public function miembro(): BelongsTo
@@ -26,9 +27,16 @@ class Docente extends Model
         return $this->belongsTo(Miembro::class, 'id_miembro');
     }
 
-    public function cursos(): BelongsToMany
+    public function user(): BelongsTo
     {
-        return $this->belongsToMany(Curso::class, 'docente_curso', 'id_docente', 'id_curso')
-                    ->withTimestamps();
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Sesiones que dicta el docente. El dictado se asigna sesión por sesión.
+     */
+    public function sesiones(): HasMany
+    {
+        return $this->hasMany(Sesion::class, 'id_docente');
     }
 }

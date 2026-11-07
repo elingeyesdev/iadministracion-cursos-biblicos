@@ -1,113 +1,119 @@
 @extends('layouts.app')
 
 @section('title', 'Reporte Financiero')
-@section('body_class', 'report-page')
-
-@section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('reportes.index') }}" class="text-gold-500 text-decoration-none">Reportes</a></li>
-    <li class="breadcrumb-item active text-muted" aria-current="page">Financiero</li>
-@endsection
 
 @section('content')
 @php
-    $periodo = 'Desde '.\Carbon\Carbon::parse($desde)->format('d/m/Y').' hasta '.\Carbon\Carbon::parse($hasta)->format('d/m/Y');
+    $periodo = \Carbon\Carbon::parse($desde)->format('d/m/Y')
+        . ' — ' . \Carbon\Carbon::parse($hasta)->format('d/m/Y');
+
+    $indicadores = [
+        ['label' => 'Total ingresos', 'value' => 'Bs ' . number_format($totalIngresos, 2), 'tone' => 'success'],
+        ['label' => 'Total egresos', 'value' => 'Bs ' . number_format($totalEgresos, 2), 'tone' => 'danger'],
+        ['label' => 'Balance', 'value' => 'Bs ' . number_format($balance, 2), 'tone' => $balance >= 0 ? 'info' : 'danger'],
+    ];
+
+    $columnasResumen = [
+        ['label' => 'Tipo'],
+        ['label' => 'Monto', 'align' => 'right', 'width' => '140px'],
+    ];
+
+    $filasIngresos = $ingresosPorTipo->map(fn ($total, $tipo) => [
+        $tipo,
+        'Bs ' . number_format($total, 2),
+    ])->values()->all();
+
+    $filasEgresos = $egresosPorTipo->map(fn ($total, $tipo) => [
+        $tipo,
+        'Bs ' . number_format($total, 2),
+    ])->values()->all();
+
+    $conceptoIngreso = fn ($ingreso) => trim(($ingreso->tipo?->value ?? 'Sin clasificar') . ($ingreso->metodo_pago ? ' · ' . $ingreso->metodo_pago->value : ''));
+    $conceptoEgreso = fn ($egreso) => trim(($egreso->tipo_egreso?->value ?? 'Sin clasificar') . ($egreso->descripcion ? ' · ' . $egreso->descripcion : ''));
+
+    $columnasMovimientos = [
+        ['label' => 'Fecha', 'align' => 'center', 'width' => '110px'],
+        ['label' => 'Tipo', 'align' => 'center', 'width' => '90px'],
+        ['label' => 'Concepto / Descripción'],
+        ['label' => 'Ingreso', 'align' => 'right', 'width' => '130px'],
+        ['label' => 'Egreso', 'align' => 'right', 'width' => '130px'],
+    ];
+
+    $filasMovimientos = collect()
+        ->concat($ingresos->map(fn ($ingreso) => [
+            \Carbon\Carbon::parse($ingreso->fecha)->format('d/m/Y'),
+            ['badge' => 'Ingreso', 'tone' => 'success'],
+            $conceptoIngreso($ingreso),
+            'Bs ' . number_format($ingreso->monto_total, 2),
+            '—',
+        ]))
+        ->concat($egresos->map(fn ($egreso) => [
+            \Carbon\Carbon::parse($egreso->fecha)->format('d/m/Y'),
+            ['badge' => 'Egreso', 'tone' => 'danger'],
+            $conceptoEgreso($egreso),
+            '—',
+            'Bs ' . number_format($egreso->monto, 2),
+        ]))
+        ->values()
+        ->all();
 @endphp
 
-{{-- Interfaz de la aplicación: filtros y acciones (no se imprime) --}}
-<div class="report-controls">
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-cash-coin me-2"></i>Reporte Financiero</h2>
-        <a href="{{ route('reportes.index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i> Volver
-        </a>
+{{-- ============ INTERFAZ DE LA APLICACIÓN (no se imprime) ============ --}}
+<div class="glass-panel report-panel">
+    <div class="report-panel__head">
+        <div>
+            <h2 class="report-panel__title">Reportes</h2>
+            <p class="report-panel__subtitle">Reporte financiero</p>
+        </div>
     </div>
 
-    <form method="GET" action="{{ route('reportes.financiero') }}">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <input type="date" name="desde" class="form-control" value="{{ $desde }}" title="Desde">
-            </div>
-            <div class="col-md-6">
-                <input type="date" name="hasta" class="form-control" value="{{ $hasta }}" title="Hasta">
-            </div>
+    <form method="GET" action="{{ route('reportes.financiero') }}" class="report-filters">
+        <div class="report-field">
+            <label class="form-label" for="filtro-desde">Desde</label>
+            <input type="date" name="desde" id="filtro-desde" class="form-control" value="{{ $desde }}">
         </div>
-
-        <x-report.actions class="mt-3" />
+        <div class="report-field">
+            <label class="form-label" for="filtro-hasta">Hasta</label>
+            <input type="date" name="hasta" id="filtro-hasta" class="form-control" value="{{ $hasta }}">
+        </div>
+        <div class="report-field report-field--action">
+            <button type="submit" class="report-btn report-btn--primary">Aplicar filtros</button>
+        </div>
     </form>
 </div>
 
-{{-- Documento del reporte (es lo único que se imprime/exporta) --}}
-<x-report.document title="Reporte Financiero" subtitle="Ingresos, egresos y balance del período" :period="$periodo">
-    <x-report.summary :items="[
-        ['label' => 'Ingresos', 'value' => 'Bs. '.number_format($totalIngresos, 2), 'class' => 'is-success'],
-        ['label' => 'Egresos', 'value' => '$'.number_format($totalEgresos, 2), 'class' => 'is-danger'],
-        ['label' => 'Balance', 'value' => ($balance >= 0 ? '+' : '').number_format($balance, 2), 'class' => $balance >= 0 ? 'is-success' : 'is-danger'],
-    ]" />
+<x-report.actions :back-route="route('reportes.index')" />
 
-    <div class="report-grid">
-        <div class="report-block">
-            <h3 class="report-block-title"><i class="bi bi-arrow-down-circle"></i> Ingresos (Bs.)</h3>
-            <x-report.table :columns="[
-                ['label' => 'Fecha', 'class' => 'center'],
-                ['label' => 'Tipo'],
-                ['label' => 'Método'],
-                ['label' => 'Monto', 'class' => 'num'],
-            ]">
-                @forelse($ingresos as $ingreso)
-                    <tr>
-                        <td class="center">{{ \Carbon\Carbon::parse($ingreso->fecha)->format('d/m/Y') }}</td>
-                        <td>{{ $ingreso->tipo ?? 'Ingreso General' }}</td>
-                        <td class="text-capitalize">{{ $ingreso->metodo_pago }}</td>
-                        <td class="num">Bs. {{ number_format($ingreso->monto_total, 2) }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="report-empty">Sin ingresos en el período.</td>
-                    </tr>
-                @endforelse
-            </x-report.table>
+{{-- ============ DOCUMENTO DEL REPORTE (se imprime / exporta) ============ --}}
+<x-report.layout
+    title="Reporte Financiero"
+    subtitle="Ingresos, egresos y balance del período"
+    :generated-at="now()"
+    :period="$periodo"
+>
+    <x-slot:summary>
+        <x-report.summary :items="$indicadores" />
+    </x-slot:summary>
 
-            @if($ingresosPorTipo->isNotEmpty())
-                <div class="report-note">
-                    <strong>Por tipo:</strong>
-                    @foreach($ingresosPorTipo as $tipo => $total)
-                        {{ $tipo ?: 'General' }}: Bs. {{ number_format($total, 2) }}@if(!$loop->last) · @endif
-                    @endforeach
-                </div>
-            @endif
-        </div>
+    <x-report.table
+        :columns="$columnasResumen"
+        :rows="$filasIngresos"
+        caption="Ingresos por tipo"
+        empty="Sin ingresos registrados en el período."
+    />
 
-        <div class="report-block">
-            <h3 class="report-block-title"><i class="bi bi-arrow-up-circle"></i> Egresos ($)</h3>
-            <x-report.table :columns="[
-                ['label' => 'Fecha', 'class' => 'center'],
-                ['label' => 'Tipo de egreso'],
-                ['label' => 'Responsable'],
-                ['label' => 'Monto', 'class' => 'num'],
-            ]">
-                @forelse($egresos as $egreso)
-                    <tr>
-                        <td class="center">{{ \Carbon\Carbon::parse($egreso->fecha)->format('d/m/Y') }}</td>
-                        <td>{{ $egreso->tipo_egreso }}</td>
-                        <td>{{ $egreso->responsable ?? 'N/A' }}</td>
-                        <td class="num">${{ number_format($egreso->monto, 2) }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="report-empty">Sin egresos en el período.</td>
-                    </tr>
-                @endforelse
-            </x-report.table>
+    <x-report.table
+        :columns="$columnasResumen"
+        :rows="$filasEgresos"
+        caption="Egresos por tipo"
+        empty="Sin egresos registrados en el período."
+    />
 
-            @if($egresosPorTipo->isNotEmpty())
-                <div class="report-note">
-                    <strong>Por tipo:</strong>
-                    @foreach($egresosPorTipo as $tipo => $total)
-                        {{ $tipo }}: ${{ number_format($total, 2) }}@if(!$loop->last) · @endif
-                    @endforeach
-                </div>
-            @endif
-        </div>
-    </div>
-</x-report.document>
+    <x-report.table
+        :columns="$columnasMovimientos"
+        :rows="$filasMovimientos"
+        caption="Detalle de movimientos"
+        empty="No hay movimientos registrados en el período seleccionado."
+    />
+</x-report.layout>
 @endsection

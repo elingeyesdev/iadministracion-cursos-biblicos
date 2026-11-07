@@ -2,162 +2,142 @@
 
 /*
 |--------------------------------------------------------------------------
-| Catálogo de permisos
+| Configuración de Permisos
 |--------------------------------------------------------------------------
 |
-| Cada módulo agrupa los permisos que se pueden asignar a un rol desde el
-| panel de Roles. El nombre del permiso se usa en las rutas (middleware
-| "permiso:"), en el modelo User (tienePermiso) y en las vistas (@permiso).
-|
-| Convención:
-|   - <modulo>.ver       → consultar listados y detalles
-|   - <modulo>.gestionar → crear, editar y eliminar
-|
-| Un permiso ".gestionar" incluye automáticamente el ".ver" del mismo módulo.
-|
-| Para la pantalla de Administrar Permisos, los permisos se agrupan en las
-| categorías definidas en "categorias" (Acceso y Seguridad, Parametrización,
-| Transaccional y Reportes). Cada módulo indica su categoría por defecto en
-| "categoria" y, si un módulo mezcla permisos de varias categorías, se puede
-| ajustar permiso por permiso en "categorias_permisos".
+| Aquí se definen los módulos del sistema agrupados por categoría y las
+| acciones (ver, crear, editar, eliminar, buscar) que aplican a cada uno.
+| También se construye el mapa ruta -> [módulo, acción] que usa el
+| middleware CheckPermiso para autorizar cada petición.
 |
 */
 
+$acciones = [
+    'ver' => 'Ver',
+    'crear' => 'Crear',
+    'editar' => 'Editar',
+    'eliminar' => 'Eliminar',
+    'buscar' => 'Buscar',
+];
+
+$categorias = [
+    'Acceso y Seguridad' => [
+        'usuarios' => ['label' => 'Usuarios', 'acciones' => ['ver', 'crear', 'editar', 'eliminar']],
+        'roles' => ['label' => 'Roles', 'acciones' => ['ver', 'crear', 'editar', 'eliminar']],
+        'permisos' => ['label' => 'Permisos', 'acciones' => ['ver', 'editar']],
+    ],
+    'Parametrización' => [
+        'miembros' => ['label' => 'Miembros', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'cargos' => ['label' => 'Cargos', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'lideres' => ['label' => 'Líderes de Iglesia', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'ministerios' => ['label' => 'Ministerios', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'actividades' => ['label' => 'Actividades', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'seguimiento' => ['label' => 'Seguimiento', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'cursos' => ['label' => 'Cursos', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'docentes' => ['label' => 'Docentes', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'contratos' => ['label' => 'Contratos', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+    ],
+    'Transaccional' => [
+        'inscripciones' => ['label' => 'Inscripciones', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'sesiones' => ['label' => 'Sesiones', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'asistencia' => ['label' => 'Asistencia', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'cultos' => ['label' => 'Cultos', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'ingresos' => ['label' => 'Ingresos', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+        'egresos' => ['label' => 'Egresos', 'acciones' => ['ver', 'crear', 'editar', 'eliminar', 'buscar']],
+    ],
+    'Reportes' => [
+        'reportes.miembros' => ['label' => 'Reporte de Miembros', 'acciones' => ['ver']],
+        'reportes.asistencia' => ['label' => 'Reporte de Asistencia', 'acciones' => ['ver']],
+        'reportes.financiero' => ['label' => 'Reporte Financiero', 'acciones' => ['ver']],
+    ],
+];
+
+// Mapeo genérico de rutas resource: sufijo -> acción
+$crud = [
+    'index' => 'ver',
+    'show' => 'ver',
+    'create' => 'crear',
+    'store' => 'crear',
+    'edit' => 'editar',
+    'update' => 'editar',
+    'destroy' => 'eliminar',
+];
+
+// módulo => prefijo de ruta
+$recursos = [
+    'usuarios' => 'users',
+    'roles' => 'roles',
+    'miembros' => 'miembros',
+    'cargos' => 'cargos',
+    'lideres' => 'lideres',
+    'ministerios' => 'ministerios',
+    'actividades' => 'actividades',
+    'seguimiento' => 'seguimiento',
+    'cursos' => 'cursos',
+    'docentes' => 'docentes',
+    'contratos' => 'contratos',
+    'inscripciones' => 'inscripciones',
+    'sesiones' => 'sesiones',
+    'cultos' => 'cultos',
+    'ingresos' => 'ingresos',
+    'egresos' => 'egresos',
+];
+
+$rutas = [];
+foreach ($recursos as $modulo => $prefijo) {
+    foreach ($crud as $sufijo => $accion) {
+        $rutas["{$prefijo}.{$sufijo}"] = [$modulo, $accion];
+    }
+}
+
+$rutas += [
+    // Roles: asignación de roles a usuarios
+    'roles.user' => ['roles', 'ver'],
+    'roles.user.edit' => ['roles', 'editar'],
+    'roles.user.save' => ['roles', 'editar'],
+    'roles.user.clear' => ['roles', 'editar'],
+
+    // Inscripciones
+    'inscripciones.gestion' => ['inscripciones', 'ver'],
+
+    // Acceso del docente (crear su usuario)
+    'docentes.acceso' => ['docentes', 'editar'],
+    'docentes.acceso.store' => ['docentes', 'editar'],
+
+    // Pagos (parte del módulo Inscripciones)
+    'pagos.create' => ['inscripciones', 'crear'],
+    'pagos.store' => ['inscripciones', 'crear'],
+    'pagos.destroy' => ['inscripciones', 'eliminar'],
+
+    // Sesiones
+    'sesiones.generar' => ['sesiones', 'crear'],
+
+    // Asistencia
+    'asistencia.index' => ['asistencia', 'ver'],
+    'asistencia.registrar' => ['asistencia', 'ver'],
+    'asistencia.store' => ['asistencia', 'crear'],
+    'asistencia.marcarTodos' => ['asistencia', 'crear'],
+    'asistencia.historial' => ['asistencia', 'ver'],
+
+    // Contratos
+    'contratos.renovar' => ['contratos', 'editar'],
+
+    // Permisos
+    'permisos.index' => ['permisos', 'ver'],
+    'permisos.edit' => ['permisos', 'ver'],
+    'permisos.update' => ['permisos', 'editar'],
+
+    // Reportes
+    'reportes.miembros' => ['reportes.miembros', 'ver'],
+    'reportes.asistencia' => ['reportes.asistencia', 'ver'],
+    'reportes.financiero' => ['reportes.financiero', 'ver'],
+];
+
 return [
+    'acciones' => $acciones,
+    'categorias' => $categorias,
+    'rutas' => $rutas,
 
-    'categorias' => [
-
-        'acceso-seguridad' => [
-            'nombre' => 'Acceso y Seguridad',
-            'icono'  => 'bi-shield-lock',
-            'orden'  => 1,
-        ],
-
-        'parametrizacion' => [
-            'nombre' => 'Parametrización',
-            'icono'  => 'bi-sliders',
-            'orden'  => 2,
-        ],
-
-        'transaccional' => [
-            'nombre' => 'Transaccional',
-            'icono'  => 'bi-arrow-left-right',
-            'orden'  => 3,
-        ],
-
-        'reportes' => [
-            'nombre' => 'Reportes',
-            'icono'  => 'bi-graph-up',
-            'orden'  => 4,
-        ],
-
-    ],
-
-    'modulos' => [
-
-        'Seguridad' => [
-            'categoria' => 'acceso-seguridad',
-            'icono' => 'bi-shield-lock',
-            'permisos' => [
-                'usuarios.ver'        => 'Ver listado y detalle de usuarios',
-                'usuarios.gestionar'  => 'Crear, editar y eliminar usuarios',
-                'roles.ver'           => 'Ver roles y sus permisos',
-                'roles.gestionar'     => 'Crear, editar y eliminar roles y sus permisos',
-                'permisos.ver'        => 'Ver los permisos de cada rol',
-                'permisos.gestionar'  => 'Asignar y quitar permisos a los roles',
-                'asignar-roles.ver'   => 'Ver los roles asignados a cada usuario',
-                'asignar-roles.gestionar' => 'Asignar y quitar roles a los usuarios',
-            ],
-        ],
-
-        'Personas' => [
-            'categoria' => 'parametrizacion',
-            'icono' => 'bi-people',
-            'permisos' => [
-                'miembros.ver'       => 'Ver miembros',
-                'miembros.gestionar' => 'Crear, editar y eliminar miembros',
-                'docentes.ver'       => 'Ver docentes',
-                'docentes.gestionar' => 'Crear, editar y eliminar docentes',
-                'lideres.ver'        => 'Ver líderes de iglesia',
-                'lideres.gestionar'  => 'Crear, editar y eliminar líderes de iglesia',
-                'cargos.ver'         => 'Ver cargos',
-                'cargos.gestionar'   => 'Crear, editar y eliminar cargos',
-            ],
-        ],
-
-        'Organización' => [
-            'categoria' => 'parametrizacion',
-            'icono' => 'bi-diagram-3',
-            'permisos' => [
-                'ministerios.ver'       => 'Ver ministerios',
-                'ministerios.gestionar' => 'Crear, editar y eliminar ministerios',
-                'actividades.ver'       => 'Ver actividades',
-                'actividades.gestionar' => 'Crear, editar y eliminar actividades',
-                'seguimientos.ver'      => 'Ver seguimientos de actividades',
-                'seguimientos.gestionar' => 'Crear, editar y eliminar seguimientos',
-            ],
-        ],
-
-        'Finanzas' => [
-            'categoria' => 'transaccional',
-            'icono' => 'bi-cash-coin',
-            'permisos' => [
-                'cultos.ver'       => 'Ver cultos',
-                'cultos.gestionar' => 'Crear, editar y eliminar cultos',
-                'ingresos.ver'       => 'Ver ingresos',
-                'ingresos.gestionar' => 'Crear, editar y eliminar ingresos',
-                'egresos.ver'       => 'Ver egresos',
-                'egresos.gestionar' => 'Crear, editar y eliminar egresos',
-                'contratos.ver'       => 'Ver contratos',
-                'contratos.gestionar' => 'Crear, editar y eliminar contratos',
-            ],
-        ],
-
-        'Académico' => [
-            'categoria' => 'transaccional',
-            'icono' => 'bi-book',
-            'permisos' => [
-                'cursos.ver'       => 'Ver cursos',
-                'cursos.gestionar' => 'Crear, editar y eliminar cursos',
-                'sesiones.ver'       => 'Ver sesiones de clase',
-                'sesiones.gestionar' => 'Crear, editar y eliminar sesiones',
-                'inscripciones.ver'       => 'Ver inscripciones',
-                'inscripciones.gestionar' => 'Inscribir, editar y retirar alumnos',
-                'asistencia.ver'       => 'Ver la asistencia',
-                'asistencia.gestionar' => 'Registrar la asistencia de las sesiones',
-            ],
-        ],
-
-        'Reportes' => [
-            'categoria' => 'reportes',
-            'icono' => 'bi-graph-up',
-            'permisos' => [
-                'reportes.ver' => 'Ver reportes de miembros, asistencia y finanzas',
-            ],
-        ],
-
-        'Biblia' => [
-            'categoria' => 'reportes',
-            'icono' => 'bi-book-half',
-            'permisos' => [
-                'biblia.ver' => 'Consultar la Biblia digital',
-            ],
-        ],
-
-    ],
-
-    /*
-    | Permisos que pertenecen a una categoría distinta a la de su módulo.
-    | Se usa cuando un módulo mezcla configuración (parametrización) con
-    | operaciones del día a día (transaccional), como Finanzas o Académico.
-    */
-    'categorias_permisos' => [
-        'cultos.ver'       => 'parametrizacion',
-        'cultos.gestionar' => 'parametrizacion',
-        'contratos.ver'       => 'parametrizacion',
-        'contratos.gestionar' => 'parametrizacion',
-        'cursos.ver'       => 'parametrizacion',
-        'cursos.gestionar' => 'parametrizacion',
-    ],
-
+    // Módulos cuyo listado tiene buscador (?q=). Requieren el permiso "buscar".
+    'modulos_con_busqueda' => ['miembros', 'inscripciones', 'asistencia', 'contratos'],
 ];

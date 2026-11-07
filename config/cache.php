@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Str;
 
+defined('DEFAULT_CACHE_DATA_PATH') || define('DEFAULT_CACHE_DATA_PATH', 'framework/cache/data');
+
 return [
 
     /*
@@ -27,8 +29,8 @@ return [
     | same cache driver to group types of items stored in your caches.
     |
     | Supported drivers: "array", "database", "file", "memcached",
-    |                    "redis", "dynamodb", "octane",
-    |                    "failover", "null"
+    |                    "redis", "dynamodb", "storage", "octane",
+    |                    "session", "failover", "null"
     |
     */
 
@@ -49,8 +51,14 @@ return [
 
         'file' => [
             'driver' => 'file',
-            'path' => storage_path('framework/cache/data'),
-            'lock_path' => storage_path('framework/cache/data'),
+            'path' => storage_path(DEFAULT_CACHE_DATA_PATH),
+            'lock_path' => storage_path(DEFAULT_CACHE_DATA_PATH),
+        ],
+
+        'storage' => [
+            'driver' => 'storage',
+            'disk' => env('CACHE_STORAGE_DISK'),
+            'path' => env('CACHE_STORAGE_PATH', DEFAULT_CACHE_DATA_PATH),
         ],
 
         'memcached' => [

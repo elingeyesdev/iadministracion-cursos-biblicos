@@ -5,6 +5,12 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// La base de datos remota puede tener alta latencia; damos margen al panel
+// (que agrega muchos KPIs) sin afectar el límite del resto de peticiones.
+if (function_exists('set_time_limit')) {
+    @set_time_limit(120);
+}
+
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;

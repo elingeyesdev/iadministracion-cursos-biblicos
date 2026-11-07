@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Casts\EnumTolerante;
+use App\Enums\EstadoInscripcion;
+use App\Models\Concerns\TieneRegistroUnico;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inscripcion extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, TieneRegistroUnico;
 
     protected $table = 'inscripciones';
 
@@ -19,20 +23,51 @@ class Inscripcion extends Model
         'estado',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'estado' => EnumTolerante::class.':'.EstadoInscripcion::class,
+        ];
+    }
+
     public function miembro(): BelongsTo
     {
-        return $this->belongsTo(Miembro::class, 'miembro_id');
+        return $this->belongsTo(Miembro::class);
     }
 
     public function curso(): BelongsTo
     {
-        return $this->belongsTo(Curso::class, 'curso_id');
+        return $this->belongsTo(Curso::class);
+    }
+
+    public function pagos(): HasMany
+    {
+        return $this->hasMany(PagoCurso::class);
+    }
+
+    public function getMontoPagadoAttribute(): float
+    {
+        return (float) ($this->pagos_sum_monto ?? $this->pagos()->sum('monto'));
+    }
+
+    public function getSaldoPendienteAttribute(): float
+    {
+        return max(0, (float) $this->curso->monto_inscripcion - $this->monto_pagado);
+    }
+
+    public function getEstadoPagoAttribute(): string
+    {
+        if ($this->saldo_pendiente <= 0) {
+            return 'Pagado';
+        }
+
+        return $this->monto_pagado > 0 ? 'Pago Parcial' : 'Pendiente';
     }
 
     public static function getMiembrosDisponibles(int $cursoId)
     {
-        return Miembro::where('estado', 'activo')
-            ->whereDoesntHave('inscripciones', fn ($q) => $q->where('curso_id', $cursoId))
+        return Miembro::where('estado', 'Activo')
+            ->whereDoesntHave('inscripciones', fn ($q) => $q->withTrashed()->where('curso_id', $cursoId))
             ->orderBy('nombre')
             ->get();
     }

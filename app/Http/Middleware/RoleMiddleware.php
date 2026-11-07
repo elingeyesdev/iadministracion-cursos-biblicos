@@ -9,27 +9,28 @@ use Symfony\Component\HttpFoundation\Response;
 class RoleMiddleware
 {
     /**
-     * Allow access only when authenticated user has one of the given roles.
+     * Handle an incoming request.
+     *
+     * @param  Closure(Request): (Response)  $next
+     * @param  string  ...$roles
      */
-    public function handle(Request $request, Closure $next, string ...$roles): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        $user = $request->user();
-
-        \Illuminate\Support\Facades\Log::info('RoleMiddleware Check', [
-            'user' => $user ? $user->email : 'null',
-            'user_role' => $user ? $user->role : 'null',
-            'allowed_roles' => $roles
-        ]);
-
-        if (! $user) {
-            abort(403);
+        if (! $request->user()) {
+            return redirect()->route('login');
         }
 
-        if (! in_array($user->role, $roles, true)) {
-            abort(403);
+        // Si no se especifican roles, permitir el paso (solo requiere auth)
+        if (empty($roles)) {
+            return $next($request);
         }
 
-        return $next($request);
+        foreach ($roles as $role) {
+            if ($request->user()->hasRole($role)) {
+                return $next($request);
+            }
+        }
+
+        abort(403, 'No tienes permiso para acceder a esta sección.');
     }
 }
-

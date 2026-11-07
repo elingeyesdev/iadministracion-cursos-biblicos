@@ -1,22 +1,24 @@
 <?php
 
+use App\Http\Controllers\Api\ActividadController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ContratoController;
+use App\Http\Controllers\Api\CultoController;
+use App\Http\Controllers\Api\CursoController;
+use App\Http\Controllers\Api\DocenteController;
+use App\Http\Controllers\Api\EgresoController;
+use App\Http\Controllers\Api\IngresoController;
+use App\Http\Controllers\Api\MiembroController;
+use App\Http\Controllers\Api\MinisterioController;
+use App\Http\Controllers\Api\SeguimientoActividadController;
+use App\Http\Controllers\Api\SesionController;
+use App\Http\Controllers\BibliaDigitalController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\authController;
-use App\Http\Controllers\API\MiembroController;
-use App\Http\Controllers\API\MinisterioController;
-use App\Http\Controllers\API\DocenteController;
-use App\Http\Controllers\API\ActividadController;
-use App\Http\Controllers\API\SeguimientoActividadController;
-use App\Http\Controllers\API\CursoController;
-use App\Http\Controllers\API\SesionController;
-use App\Http\Controllers\API\IngresoController;
-use App\Http\Controllers\API\ContratoController;
-use App\Http\Controllers\API\EgresoController;
-use App\Http\Controllers\API\CultoController;
 
-Route::post('/login', [authController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Illuminate\Http\Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response()->json($request->user()->load('roles'), 200);
 });
 
@@ -33,8 +35,6 @@ Route::name('api.')->group(function () {
     Route::apiResource('egresos', EgresoController::class);
     Route::apiResource('cultos', CultoController::class);
 });
-
-use App\Http\Controllers\BibliaDigitalController;
 
 Route::prefix('biblia')->group(function () {
     Route::get('/books', [BibliaDigitalController::class, 'getBooks']);

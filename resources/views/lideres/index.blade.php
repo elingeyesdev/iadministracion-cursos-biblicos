@@ -1,96 +1,76 @@
 @extends('layouts.app')
 
-@section('title', 'Listado de Líderes de Iglesia')
-
-@section('breadcrumb')
-    <li class="breadcrumb-item active text-muted" aria-current="page">Líderes de Iglesia</li>
-@endsection
+@section('title', 'Gestión de Líderes de Iglesia')
 
 @section('content')
-<div class="card p-4 shadow-sm">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-person-badge me-2"></i>Líderes de Iglesia</h2>
-        <a href="{{ route('lideres.create') }}" class="btn btn-church">
-            <i class="bi bi-plus-circle me-1"></i> Nuevo Líder
+<div class="glass-panel" style="padding: 30px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-weight: 700; color: var(--text-primary);">Lista de Líderes de Iglesia</h2>
+        @if(auth()->user()->puede('lideres', 'crear'))
+        <a href="{{ route('lideres.create') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">
+            + Nuevo Líder
         </a>
+        @endif
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-            <thead class="table-dark">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
                 <tr>
-                    <th>Nombre</th>
                     <th>Cargo</th>
+                    <th>Nombre</th>
                     <th>Teléfono</th>
-                    <th>Fecha de Inicio</th>
+                    <th>Fecha Inicio</th>
                     <th>Estado</th>
-                    <th class="text-end">Acciones</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($lideres as $lider)
-                <tr>
-                    <td><strong>{{ $lider->nombre }}</strong></td>
-                    <td>{{ $lider->cargo->nombre ?? 'N/A' }}</td>
-                    <td>{{ $lider->telefono ?? 'N/A' }}</td>
-                    <td>{{ \Carbon\Carbon::parse($lider->fecha_inicio)->format('d/m/Y') }}</td>
-                    <td>
-                        @if($lider->activo)
-                            <span class="badge bg-success">Activo</span>
-                        @else
-                            <span class="badge bg-secondary">Inactivo</span>
-                        @endif
-                    </td>
-                    <td class="text-end">
-                        <a href="{{ route('lideres.show', $lider->id) }}" class="btn btn-sm btn-outline-info me-1" title="Ver Detalle">
-                            <i class="bi bi-eye"></i>
-                        </a>
-                        <a href="{{ route('lideres.edit', $lider->id) }}" class="btn btn-sm btn-outline-warning me-1" title="Editar">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <form action="{{ route('lideres.destroy', $lider->id) }}" method="POST" class="d-inline eliminar-form">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" title="Eliminar">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="text-center text-muted py-4">No hay líderes de iglesia registrados.</td>
-                </tr>
-                @endforelse
+
+                    <tr style="@if($lider->trashed()) opacity: 0.5; @endif">
+                        <td>{{ $lider->cargo->nombre ?? 'N/A' }}</td>
+                        <td>{{ $lider->nombre }}</td>
+                        <td>{{ $lider->telefono ?? 'N/A' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($lider->fecha_inicio)->format('d/m/Y') }}</td>
+                        <td>
+                            @if($lider->activo)
+                                <span class="badge badge-active">Activo</span>
+                            @else
+                                <span class="badge badge-inactive">Inactivo</span>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                    @if(auth()->user()->puede('lideres', 'editar'))
+                                    <a href="{{ route('lideres.edit', $lider->id) }}" class="btn-icon btn-edit" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.83 20.082a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg></a>
+                                    @endif
+                                    @if(auth()->user()->puede('lideres', 'eliminar'))
+                                    <form method="POST" action="{{ route('lideres.destroy', $lider->id) }}" style="display: inline;">
+                                        @csrf
+                                        <?php echo method_field('DELETE'); ?>
+                                        <button type="submit" class="btn-icon btn-delete" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button>
+                                    </form>
+                                    @endif
+                            </div>
+                        </td>
+                    </tr>
+                
+@empty
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 30px;">
+                            No hay líderes de iglesia registrados en el sistema.
+                        </td>
+                    </tr>
+                
+@endforelse
             </tbody>
         </table>
     </div>
 
-    <div class="mt-3">
+    <div style="margin-top: 20px;">
         {{ $lideres->links() }}
+
     </div>
 </div>
-@endsection
-
-@section('scripts')
-<script>
-document.querySelectorAll('.btn-eliminar').forEach(btn => {
-    btn.addEventListener('click', function() {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Esta acción no se puede deshacer',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then(result => {
-            if (result.isConfirmed) {
-                this.closest('form').submit();
-            }
-        });
-    });
-});
-</script>
 @endsection

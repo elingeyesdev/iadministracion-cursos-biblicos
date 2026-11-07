@@ -1,89 +1,101 @@
 @extends('layouts.app')
 
 @section('title', 'Reporte de Miembros')
-@section('body_class', 'report-page')
-
-@section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('reportes.index') }}" class="text-gold-500 text-decoration-none">Reportes</a></li>
-    <li class="breadcrumb-item active text-muted" aria-current="page">Miembros</li>
-@endsection
 
 @section('content')
 @php
-    $periodo = ($desde || $hasta)
-        ? trim(($desde ? 'Desde '.\Carbon\Carbon::parse($desde)->format('d/m/Y') : '')
-            .($hasta ? ' hasta '.\Carbon\Carbon::parse($hasta)->format('d/m/Y') : ''))
-        : 'Todos los registros';
+    // Periodo consultado (texto legible) para el encabezado del documento.
+    $periodo = null;
+    if ($desde || $hasta) {
+        $periodo = ($desde ? \Carbon\Carbon::parse($desde)->format('d/m/Y') : 'inicio')
+            . ' — ' . ($hasta ? \Carbon\Carbon::parse($hasta)->format('d/m/Y') : 'actual');
+    }
+
+    // Metadatos adicionales del encabezado: solo si existe un filtro real.
+    $meta = [];
+    if ($estado !== '') {
+        $meta['Estado'] = $estado;
+    }
+
+    // Indicadores calculados con los MISMOS datos del listado.
+    $indicadores = [
+        ['label' => 'Total de miembros', 'value' => $totales['total'], 'tone' => 'neutral'],
+        ['label' => 'Miembros activos', 'value' => $totales['activos'], 'tone' => 'success'],
+        ['label' => 'Miembros inactivos', 'value' => $totales['inactivos'], 'tone' => 'muted'],
+    ];
+
+    // Columnas y filas de la tabla (campos reales de la base de datos).
+    $columnas = [
+        ['label' => 'N.º', 'align' => 'center', 'width' => '48px'],
+        ['label' => 'Nombre completo'],
+        ['label' => 'Teléfono', 'width' => '120px'],
+        ['label' => 'Sexo', 'align' => 'center', 'width' => '80px'],
+        ['label' => 'Fecha de ingreso', 'align' => 'center', 'width' => '130px'],
+        ['label' => 'Estado', 'align' => 'center', 'width' => '110px'],
+    ];
+
+    $filas = $miembros->values()->map(function ($miembro, $index) {
+        return [
+            $index + 1,
+            $miembro->nombre,
+            $miembro->telefono ?: '—',
+            $miembro->sexo ?: '—',
+            $miembro->fecha_ingreso ? \Carbon\Carbon::parse($miembro->fecha_ingreso)->format('d/m/Y') : '—',
+            ['badge' => $miembro->estado?->value, 'tone' => $miembro->estado?->value === 'Activo' ? 'success' : 'muted'],
+        ];
+    })->all();
 @endphp
 
-{{-- Interfaz de la aplicación: filtros y acciones (no se imprime) --}}
-<div class="report-controls">
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-people me-2"></i>Reporte de Miembros</h2>
-        <a href="{{ route('reportes.index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i> Volver
-        </a>
+{{-- ============ INTERFAZ DE LA APLICACIÓN (no se imprime) ============ --}}
+<div class="glass-panel report-panel">
+    <div class="report-panel__head">
+        <div>
+            <h2 class="report-panel__title">Reportes</h2>
+            <p class="report-panel__subtitle">Reporte de miembros</p>
+        </div>
     </div>
 
-    <form method="GET" action="{{ route('reportes.miembros') }}">
-        <div class="row g-3">
-            <div class="col-md-4">
-                <select name="estado" class="form-select">
-                    <option value="">-- Estado --</option>
-                    @foreach(['activo', 'inactivo', 'visita'] as $e)
-                        <option value="{{ $e }}" {{ $estado === $e ? 'selected' : '' }}>{{ ucfirst($e) }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-4">
-                <input type="date" name="desde" class="form-control" value="{{ $desde }}" title="Desde">
-            </div>
-            <div class="col-md-4">
-                <input type="date" name="hasta" class="form-control" value="{{ $hasta }}" title="Hasta">
-            </div>
+    <form method="GET" action="{{ route('reportes.miembros') }}" class="report-filters">
+        <div class="report-field">
+            <label class="form-label" for="filtro-estado">Estado</label>
+            <select name="estado" id="filtro-estado" class="form-control">
+                <option value="">Todos</option>
+                <option value="Activo" {{ $estado == 'Activo' ? 'selected' : '' }}>Activo</option>
+                <option value="Inactivo" {{ $estado == 'Inactivo' ? 'selected' : '' }}>Inactivo</option>
+            </select>
         </div>
-
-        <x-report.actions class="mt-3" />
+        <div class="report-field">
+            <label class="form-label" for="filtro-desde">Desde</label>
+            <input type="date" name="desde" id="filtro-desde" class="form-control" value="{{ $desde }}">
+        </div>
+        <div class="report-field">
+            <label class="form-label" for="filtro-hasta">Hasta</label>
+            <input type="date" name="hasta" id="filtro-hasta" class="form-control" value="{{ $hasta }}">
+        </div>
+        <div class="report-field report-field--action">
+            <button type="submit" class="report-btn report-btn--primary">Aplicar filtros</button>
+        </div>
     </form>
 </div>
 
-{{-- Documento del reporte (es lo único que se imprime/exporta) --}}
-<x-report.document title="Reporte de Miembros" subtitle="Listado y estado de los miembros" :period="$periodo">
-    <x-report.summary :items="[
-        ['label' => 'Total', 'value' => $totales['total']],
-        ['label' => 'Activos', 'value' => $totales['activos'], 'class' => 'is-success'],
-        ['label' => 'Inactivos', 'value' => $totales['inactivos'], 'class' => 'is-danger'],
-    ]" />
+<x-report.actions :back-route="route('reportes.index')" />
 
-    <x-report.table :columns="[
-        ['label' => 'N.º', 'class' => 'center'],
-        ['label' => 'Nombre completo'],
-        ['label' => 'Teléfono'],
-        ['label' => 'Fecha de ingreso', 'class' => 'center'],
-        ['label' => 'Estado', 'class' => 'center'],
-    ]">
-        @forelse($miembros as $i => $miembro)
-            @php
-                $estadoClase = match($miembro->estado) {
-                    'activo' => 'is-success',
-                    'visita' => 'is-info',
-                    default => 'is-secondary',
-                };
-            @endphp
-            <tr>
-                <td class="cell-num">{{ $i + 1 }}</td>
-                <td class="cell-strong">{{ $miembro->nombre }}</td>
-                <td>{{ $miembro->telefono ?: '—' }}</td>
-                <td class="center">{{ $miembro->fecha_ingreso ? \Carbon\Carbon::parse($miembro->fecha_ingreso)->format('d/m/Y') : '—' }}</td>
-                <td class="center">
-                    <span class="report-badge {{ $estadoClase }}">{{ $miembro->estado ? strtoupper($miembro->estado) : '—' }}</span>
-                </td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="5" class="report-empty">No hay miembros que coincidan con los filtros.</td>
-            </tr>
-        @endforelse
-    </x-report.table>
-</x-report.document>
+{{-- ============ DOCUMENTO DEL REPORTE (se imprime / exporta) ============ --}}
+<x-report.layout
+    title="Reporte de Miembros"
+    subtitle="Listado y estado de los miembros de la iglesia"
+    :generated-at="now()"
+    :period="$periodo"
+    :meta="$meta"
+>
+    <x-slot:summary>
+        <x-report.summary :items="$indicadores" />
+    </x-slot:summary>
+
+    <x-report.table
+        :columns="$columnas"
+        :rows="$filas"
+        empty="No hay miembros que coincidan con los filtros aplicados."
+    />
+</x-report.layout>
 @endsection

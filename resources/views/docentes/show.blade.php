@@ -2,87 +2,81 @@
 
 @section('title', 'Detalle del Docente')
 
-@section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('docentes.index') }}" class="text-gold-500 text-decoration-none">Docentes</a></li>
-    <li class="breadcrumb-item active text-muted" aria-current="page">Detalle</li>
-@endsection
-
 @section('content')
-<div class="row g-4">
-    <div class="col-md-5">
-        <div class="card p-4 shadow-sm h-100">
-            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-mortarboard me-2"></i>Información del Docente</h3>
-
-            <table class="table table-borderless">
-                <tr>
-                    <th class="ps-0 py-2 text-muted" style="width: 35%;">Nombre:</th>
-                    <td class="py-2"><strong>{{ $docente->miembro->nombre ?? 'N/A' }}</strong></td>
-                </tr>
-                <tr>
-                    <th class="ps-0 py-2 text-muted">Especialidad:</th>
-                    <td class="py-2">{{ $docente->especialidad ?? 'Sin especialidad registrada' }}</td>
-                </tr>
-                <tr>
-                    <th class="ps-0 py-2 text-muted">Título:</th>
-                    <td class="py-2">{{ $docente->titulo ?? 'Sin título registrado' }}</td>
-                </tr>
-                <tr>
-                    <th class="ps-0 py-2 text-muted">Estado:</th>
-                    <td class="py-2">
-                        @if($docente->activo)
-                            <span class="badge bg-success">Activo</span>
-                        @else
-                            <span class="badge bg-danger">Inactivo</span>
-                        @endif
-                    </td>
-                </tr>
-                <tr>
-                    <th class="ps-0 py-2 text-muted">Miembro desde:</th>
-                    <td class="py-2">{{ $docente->miembro->fecha_ingreso ? \Carbon\Carbon::parse($docente->miembro->fecha_ingreso)->format('d/m/Y') : 'N/A' }}</td>
-                </tr>
-            </table>
-
-            <div class="mt-4 d-flex gap-2">
-                <a href="{{ route('docentes.edit', $docente->id) }}" class="btn btn-church">
-                    <i class="bi bi-pencil me-1"></i> Editar
-                </a>
-                <a href="{{ route('docentes.index') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i> Volver
-                </a>
-            </div>
+<div class="glass-panel" style="padding: 30px; max-width: 850px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-weight: 700; color: var(--text-primary);">Detalle del Docente</h2>
+        <div style="display: flex; gap: 10px;">
+            @if(!$docente->user && auth()->user()->puede('docentes', 'editar'))
+            <a href="{{ route('docentes.acceso', $docente->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Crear acceso</a>
+            @endif
+            @if(auth()->user()->puede('docentes', 'editar'))
+            <a href="{{ route('docentes.edit', $docente->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
+            @endif
+            <a href="{{ route('docentes.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
         </div>
     </div>
 
-    <div class="col-md-7">
-        <div class="card p-4 shadow-sm h-100">
-            <h4 class="sidebar-title mb-3" style="color: var(--church-gold);"><i class="bi bi-book me-2"></i>Cursos que Dicta</h4>
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>Curso</th>
-                            <th>Fecha Inicio</th>
-                            <th>Fecha Fin</th>
-                            <th>Cupo Máx.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($docente->cursos as $curso)
-                        <tr>
-                            <td><strong>{{ $curso->nombre }}</strong></td>
-                            <td>{{ \Carbon\Carbon::parse($curso->f_inicio)->format('d/m/Y') }}</td>
-                            <td>{{ $curso->f_fin ? \Carbon\Carbon::parse($curso->f_fin)->format('d/m/Y') : 'Sin fecha fin' }}</td>
-                            <td>{{ $curso->cupo_max ?? 'Ilimitado' }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="text-center text-muted py-3">No dicta ningún curso en este momento.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+    <div style="border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Miembro</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $docente->miembro?->nombre ?? 'N/A' }}</span>
         </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Especialidad</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $docente->especialidad }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Título</span>
+            <span style="font-weight: 600; color: var(--text-primary);">{{ $docente->titulo ?? 'N/A' }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px;">
+            <span style="color: var(--text-secondary);">Estado</span>
+            <span style="font-weight: 600; color: var(--text-primary);">
+                <span class="badge {{ $docente->activo ? 'badge-active' : 'badge-inactive' }}">{{ $docente->activo ? 'Activo' : 'Inactivo' }}</span>
+            </span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-top: 1px solid var(--card-border);">
+            <span style="color: var(--text-secondary);">Acceso al sistema</span>
+            <span style="font-weight: 600; color: var(--text-primary);">
+                @if($docente->user)
+                    {{ $docente->user->email }}
+                    <span class="badge badge-active" style="margin-left: 6px;">Con acceso</span>
+                @else
+                    <span class="badge badge-inactive">Sin acceso</span>
+                @endif
+            </span>
+        </div>
+    </div>
+
+    <h3 style="font-weight: 700; margin-bottom: 14px; color: var(--text-primary);">Sesiones Asignadas</h3>
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Curso</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Tema</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($docente->sesiones as $sesion)
+                    <tr>
+                        <td>{{ $sesion->curso?->nombre ?? 'N/A' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($sesion->fecha)->format('d/m/Y') }}</td>
+                        <td>{{ substr((string) $sesion->hora, 0, 5) }}</td>
+                        <td>{{ $sesion->tema }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 30px;">
+                            Este docente no tiene sesiones asignadas.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 @endsection

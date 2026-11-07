@@ -1,144 +1,87 @@
 @extends('layouts.app')
 
-@section('title', 'Listado de Ingresos')
-
-@section('breadcrumb')
-    <li class="breadcrumb-item active text-white" aria-current="page">Ingresos</li>
-@endsection
+﻿@section('title', 'Ingresos Financieros')
 
 @section('content')
-<div class="container-fluid px-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
-        <div>
-            <h1 class="h2 text-white mb-1">Ingresos</h1>
-            <p class="text-muted mb-0">Gestiona el registro de ingresos y diezmos recaudados en los cultos.</p>
-        </div>
-        <a href="{{ route('ingresos.create') }}" class="btn btn-success">
-            <i class="bi bi-plus-circle me-1"></i> Registrar Ingreso
-        </a>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+    <div style="flex: 1; min-width: 200px; background: rgba(47,158,68,.12); border: 1px solid rgba(47,158,68,.25); padding: 18px 20px; border-radius: 14px;">
+        <div style="font-size: 13px; color: var(--text-secondary);">Total Ingresos</div>
+        <div style="font-size: 26px; font-weight: 800; color: var(--success);">Bs {{ number_format($totales['ingresos'], 2) }}</div>
     </div>
-
-    <!-- Buscador en tiempo real -->
-    <div class="card mb-4 border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
-        <div class="card-body">
-            <div class="input-group">
-                <span class="input-group-text bg-transparent text-muted border-secondary">
-                    <i class="bi bi-search"></i>
-                </span>
-                <input type="text" id="realtimeSearch" class="form-control bg-transparent text-white border-secondary" placeholder="Buscar ingreso...">
-            </div>
-        </div>
+    <div style="flex: 1; min-width: 200px; background: rgba(220,38,38,.12); border: 1px solid rgba(220,38,38,.25); padding: 18px 20px; border-radius: 14px;">
+        <div style="font-size: 13px; color: var(--text-secondary);">Total Egresos</div>
+        <div style="font-size: 26px; font-weight: 800; color: var(--error);">Bs {{ number_format($totales['egresos'], 2) }}</div>
     </div>
-
-    <div class="card border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="ingresosTable" style="color: #c5c5d2;">
-                <thead class="table-dark" style="background-color: #151521;">
-                    <tr>
-                        <th scope="col" class="border-0">Culto</th>
-                        <th scope="col" class="border-0">Día</th>
-                        <th scope="col" class="border-0">Fecha</th>
-                        <th scope="col" class="border-0">Tipo / Concepto</th>
-                        <th scope="col" class="border-0">Método de Pago</th>
-                        <th scope="col" class="border-0 text-end">Monto Total</th>
-                        <th scope="col" class="border-0 text-end">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaBody">
-                    @forelse($ingresos as $ingreso)
-                        <tr class="ingreso-row">
-                            <td class="fw-bold text-white">{{ $ingreso->culto->nombre ?? '-' }}</td>
-                            <td class="text-capitalize">{{ optional($ingreso->culto)->dia_semana ?? '-' }}</td>
-                            <td>{{ \Carbon\Carbon::parse($ingreso->fecha)->format('d/m/Y') }}</td>
-                            <td>{{ $ingreso->tipo ?? 'Ingreso General' }}</td>
-                            <td class="text-capitalize">{{ $ingreso->metodo_pago }}</td>
-                            <td class="text-end fw-bold text-success">
-                                Bs. {{ number_format($ingreso->monto_total, 2) }}
-                            </td>
-                            <td class="text-end">
-                                <div class="btn-group" role="group">
-                                    <a href="{{ route('ingresos.show', $ingreso->id) }}" class="btn btn-sm btn-outline-info" title="Ver Detalle">
-                                        <i class="bi bi-eye-fill"></i>
-                                    </a>
-                                    <a href="{{ route('ingresos.edit', $ingreso->id) }}" class="btn btn-sm btn-outline-warning" title="Editar">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger btn-delete-ingreso" data-id="{{ $ingreso->id }}" title="Eliminar">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
-                                    <form id="delete-form-{{ $ingreso->id }}" action="{{ route('ingresos.destroy', $ingreso->id) }}" method="POST" class="d-none">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="text-center text-muted py-4">No hay ingresos registrados.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        @if($ingresos->hasPages())
-            <div class="card-footer border-0 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #151521;">
-                <div class="text-muted small">
-                    Mostrando {{ $ingresos->firstItem() }}–{{ $ingresos->lastItem() }} de {{ $ingresos->total() }} ingresos
-                </div>
-                <div>
-                    {{ $ingresos->links('pagination::bootstrap-5') }}
-                </div>
-            </div>
-        @endif
+    <div style="flex: 1; min-width: 200px; background: {{ $totales['balance'] >= 0 ? 'rgba(37,99,235,.12)' : 'rgba(220,38,38,.18)' }}; border: 1px solid rgba(37,99,235,.25); padding: 18px 20px; border-radius: 14px;">
+        <div style="font-size: 13px; color: var(--text-secondary);">Balance</div>
+        <div style="font-size: 26px; font-weight: 800; color: {{ $totales['balance'] >= 0 ? 'var(--primary)' : 'var(--error)' }};">Bs {{ number_format($totales['balance'], 2) }}</div>
     </div>
 </div>
-@endsection
 
-@section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Buscador en tiempo real
-        const searchInput = document.getElementById('realtimeSearch');
-        const rows = document.querySelectorAll('.ingreso-row');
+<div class="glass-panel" style="padding: 30px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-weight: 700; color: var(--text-primary);">Lista de Ingresos</h2>
+        @if(auth()->user()->puede('ingresos', 'crear'))
+        <a href="{{ route('ingresos.create') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">
+            + Nuevo Ingreso
+        </a>
+        @endif
+    </div>
 
-        searchInput.addEventListener('input', function() {
-            const query = searchInput.value.toLowerCase().trim();
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                if (text.includes(query)) {
-                    row.style.setProperty('display', '', 'important');
-                } else {
-                    row.style.setProperty('display', 'none', 'important');
-                }
-            });
-        });
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Método de Pago</th>
+                    <th>Monto Total</th>
+                    <th>Actividad</th>
+                    <th>Culto</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($ingresos as $ingreso)
 
-        // SweetAlert2 confirmación de borrado
-        const deleteButtons = document.querySelectorAll('.btn-delete-ingreso');
-        deleteButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const ingresoId = this.getAttribute('data-id');
+                    <tr style="@if($ingreso->trashed()) opacity: 0.5; @endif">
+                        <td>{{ \Carbon\Carbon::parse($ingreso->fecha)->format('d/m/Y') }}</td>
+                        <td>{{ $ingreso->tipo?->value }}</td>
+                        <td>{{ $ingreso->metodo_pago?->value }}</td>
+                        <td style="font-weight: 600; color: var(--success);">Bs {{ number_format($ingreso->monto_total, 2) }}</td>
+                        <td>{{ $ingreso->actividad->nombre ?? 'N/A' }}</td>
+                        <td>{{ $ingreso->culto->nombre ?? 'N/A' }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                    @if(auth()->user()->puede('ingresos', 'editar'))
+                                    <a href="{{ route('ingresos.edit', $ingreso->id) }}" class="btn-icon btn-edit" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.83 20.082a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg></a>
+                                    @endif
+                                    @if(auth()->user()->puede('ingresos', 'eliminar'))
+                                    <form method="POST" action="{{ route('ingresos.destroy', $ingreso->id) }}" style="display: inline;">
+                                        @csrf
+                                        <?php echo method_field('DELETE'); ?>
+                                        <button type="submit" class="btn-icon btn-delete" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button>
+                                    </form>
+                                    @endif
+                            </div>
+                        </td>
+                    </tr>
+                
+@empty
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 30px;">
+                            No hay ingresos registrados.
+                        </td>
+                    </tr>
+                
+@endforelse
+            </tbody>
+        </table>
+    </div>
 
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "Vas a eliminar permanentemente este ingreso. Esta acción no se puede deshacer.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar',
-                    background: '#1e1e2d',
-                    color: '#fff'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById(`delete-form-${ingresoId}`).submit();
-                    }
-                });
-            });
-        });
-    });
-</script>
+    <div style="margin-top: 20px;">
+        {{ $ingresos->links() }}
+
+    </div>
+</div>
 @endsection
