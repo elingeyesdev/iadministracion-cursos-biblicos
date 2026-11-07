@@ -1,50 +1,52 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', 'Editar Inscripción')
+@section('title', 'Editar Inscripci├│n')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('inscripciones.index') }}" class="text-gold-500 text-decoration-none">Inscripciones</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('inscripciones.gestion', $inscripcion->curso_id) }}" class="text-gold-500 text-decoration-none">{{ $inscripcion->curso->nombre ?? 'Curso' }}</a></li>
+    <li class="breadcrumb-item active text-muted" aria-current="page">Editar</li>
+@endsection
 
 @section('content')
-<div class="glass-panel" style="padding: 30px; max-width: 600px; margin: 0 auto;">
-    <h2 style="font-weight: 700; margin-bottom: 20px; color: var(--text-primary);">Editar Inscripción</h2>
+<div class="card p-4 shadow-sm">
+    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-journal-richtext me-2"></i>Editar Inscripci├│n</h2>
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach($errors->all() as $error)
+    <p><strong>Miembro:</strong> {{ $inscripcion->miembro->nombre ?? 'Miembro eliminado' }} &middot; <strong>Curso:</strong> {{ $inscripcion->curso->nombre ?? 'Curso eliminado' }}</p>
 
-                    <li>{{ $error }}</li>
-                
-@endforeach
-            </ul>
-        </div>
-    @endif
-
-    <div style="background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.25); padding: 14px 18px; border-radius: 12px; margin-bottom: 20px;">
-        <div style="font-size: 13px; color: var(--text-secondary);">Miembro / Curso</div>
-        <div style="font-size: 18px; font-weight: 700; color: var(--text-primary);">{{ $inscripcion->miembro->nombre ?? 'N/A' }}</div>
-        <div style="font-size: 14px; color: var(--text-secondary);">{{ $inscripcion->curso->nombre ?? 'N/A' }}</div>
-    </div>
-
-    <form method="POST" action="{{ route('inscripciones.update', $inscripcion->id) }}">
+    <form action="{{ route('inscripciones.update', $inscripcion->id) }}" method="POST">
         @csrf
         @method('PUT')
 
-        <div class="form-group">
-            <label for="fecha_inscripcion" class="form-label">Fecha de Inscripción</label>
-            <input id="fecha_inscripcion" type="date" name="fecha_inscripcion" class="form-control" value="{{ old('fecha_inscripcion', $inscripcion->fecha_inscripcion ? \Carbon\Carbon::parse($inscripcion->fecha_inscripcion)->format('Y-m-d') : '') }}" required>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="fecha_inscripcion" class="form-label">Fecha de Inscripci├│n <span class="text-danger">*</span></label>
+                <input type="date" class="form-control @error('fecha_inscripcion') is-invalid @enderror" id="fecha_inscripcion" name="fecha_inscripcion" value="{{ old('fecha_inscripcion', $inscripcion->fecha_inscripcion) }}" required>
+                @error('fecha_inscripcion')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-6">
+                <label for="estado" class="form-label">Estado <span class="text-danger">*</span></label>
+                <select class="form-select @error('estado') is-invalid @enderror" id="estado" name="estado" required>
+                    @foreach(['Activo', 'Retirado', 'Completado'] as $estado)
+                        <option value="{{ $estado }}" {{ old('estado', $inscripcion->estado) === $estado ? 'selected' : '' }}>{{ $estado }}</option>
+                    @endforeach
+                </select>
+                @error('estado')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="estado" class="form-label">Estado</label>
-            <select id="estado" name="estado" class="form-control" required>
-                @foreach(\App\Enums\EstadoInscripcion::opciones() as $valor => $etiqueta)
-                    <option value="{{ $valor }}" {{ old('estado', $inscripcion->estado?->value) === $valor ? 'selected' : '' }}>{{ $etiqueta }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <div style="display: flex; gap: 15px; margin-top: 30px;">
-            <button type="submit" class="btn">Actualizar Inscripción</button>
-            <a href="{{ route('inscripciones.gestion', $inscripcion->curso_id) }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-church">
+                <i class="bi bi-save me-1"></i> Actualizar
+            </button>
+            <a href="{{ route('inscripciones.gestion', $inscripcion->curso_id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
         </div>
     </form>
 </div>

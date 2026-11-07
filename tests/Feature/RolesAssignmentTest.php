@@ -44,7 +44,7 @@ class RolesAssignmentTest extends TestCase
     public function test_administrador_ve_la_pantalla_asignar_rol(): void
     {
         $this->actingAs($this->admin)
-            ->get(route('roles.user'))
+            ->get(route('asignar-roles.index'))
             ->assertOk()
             ->assertSee('Asignar Rol')
             ->assertSee('Gestiona los roles asignados a los usuarios del sistema')
@@ -56,7 +56,7 @@ class RolesAssignmentTest extends TestCase
     public function test_formulario_de_asignacion_muestra_los_roles_reales(): void
     {
         $this->actingAs($this->admin)
-            ->get(route('roles.user.edit', $this->objetivo->id))
+            ->get(route('asignar-roles.edit', $this->objetivo->id))
             ->assertOk()
             ->assertSee('Asignar Roles')
             ->assertSee(self::EMAIL_OBJETIVO)
@@ -71,7 +71,7 @@ class RolesAssignmentTest extends TestCase
         $this->objetivo->roles()->attach($secretario->id);
 
         $html = $this->actingAs($this->admin)
-            ->get(route('roles.user.edit', $this->objetivo->id))
+            ->get(route('asignar-roles.edit', $this->objetivo->id))
             ->assertOk()
             ->getContent();
 
@@ -87,11 +87,11 @@ class RolesAssignmentTest extends TestCase
         $secretario = Role::where('nombre', 'Secretario')->first();
 
         $this->actingAs($this->admin)
-            ->post(route('roles.user.save'), [
+            ->post(route('asignar-roles.store'), [
                 'user_id' => $this->objetivo->id,
                 'roles' => [$secretario->id],
             ])
-            ->assertRedirect(route('roles.user'))
+            ->assertRedirect(route('asignar-roles.index'))
             ->assertSessionHas('success');
 
         $this->assertDatabaseHas('role_user', [
@@ -108,11 +108,11 @@ class RolesAssignmentTest extends TestCase
         $this->objetivo->roles()->attach($adminRole->id);
 
         $this->actingAs($this->admin)
-            ->post(route('roles.user.save'), [
+            ->post(route('asignar-roles.store'), [
                 'user_id' => $this->objetivo->id,
                 'roles' => [$secretario->id],
             ])
-            ->assertRedirect(route('roles.user'));
+            ->assertRedirect(route('asignar-roles.index'));
 
         $this->assertSoftDeleted('role_user', [
             'user_id' => $this->objetivo->id,
@@ -127,16 +127,16 @@ class RolesAssignmentTest extends TestCase
     public function test_valida_usuario_inexistente(): void
     {
         $this->actingAs($this->admin)
-            ->from(route('roles.user.edit', $this->objetivo->id))
-            ->post(route('roles.user.save'), ['user_id' => 999999, 'roles' => []])
+            ->from(route('asignar-roles.edit', $this->objetivo->id))
+            ->post(route('asignar-roles.store'), ['user_id' => 999999, 'roles' => []])
             ->assertSessionHasErrors('user_id');
     }
 
     public function test_valida_rol_inexistente(): void
     {
         $this->actingAs($this->admin)
-            ->from(route('roles.user.edit', $this->objetivo->id))
-            ->post(route('roles.user.save'), [
+            ->from(route('asignar-roles.edit', $this->objetivo->id))
+            ->post(route('asignar-roles.store'), [
                 'user_id' => $this->objetivo->id,
                 'roles' => [999999],
             ])
@@ -149,8 +149,8 @@ class RolesAssignmentTest extends TestCase
         $this->objetivo->roles()->attach($secretario->id);
 
         $this->actingAs($this->admin)
-            ->post(route('roles.user.clear', $this->objetivo->id))
-            ->assertRedirect(route('roles.user'))
+            ->post(route('asignar-roles.destroy', $this->objetivo->id))
+            ->assertRedirect(route('asignar-roles.index'))
             ->assertSessionHas('success');
 
         $this->assertSoftDeleted('role_user', [
@@ -165,12 +165,12 @@ class RolesAssignmentTest extends TestCase
         $usuario = User::factory()->create(['email' => 'sec_roles@proyecto.com']);
         $usuario->roles()->attach($secretario->id);
 
-        $this->actingAs($usuario)->get(route('roles.user'))->assertForbidden();
+        $this->actingAs($usuario)->get(route('asignar-roles.index'))->assertForbidden();
         $this->actingAs($usuario)
-            ->get(route('roles.user.edit', $this->objetivo->id))
+            ->get(route('asignar-roles.edit', $this->objetivo->id))
             ->assertForbidden();
         $this->actingAs($usuario)
-            ->post(route('roles.user.save'), ['user_id' => $this->objetivo->id, 'roles' => []])
+            ->post(route('asignar-roles.store'), ['user_id' => $this->objetivo->id, 'roles' => []])
             ->assertForbidden();
     }
 }

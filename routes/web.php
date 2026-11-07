@@ -4,6 +4,14 @@ use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\BibliaDigitalController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\ContratoController;
 use App\Http\Controllers\CultoController;
@@ -30,6 +38,28 @@ Route::get('/', function () {
     return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
 });
 
+// Rutas de autenticación (Breeze)
+Route::get('/login', [LoginController::class, 'create'])->name('login');
+Route::post('/login', [LoginController::class, 'store']);
+Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+Route::post('/register', [RegisteredUserController::class, 'store']);
+Route::get('/password/reset', [PasswordResetLinkController::class, 'create'])->name('password.request');
+Route::post('/password/email', [PasswordResetLinkController::class, 'store'])->name('password.email');
+Route::get('/password/reset/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+Route::post('/password/reset', [NewPasswordController::class, 'store'])->name('password.store');
+Route::get('/password/confirm', [ConfirmablePasswordController::class, 'show'])->name('password.confirm');
+Route::post('/password/confirm', [ConfirmablePasswordController::class, 'store']);
+Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
+Route::get('/email/verify', [EmailVerificationPromptController::class, '__invoke'])->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware('throttle:6,1')->name('verification.send');
+
+// Rutas de perfil (Breeze)
+Route::get('/profile', [App\Http\Controllers\Auth\PasswordController::class, 'show'])->name('profile.edit');
+Route::patch('/profile', [App\Http\Controllers\Auth\PasswordController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [App\Http\Controllers\Auth\PasswordController::class, 'destroy'])->name('profile.destroy');
+
 // Rutas de Autenticación (Invitados) — el envío del formulario va limitado
 // por intentos para mitigar fuerza bruta (OWASP A07).
 Route::middleware('guest')->group(function () {
@@ -53,12 +83,15 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
     // Acceso y Seguridad (permisos por rol: usuarios, roles)
     Route::group([], function () {
-        Route::resource('users', UserController::class);
+        Route::resource('usuarios', UserController::class)->names('usuarios');
 
-        Route::get('roles/assign', [RoleController::class, 'userRoles'])->name('roles.user');
-        Route::get('roles/assign/{user}/edit', [RoleController::class, 'userRolesEdit'])->name('roles.user.edit');
-        Route::post('roles/assign', [RoleController::class, 'assignRole'])->name('roles.user.save');
-        Route::post('roles/assign/{id}/clear', [RoleController::class, 'clearUserRoles'])->name('roles.user.clear');
+        // Rutas para asignación de roles (usadas por las vistas)
+        Route::get('roles/assign', [RoleController::class, 'userRoles'])->name('asignar-roles.index');
+        Route::get('roles/assign/{user}/edit', [RoleController::class, 'userRolesEdit'])->name('asignar-roles.edit');
+        Route::post('roles/assign', [RoleController::class, 'assignRole'])->name('asignar-roles.store');
+        Route::post('roles/assign/{id}/clear', [RoleController::class, 'clearUserRoles'])->name('asignar-roles.destroy');
+        
+        // Rutas estándar del recurso roles
         Route::resource('roles', RoleController::class);
     });
 
@@ -87,7 +120,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::resource('actividades', ActividadController::class);
 
         // 6. Seguimiento de Actividades
-        Route::resource('seguimiento', SeguimientoActividadController::class);
+        Route::resource('seguimiento', SeguimientoActividadController::class)->names('seguimientos');
 
         // 7. Cursos
         Route::resource('cursos', CursoController::class);

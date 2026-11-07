@@ -1,7 +1,7 @@
-<section>
+﻿<section>
     <header>
-        <h2 class="sidebar-title mb-1">Información del perfil</h2>
-        <p class="text-muted mb-0">Actualiza tu nombre y correo electrónico.</p>
+        <h2 class="sidebar-title mb-1">Informaci├│n del perfil</h2>
+        <p class="text-muted mb-0">Actualiza tu nombre y correo electr├│nico.</p>
     </header>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
@@ -28,15 +28,15 @@
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div class="mt-2">
                     <div class="text-muted small">
-                        Tu correo aún no está verificado.
+                        Tu correo a├║n no est├í verificado.
                         <button form="send-verification" class="btn btn-link p-0 align-baseline text-decoration-none" style="color: var(--church-gold);">
-                            Reenviar verificación
+                            Reenviar verificaci├│n
                         </button>
                     </div>
 
                     @if (session('status') === 'verification-link-sent')
                         <div class="alert alert-success mt-3 mb-0" role="alert">
-                            Se ha enviado un nuevo enlace de verificación a tu correo.
+                            Se ha enviado un nuevo enlace de verificaci├│n a tu correo.
                         </div>
                     @endif
                 </div>

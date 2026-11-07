@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Actividades')
 
@@ -6,7 +6,7 @@
 
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
     <div>
-        <div class="text-muted small mb-1" style="letter-spacing:.18em; text-transform:uppercase;">Gestión</div>
+        <div class="text-muted small mb-1" style="letter-spacing:.18em; text-transform:uppercase;">Gesti├│n</div>
         <h1 class="sidebar-title" style="font-size:2rem;">Actividades</h1>
         <p class="text-muted mb-0">Organiza y administra todas las actividades.</p>
     </div>
@@ -15,11 +15,11 @@
 
 <form method="GET" action="{{ route('actividad.index') }}" class="mb-3">
     <div class="input-group" style="max-width: 520px;">
-        <span class="input-group-text">🔍</span>
-        <input type="text" name="busqueda" value="{{ $busqueda ?? '' }}" class="form-control" placeholder="Buscar actividad…">
+        <span class="input-group-text">­ƒöì</span>
+        <input type="text" name="busqueda" value="{{ $busqueda ?? '' }}" class="form-control" placeholder="Buscar actividadÔÇª">
         <button class="btn btn-outline-church" type="submit">Buscar</button>
         @if($busqueda)
-            <a class="btn btn-outline-secondary" href="{{ route('actividad.index') }}">✕</a>
+            <a class="btn btn-outline-secondary" href="{{ route('actividad.index') }}">Ô£ò</a>
         @endif
     </div>
     @if($busqueda)
@@ -33,7 +33,7 @@
             @if($busqueda)
                 No se encontraron actividades para <strong>"{{ $busqueda }}"</strong>
             @else
-                Aún no hay actividades registradas.
+                A├║n no hay actividades registradas.
             @endif
             @if(!$busqueda)
                 <div class="mt-3">
@@ -48,7 +48,7 @@
                     <tr>
                         <th style="width: 4rem;">#</th>
                         <th>Nombre</th>
-                        <th class="d-none d-md-table-cell">Categoría</th>
+                        <th class="d-none d-md-table-cell">Categor├¡a</th>
                         <th class="d-none d-md-table-cell">Responsable</th>
                         <th class="d-none d-lg-table-cell">Fechas</th>
                         <th>Estado</th>
@@ -76,10 +76,10 @@
                             <td>{{ $act->nombre }}</td>
                             <td class="d-none d-md-table-cell">
                                 <span class="badge" style="background: rgba(212,175,83,.12); color: var(--church-gold); border: 1px solid rgba(212,175,83,.35);">
-                                    {{ $act->categoria->nombre ?? '—' }}
+                                    {{ $act->categoria->nombre ?? 'ÔÇö' }}
                                 </span>
                             </td>
-                            <td class="text-muted d-none d-md-table-cell">{{ $act->responsable->nombre ?? '—' }}</td>
+                            <td class="text-muted d-none d-md-table-cell">{{ $act->responsable->nombre ?? 'ÔÇö' }}</td>
                             <td class="text-muted small d-none d-lg-table-cell">
                                 <div>Inicio: {{ $act->fecha_inicio->format('d/m/Y') }}</div>
                                 @if($act->fecha_fin)
@@ -91,7 +91,7 @@
                                 <a class="btn btn-sm btn-outline-secondary" href="{{ route('actividad.show', $act) }}">Ver</a>
                                 <a class="btn btn-sm btn-outline-church" href="{{ route('actividad.edit', $act) }}">Editar</a>
                                 <form method="POST" action="{{ route('actividad.destroy', $act) }}" class="d-inline"
-                                      onsubmit="return confirm('¿Eliminar la actividad «{{ addslashes($act->nombre) }}»?')">
+                                      onsubmit="return confirm('┬┐Eliminar la actividad ┬½{{ addslashes($act->nombre) }}┬╗?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
@@ -105,7 +105,7 @@
         @if($actividades->hasPages())
             <div class="card-body py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div class="text-muted small">
-                    Mostrando {{ $actividades->firstItem() }}–{{ $actividades->lastItem() }} de {{ $actividades->total() }} actividades
+                    Mostrando {{ $actividades->firstItem() }}ÔÇô{{ $actividades->lastItem() }} de {{ $actividades->total() }} actividades
                 </div>
                 <div>{{ $actividades->links('pagination::bootstrap-5') }}</div>
             </div>

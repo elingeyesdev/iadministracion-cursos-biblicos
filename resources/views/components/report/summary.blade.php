@@ -1,20 +1,15 @@
+﻿@props(['items' => []])
+
 {{--
-    ReportSummary — indicadores compactos.
-    $items: array de ['label' => string, 'value' => mixed, 'tone' => neutral|success|danger|warning|info|muted]
+    Resumen estad├¡stico compacto.
+    $items: [ ['label' => 'Total', 'value' => 12, 'class' => 'is-success'], ... ]
+    Los valores siempre provienen de los datos filtrados reales.
 --}}
-@props(['items' => []])
-
-@php
-    $items = collect($items)->filter(fn ($item) => isset($item['label']));
-@endphp
-
-@if($items->isNotEmpty())
-    <section class="report-summary" aria-label="Resumen estadístico">
-        @foreach($items as $item)
-            <div class="report-summary__item report-summary__item--{{ $item['tone'] ?? 'neutral' }}">
-                <span class="report-summary__value">{{ $item['value'] ?? 0 }}</span>
-                <span class="report-summary__label">{{ $item['label'] }}</span>
-            </div>
-        @endforeach
-    </section>
-@endif
+<div class="report-summary">
+    @foreach($items as $item)
+        <div class="report-summary-item">
+            <div class="report-summary-label">{{ $item['label'] }}</div>
+            <div class="report-summary-value {{ $item['class'] ?? '' }}">{{ $item['value'] }}</div>
+        </div>
+    @endforeach
+</div>

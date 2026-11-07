@@ -1,4 +1,4 @@
-@php
+﻿@php
     $uid = $uid ?? 'x';
     $asignados = collect($asignados ?? [])->map(fn ($id) => (int) $id)->all();
     $seleccionados = collect(old('permisos', $asignados))->map(fn ($id) => (int) $id)->all();
@@ -51,7 +51,7 @@
                     </div>
                 @empty
                     <div class="col-12">
-                        <p class="text-muted small mb-0">Esta categoría no tiene permisos registrados.</p>
+                        <p class="text-muted small mb-0">Esta categor├¡a no tiene permisos registrados.</p>
                     </div>
                 @endforelse
             </div>

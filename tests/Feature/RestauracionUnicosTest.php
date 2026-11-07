@@ -159,14 +159,14 @@ class RestauracionUnicosTest extends TestCase
         $rol = Role::where('nombre', 'Administrador')->firstOrFail();
 
         $this->actingAs($this->admin)
-            ->post(route('roles.user.save'), [
+            ->post(route('asignar-roles.store'), [
                 'user_id' => $usuario->id,
                 'roles' => [$rol->id],
             ])
             ->assertRedirect();
 
         $this->actingAs($this->admin)
-            ->post(route('roles.user.save'), [
+            ->post(route('asignar-roles.store'), [
                 'user_id' => $usuario->id,
                 'roles' => [],
             ])
@@ -179,7 +179,7 @@ class RestauracionUnicosTest extends TestCase
         ]);
 
         $this->actingAs($this->admin)
-            ->post(route('roles.user.save'), [
+            ->post(route('asignar-roles.store'), [
                 'user_id' => $usuario->id,
                 'roles' => [$rol->id],
             ])

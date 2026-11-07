@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Mi Perfil')
 
@@ -6,7 +6,7 @@
 
 <div class="mb-4">
     <h1 class="sidebar-title" style="font-size:2rem;">Mi Perfil</h1>
-    <p class="text-muted">Actualiza tu información, contraseña y opciones de cuenta.</p>
+    <p class="text-muted">Actualiza tu informaci├│n, contrase├▒a y opciones de cuenta.</p>
 </div>
 
 <div class="row g-4">

@@ -1,5 +1,5 @@
-<script>
-    // Restaura el estado del menú lateral (expandido/contraído) antes del
+﻿<script>
+    // Restaura el estado del men├║ lateral (expandido/contra├¡do) antes del
     // primer render para evitar parpadeos. Solo afecta a escritorio: el CSS
     // limita el estado con una media query. Ver resources/js/sidebar.js.
     (function () {

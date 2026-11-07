@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Detalle del Miembro')
 
@@ -7,9 +7,9 @@
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
     <div>
         <h1 class="sidebar-title" style="font-size:2rem;">Detalle del Miembro</h1>
-        <p class="text-muted mb-0">Información registrada.</p>
+        <p class="text-muted mb-0">Informaci├│n registrada.</p>
     </div>
-    <a href="{{ route('miembro.index') }}" class="btn btn-outline-church">← Volver</a>
+    <a href="{{ route('miembro.index') }}" class="btn btn-outline-church">ÔåÉ Volver</a>
 </div>
 
 <div class="card shadow-sm">
@@ -24,8 +24,8 @@
             <dt class="col-sm-3 text-muted">Correo</dt>
             <dd class="col-sm-9">{{ $miembro->correo }}</dd>
 
-            <dt class="col-sm-3 text-muted">Teléfono</dt>
-            <dd class="col-sm-9">{{ $miembro->telefono ?? '—' }}</dd>
+            <dt class="col-sm-3 text-muted">Tel├®fono</dt>
+            <dd class="col-sm-9">{{ $miembro->telefono ?? 'ÔÇö' }}</dd>
 
             <dt class="col-sm-3 text-muted">Rol</dt>
             <dd class="col-sm-9">
@@ -41,7 +41,7 @@
         <div class="d-flex gap-2 mt-4">
             <a href="{{ route('miembro.edit', $miembro) }}" class="btn btn-outline-church">Editar</a>
             <form method="POST" action="{{ route('miembro.destroy', $miembro) }}"
-                  onsubmit="return confirm('¿Eliminar este miembro?')">
+                  onsubmit="return confirm('┬┐Eliminar este miembro?')">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-outline-danger">Eliminar</button>

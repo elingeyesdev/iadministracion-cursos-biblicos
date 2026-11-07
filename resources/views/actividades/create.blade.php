@@ -1,70 +1,88 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Nueva Actividad')
 
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('actividades.index') }}" class="text-gold-500 text-decoration-none">Actividades</a></li>
+    <li class="breadcrumb-item active text-muted" aria-current="page">Nueva</li>
+@endsection
+
 @section('content')
-<div class="glass-panel" style="padding: 30px; max-width: 600px; margin: 0 auto;">
-    <h2 style="font-weight: 700; margin-bottom: 20px; color: var(--text-primary);">Registrar Nueva Actividad</h2>
+<div class="card p-4 shadow-sm">
+    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-calendar-plus me-2"></i>Registrar Nueva Actividad</h2>
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach($errors->all() as $error)
-
-                    <li>{{ $error }}</li>
-                
-@endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('actividades.store') }}">
+    <form action="{{ route('actividades.store') }}" method="POST">
         @csrf
+        
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="id_ministerio" class="form-label">Ministerio Organizador <span class="text-danger">*</span></label>
+                <select class="form-select @error('id_ministerio') is-invalid @enderror" id="id_ministerio" name="id_ministerio" required>
+                    <option value="" disabled selected>Seleccione un ministerio...</option>
+                    @foreach($ministerios as $ministerio)
+                        <option value="{{ $ministerio->id }}" {{ old('id_ministerio') == $ministerio->id ? 'selected' : '' }}>
+                            {{ $ministerio->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('id_ministerio')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
 
-        <div class="form-group">
-            <label for="nombre" class="form-label">Nombre de la Actividad</label>
-            <input type="text" name="nombre" id="nombre" class="form-control" value="{{ old('nombre') }}" pattern="[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]+" title="Solo letras y espacios" oninput="soloLetras(this)" required>
+            <div class="col-md-6">
+                <label for="nombre" class="form-label">Nombre de la Actividad <span class="text-danger">*</span></label>
+                <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre') }}" required placeholder="Ej. Campamento de J├│venes">
+                @error('nombre')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-4">
+                <label for="fecha" class="form-label">Fecha de Realizaci├│n <span class="text-danger">*</span></label>
+                <input type="date" class="form-control @error('fecha') is-invalid @enderror" id="fecha" name="fecha" value="{{ old('fecha', date('Y-m-d')) }}" required>
+                @error('fecha')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-4">
+                <label for="lugar" class="form-label">Lugar / Ubicaci├│n</label>
+                <input type="text" class="form-control @error('lugar') is-invalid @enderror" id="lugar" name="lugar" value="{{ old('lugar') }}" placeholder="Ej. Templo Central, Auditorio B">
+                @error('lugar')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-4">
+                <label for="estado" class="form-label">Estado <span class="text-danger">*</span></label>
+                <select class="form-select @error('estado') is-invalid @enderror" id="estado" name="estado" required>
+                    <option value="planificada" {{ old('estado', 'planificada') == 'planificada' ? 'selected' : '' }}>Planificada</option>
+                    <option value="en_curso" {{ old('estado') == 'en_curso' ? 'selected' : '' }}>En Curso</option>
+                    <option value="completada" {{ old('estado') == 'completada' ? 'selected' : '' }}>Completada</option>
+                    <option value="cancelada" {{ old('estado') == 'cancelada' ? 'selected' : '' }}>Cancelada</option>
+                </select>
+                @error('estado')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <label for="descripcion" class="form-label">Descripci├│n / Detalles</label>
+                <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="4" placeholder="Describa el objetivo y programa de la actividad...">{{ old('descripcion') }}</textarea>
+                @error('descripcion')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="id_ministerio" class="form-label">Ministerio</label>
-            <select id="id_ministerio" name="id_ministerio" class="form-control" required>
-                <option value="">Seleccione un ministerio...</option>
-                @foreach($ministerios as $min)
-
-                    <option value="{{ $min->id }}" {{ old('id_ministerio') == $min->id ? 'selected' : '' }}>{{ $min->nombre }}</option>
-                
-@endforeach
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="fecha" class="form-label">Fecha</label>
-            <input id="fecha" type="date" name="fecha" class="form-control" value="{{ old('fecha', date('Y-m-d')) }}" required>
-        </div>
-
-        <div class="form-group">
-            <label for="lugar" class="form-label">Lugar</label>
-            <input id="lugar" type="text" name="lugar" class="form-control" value="{{ old('lugar') }}">
-        </div>
-
-        <div class="form-group">
-            <label for="estado" class="form-label">Estado</label>
-            <select name="estado" id="estado" class="form-control" required>
-                @foreach(\App\Enums\EstadoActividad::opciones() as $valor => $etiqueta)
-                    <option value="{{ $valor }}" {{ old('estado', 'Programado') === $valor ? 'selected' : '' }}>{{ $etiqueta }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="descripcion" class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control" rows="3">{{ old('descripcion') }}</textarea>
-        </div>
-
-        <div style="display: flex; gap: 15px; margin-top: 30px;">
-            <button type="submit" class="btn">Guardar Actividad</button>
-            <a href="{{ route('actividades.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-church">
+                <i class="bi bi-save me-1"></i> Guardar
+            </button>
+            <a href="{{ route('actividades.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
         </div>
     </form>
 </div>

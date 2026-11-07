@@ -19,7 +19,7 @@
                 Selecciona los roles para <strong style="color: var(--text-primary);">{{ $user->name }}</strong> ({{ $user->email }}).
             </p>
         </div>
-        <a href="{{ route('roles.user') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
+        <a href="{{ route('asignar-roles.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
     </div>
 
     @if($errors->any())
@@ -44,7 +44,7 @@
     @endif
 
     @if(auth()->user()->puede('roles', 'editar'))
-    <form method="POST" action="{{ route('roles.user.save') }}" class="js-assign-roles-form">
+    <form method="POST" action="{{ route('asignar-roles.store') }}" class="js-assign-roles-form">
         @csrf
         <input type="hidden" name="user_id" value="{{ $user->id }}">
 
@@ -70,7 +70,7 @@
 
         <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 30px;">
             <button type="submit" class="btn">Guardar Roles</button>
-            <a href="{{ route('roles.user') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Volver</a>
+            <a href="{{ route('asignar-roles.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Volver</a>
         </div>
     </form>
     @endif

@@ -1,25 +1,25 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', 'Asignación de Actividades')
+@section('title', 'Asignaci├│n de Actividades')
 
 @section('content')
 
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
     <div>
-        <div class="text-muted small mb-1" style="letter-spacing:.18em; text-transform:uppercase;">Gestión</div>
-        <h1 class="sidebar-title" style="font-size:2rem;">Asignación de actividades</h1>
+        <div class="text-muted small mb-1" style="letter-spacing:.18em; text-transform:uppercase;">Gesti├│n</div>
+        <h1 class="sidebar-title" style="font-size:2rem;">Asignaci├│n de actividades</h1>
         <p class="text-muted mb-0">Asigna miembros a actividades.</p>
     </div>
-    <a href="{{ route('asignacionactividad.create') }}" class="btn btn-church">Nueva asignación</a>
+    <a href="{{ route('asignacionactividad.create') }}" class="btn btn-church">Nueva asignaci├│n</a>
 </div>
 
 <form method="GET" action="{{ route('asignacionactividad.index') }}" class="mb-3">
     <div class="input-group" style="max-width: 520px;">
-        <span class="input-group-text">🔍</span>
-        <input type="text" name="busqueda" value="{{ $busqueda ?? '' }}" class="form-control" placeholder="Buscar asignación…">
+        <span class="input-group-text">­ƒöì</span>
+        <input type="text" name="busqueda" value="{{ $busqueda ?? '' }}" class="form-control" placeholder="Buscar asignaci├│nÔÇª">
         <button class="btn btn-outline-church" type="submit">Buscar</button>
         @if($busqueda)
-            <a class="btn btn-outline-secondary" href="{{ route('asignacionactividad.index') }}">✕</a>
+            <a class="btn btn-outline-secondary" href="{{ route('asignacionactividad.index') }}">Ô£ò</a>
         @endif
     </div>
     @if($busqueda)
@@ -33,11 +33,11 @@
             @if($busqueda)
                 No se encontraron asignaciones para <strong>"{{ $busqueda }}"</strong>
             @else
-                Aún no hay asignaciones registradas.
+                A├║n no hay asignaciones registradas.
             @endif
             @if(!$busqueda)
                 <div class="mt-3">
-                    <a href="{{ route('asignacionactividad.create') }}" class="btn btn-outline-church">Crear la primera asignación</a>
+                    <a href="{{ route('asignacionactividad.create') }}" class="btn btn-outline-church">Crear la primera asignaci├│n</a>
                 </div>
             @endif
         </div>
@@ -58,17 +58,17 @@
                     @foreach($asignaciones as $asig)
                         <tr>
                             <td class="text-muted small">{{ $asig->id }}</td>
-                            <td>{{ $asig->actividad->nombre ?? '—' }}</td>
+                            <td>{{ $asig->actividad->nombre ?? 'ÔÇö' }}</td>
                             <td>{{ ($asig->miembro->nombre ?? '') }} {{ ($asig->miembro->apellido ?? '') }}</td>
-                            <td class="text-muted d-none d-md-table-cell">{{ $asig->rol_en_actividad ?? '—' }}</td>
+                            <td class="text-muted d-none d-md-table-cell">{{ $asig->rol_en_actividad ?? 'ÔÇö' }}</td>
                             <td class="text-muted small d-none d-lg-table-cell">
-                                {{ $asig->fecha_asignacion ? $asig->fecha_asignacion->format('d/m/Y') : '—' }}
+                                {{ $asig->fecha_asignacion ? $asig->fecha_asignacion->format('d/m/Y') : 'ÔÇö' }}
                             </td>
                             <td class="text-end">
                                 <a class="btn btn-sm btn-outline-secondary" href="{{ route('asignacionactividad.show', $asig) }}">Ver</a>
                                 <a class="btn btn-sm btn-outline-church" href="{{ route('asignacionactividad.edit', $asig) }}">Editar</a>
                                 <form method="POST" action="{{ route('asignacionactividad.destroy', $asig) }}" class="d-inline"
-                                      onsubmit="return confirm('¿Eliminar esta asignación?')">
+                                      onsubmit="return confirm('┬┐Eliminar esta asignaci├│n?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
@@ -82,7 +82,7 @@
         @if($asignaciones->hasPages())
             <div class="card-body py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div class="text-muted small">
-                    Mostrando {{ $asignaciones->firstItem() }}–{{ $asignaciones->lastItem() }} de {{ $asignaciones->total() }} asignaciones
+                    Mostrando {{ $asignaciones->firstItem() }}ÔÇô{{ $asignaciones->lastItem() }} de {{ $asignaciones->total() }} asignaciones
                 </div>
                 <div>{{ $asignaciones->links('pagination::bootstrap-5') }}</div>
             </div>

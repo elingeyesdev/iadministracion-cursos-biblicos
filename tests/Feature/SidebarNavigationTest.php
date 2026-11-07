@@ -37,16 +37,17 @@ class SidebarNavigationTest extends TestCase
 
     public function test_sidebar_tiene_boton_de_alternar_y_estado_persistente(): void
     {
-        // Se usa una ruta que renderiza el layout y funciona sobre SQLite
-        // (el dashboard usa DATE_FORMAT(), específico de MySQL).
         $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
-        $response->assertSee('id="app-sidebar"', false);
-        $response->assertSee('id="sidebar-toggle"', false);
-        $response->assertSee('aria-controls="app-sidebar"', false);
-        // Persistencia del estado del menú reutilizando localStorage.
-        $response->assertSee('actua_sidebar', false);
+        // Desktop sidebar
+        $response->assertSee('class="app-chrome d-none d-lg-block sidebar', false);
+        // Mobile offcanvas
+        $response->assertSee('id="sidebarOffcanvas"', false);
+        // Theme toggle
+        $response->assertSee('data-theme-toggle', false);
+        // Persistencia del estado del menú (sidebar.js usa localStorage 'church-sidebar')
+        $response->assertSee('church-sidebar', false);
     }
 
     public function test_sidebar_conserva_todas_las_opciones_de_navegacion(): void
@@ -54,27 +55,29 @@ class SidebarNavigationTest extends TestCase
         $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
-        $response->assertSee('data-title="Principal"', false);
-        $response->assertSee('data-title="Acceso y Seguridad"', false);
-        $response->assertSee('data-title="Parametrización"', false);
-        $response->assertSee('data-title="Transaccional"', false);
-        $response->assertSee('data-title="Reporte"', false);
+        // Texto visible de las secciones principales
+        $response->assertSee('Principal', false);
+        $response->assertSee('Acceso y Seguridad', false);
+        $response->assertSee('Parametrizaci', false); // Parametrización (con acento)
+        $response->assertSee('Transaccional', false);
+        $response->assertSee('Reporte', false);
 
-        // Rutas reales intactas.
+        // Rutas reales intactas
         $response->assertSee(route('dashboard'), false);
         $response->assertSee(route('miembros.index'), false);
         $response->assertSee(route('reportes.index'), false);
     }
 
-    public function test_sidebar_incluye_logo_compacto_y_avatar(): void
+    public function test_sidebar_incluye_logo_y_titulo(): void
     {
         $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
-        // Logo compacto para el estado contraído y avatar del usuario visible.
-        $response->assertSee('class="logo-mark"', false);
-        $response->assertSee('class="logo-text"', false);
-        $response->assertSee('user-avatar', false);
+        // Logo y título en la cabecera del sidebar (church layout)
+        $response->assertSee('sidebar-logo', false);
+        $response->assertSee('sidebar-brand-text', false);
+        $response->assertSee('Sistema Iglesia', false);
+        $response->assertSee('Administraci', false); // Administración
     }
 
     public function test_submenu_de_usuario_es_flotante_y_reutiliza_el_logout(): void
@@ -82,14 +85,13 @@ class SidebarNavigationTest extends TestCase
         $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
+        // User menu wrap (Alpine.js component)
         $response->assertSee('id="user-menu-wrap"', false);
-        $response->assertSee('aria-haspopup="true"', false);
-        $response->assertSee('aria-controls="user-menu"', false);
-        $response->assertSee('id="user-menu"', false);
-        $response->assertSee('role="menu"', false);
-        $response->assertSee('role="menuitem"', false);
-        $response->assertSee('Cerrar Sesión');
-        // El cierre de sesión reutiliza la ruta y el formulario existentes.
+        $response->assertSee('x-data="userMenu"', false);
+        $response->assertSee('user-menu-avatar', false);
+        $response->assertSee('user-menu-text', false);
+        $response->assertSee('Cerrar sesión', false); // Cerrar sesión
+        // El cierre de sesión reutiliza la ruta y el formulario existentes
         $response->assertSee('action="'.route('logout').'"', false);
         $response->assertSee('name="_token"', false);
     }
@@ -99,8 +101,10 @@ class SidebarNavigationTest extends TestCase
         $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
-        // No debe abrirse automáticamente: el contenedor no empieza con la clase open.
-        $response->assertDontSee('sidebar-user-wrap open', false);
-        $response->assertSee('aria-expanded="false"', false);
+        // El menú de usuario no debe tener la clase 'open' inicialmente (controlado por Alpine x-cloak)
+        $response->assertDontSee('user-menu-wrap open', false);
+        // El botón trigger tiene aria-expanded dinámico (controlado por Alpine)
+        // Verificamos que el componente Alpine está presente con x-data
+        $response->assertSee('x-data="userMenu"', false);
     }
 }

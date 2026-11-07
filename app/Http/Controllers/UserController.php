@@ -45,7 +45,7 @@ class UserController extends Controller
             VinculoPivote::adjuntar($user->roles(), $defaultRole->id);
         }
 
-        return redirect()->route('users.index')->with('success', 'Usuario creado con éxito.');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario creado con éxito.');
     }
 
     public function show($id)
@@ -81,7 +81,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->route('users.index')->with('success', 'Usuario actualizado con éxito.');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado con éxito.');
     }
 
     public function destroy($id)
@@ -92,6 +92,6 @@ class UserController extends Controller
         }
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'Usuario eliminado lógicamente.');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado lógicamente.');
     }
 }

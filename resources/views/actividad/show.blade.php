@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Ver Actividad')
 
@@ -26,7 +26,7 @@
     </div>
     <div class="d-flex gap-2 flex-wrap">
         <a href="{{ route('actividad.edit', $actividad) }}" class="btn btn-church">Editar</a>
-        <a href="{{ route('actividad.index') }}" class="btn btn-outline-church">← Volver</a>
+        <a href="{{ route('actividad.index') }}" class="btn btn-outline-church">ÔåÉ Volver</a>
     </div>
 </div>
 
@@ -37,32 +37,32 @@
             <span class="badge" style="{{ $estadoStyle }}">{{ $estadoLabel }}</span>
         </div>
         <dl class="row mb-0">
-            <dt class="col-sm-3 text-muted">Categoría</dt>
+            <dt class="col-sm-3 text-muted">Categor├¡a</dt>
             <dd class="col-sm-9">
                 @if($actividad->categoria)
                     <span class="badge" style="background: rgba(212,175,83,.12); color: var(--church-gold); border: 1px solid rgba(212,175,83,.35);">
                         {{ $actividad->categoria->nombre }}
                     </span>
                 @else
-                    <span class="text-muted">Sin categoría</span>
+                    <span class="text-muted">Sin categor├¡a</span>
                 @endif
             </dd>
             <dt class="col-sm-3 text-muted">Responsable</dt>
-            <dd class="col-sm-9">{{ $actividad->responsable->nombre ?? '—' }}</dd>
+            <dd class="col-sm-9">{{ $actividad->responsable->nombre ?? 'ÔÇö' }}</dd>
             <dt class="col-sm-3 text-muted">Fecha de inicio</dt>
             <dd class="col-sm-9">{{ $actividad->fecha_inicio->format('d/m/Y') }}</dd>
             <dt class="col-sm-3 text-muted">Fecha de fin</dt>
-            <dd class="col-sm-9">{{ $actividad->fecha_fin ? $actividad->fecha_fin->format('d/m/Y') : '—' }}</dd>
-            <dt class="col-sm-3 text-muted">Descripción</dt>
-            <dd class="col-sm-9">{{ $actividad->descripcion ?: '—' }}</dd>
+            <dd class="col-sm-9">{{ $actividad->fecha_fin ? $actividad->fecha_fin->format('d/m/Y') : 'ÔÇö' }}</dd>
+            <dt class="col-sm-3 text-muted">Descripci├│n</dt>
+            <dd class="col-sm-9">{{ $actividad->descripcion ?: 'ÔÇö' }}</dd>
             <dt class="col-sm-3 text-muted">Creado</dt>
             <dd class="col-sm-9 text-muted">{{ $actividad->created_at->format('d/m/Y H:i') }}</dd>
             <dt class="col-sm-3 text-muted">Actualizado</dt>
             <dd class="col-sm-9 text-muted">{{ $actividad->updated_at->format('d/m/Y H:i') }}</dd>
-            <dt class="col-sm-3 text-muted">¿Es de pago?</dt>
+            <dt class="col-sm-3 text-muted">┬┐Es de pago?</dt>
             <dd class="col-sm-9">
                 @if($actividad->es_pago)
-                    <span class="badge" style="background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.35);">Sí, es de pago</span>
+                    <span class="badge" style="background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.35);">S├¡, es de pago</span>
                 @else
                     <span class="badge" style="background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.35);">No, es gratis</span>
                 @endif
@@ -93,9 +93,9 @@
                                 @if($actividad->es_pago)
                                     <td>
                                         @if($participante->pivot->pago_realizado)
-                                            <span class="badge" style="background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.35);">Pagó</span>
+                                            <span class="badge" style="background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.35);">Pag├│</span>
                                         @else
-                                            <span class="badge" style="background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.35);">No pagó</span>
+                                            <span class="badge" style="background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.35);">No pag├│</span>
                                         @endif
                                     </td>
                                     <td>
@@ -135,7 +135,7 @@
                         </option>
                     @endforeach
                 </select>
-                <small class="text-muted">Selecciona los miembros que participarán en esta actividad. Al guardar se reemplazarán los participantes anteriores.</small>
+                <small class="text-muted">Selecciona los miembros que participar├ín en esta actividad. Al guardar se reemplazar├ín los participantes anteriores.</small>
             </div>
             <button type="submit" class="btn btn-primary">Actualizar participantes</button>
         </form>
@@ -143,9 +143,9 @@
 </div>
     <div class="card-body p-4">
         <div class="text-muted small mb-2" style="letter-spacing:.18em; text-transform:uppercase;">Zona de peligro</div>
-        <p class="text-muted mb-3">Una vez eliminada, esta acción no se puede deshacer.</p>
+        <p class="text-muted mb-3">Una vez eliminada, esta acci├│n no se puede deshacer.</p>
         <form method="POST" action="{{ route('actividad.destroy', $actividad) }}"
-              onsubmit="return confirm('¿Seguro que deseas eliminar «{{ addslashes($actividad->nombre) }}»?')">
+              onsubmit="return confirm('┬┐Seguro que deseas eliminar ┬½{{ addslashes($actividad->nombre) }}┬╗?')">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-outline-danger">Eliminar actividad</button>

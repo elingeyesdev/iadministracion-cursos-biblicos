@@ -107,7 +107,7 @@ class RoleController extends Controller
         $user = User::findOrFail($request->user_id);
         VinculoPivote::sincronizar($user->roles(), $request->input('roles', []));
 
-        return redirect()->route('roles.user')->with('success', 'Roles actualizados con éxito para el usuario.');
+        return redirect()->route('asignar-roles.index')->with('success', 'Roles actualizados con éxito para el usuario.');
     }
 
     public function clearUserRoles($userId)
@@ -115,6 +115,6 @@ class RoleController extends Controller
         $user = User::findOrFail($userId);
         VinculoPivote::desvincular($user->roles());
 
-        return redirect()->route('roles.user')->with('success', 'Relación rol-usuario eliminada con éxito.');
+        return redirect()->route('asignar-roles.index')->with('success', 'Relación rol-usuario eliminada con éxito.');
     }
 }

@@ -1,36 +1,46 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Reportes')
 
+@section('breadcrumb')
+    <li class="breadcrumb-item active text-muted" aria-current="page">Reportes</li>
+@endsection
+
 @section('content')
-<div style="margin-bottom: 20px;">
-    <h2 style="font-weight: 700; color: var(--text-primary);">Reportes</h2>
-    <p style="color: var(--text-secondary);">Selecciona el tipo de reporte que deseas generar.</p>
-</div>
+<div class="card p-4 shadow-sm">
+    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-graph-up me-2"></i>Reportes</h2>
 
-<div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
-    @if(auth()->user()->puede('reportes.miembros', 'ver'))
-    <a href="{{ route('reportes.miembros') }}" class="dashboard-card glass-panel" style="text-decoration: none; border: 1px solid var(--card-border); transition: transform .2s; display:block;">
-        <div class="card-icon">&#128101;</div>
-        <div class="card-title">Reporte de Miembros</div>
-        <div class="card-sub" style="color: var(--text-secondary); font-size: 13px; margin-top: 6px;">Listado de miembros con filtros por estado y fecha de ingreso.</div>
-    </a>
-    @endif
-
-    @if(auth()->user()->puede('reportes.asistencia', 'ver'))
-    <a href="{{ route('reportes.asistencia') }}" class="dashboard-card glass-panel" style="text-decoration: none; border: 1px solid var(--card-border); transition: transform .2s; display:block;">
-        <div class="card-icon">&#128202;</div>
-        <div class="card-title">Reporte de Asistencia</div>
-        <div class="card-sub" style="color: var(--text-secondary); font-size: 13px; margin-top: 6px;">Estadísticas de asistencia por curso y período.</div>
-    </a>
-    @endif
-
-    @if(auth()->user()->puede('reportes.financiero', 'ver'))
-    <a href="{{ route('reportes.financiero') }}" class="dashboard-card glass-panel" style="text-decoration: none; border: 1px solid var(--card-border); transition: transform .2s; display:block;">
-        <div class="card-icon">&#128181;</div>
-        <div class="card-title">Reporte Financiero</div>
-        <div class="card-sub" style="color: var(--text-secondary); font-size: 13px; margin-top: 6px;">Ingresos vs. egresos por rango de fechas con balance.</div>
-    </a>
-    @endif
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="p-4 rounded border text-center h-100" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
+                <i class="bi bi-people display-4 text-warning"></i>
+                <h5 class="fw-bold mt-3">Reporte de Miembros</h5>
+                <p class="text-muted small">Listado y detalle de miembros seg├║n estado y fecha de ingreso.</p>
+                <a href="{{ route('reportes.miembros') }}" class="btn btn-church w-100">
+                    <i class="bi bi-eye me-1"></i> Ver Reporte
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 rounded border text-center h-100" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
+                <i class="bi bi-clipboard-check display-4 text-warning"></i>
+                <h5 class="fw-bold mt-3">Reporte de Asistencia</h5>
+                <p class="text-muted small">Resumen de asistencias por curso y por rango de fechas.</p>
+                <a href="{{ route('reportes.asistencia') }}" class="btn btn-church w-100">
+                    <i class="bi bi-eye me-1"></i> Ver Reporte
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 rounded border text-center h-100" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
+                <i class="bi bi-cash-coin display-4 text-warning"></i>
+                <h5 class="fw-bold mt-3">Reporte Financiero</h5>
+                <p class="text-muted small">Ingresos, egresos y balance del per├¡odo seleccionado.</p>
+                <a href="{{ route('reportes.financiero') }}" class="btn btn-church w-100">
+                    <i class="bi bi-eye me-1"></i> Ver Reporte
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

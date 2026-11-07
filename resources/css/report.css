@@ -1,22 +1,22 @@
-/* ============================================================
-   REPORTES · Documento profesional (pantalla + impresión)
+﻿/* ============================================================
+   REPORTES ┬À Documento profesional (pantalla + impresi├│n)
    ------------------------------------------------------------
-   Este archivo se aplica a las páginas de reportes (marcadas con
+   Este archivo se aplica a las p├íginas de reportes (marcadas con
    body.report-page). El documento imprimible vive en .report-document;
-   la interfaz de la aplicación (menú, cabecera, migas, filtros...) está
+   la interfaz de la aplicaci├│n (men├║, cabecera, migas, filtros...) est├í
    marcada con .app-chrome / .report-controls y se oculta solo al imprimir
-   o en el modo de vista previa. No afecta al resto de páginas.
+   o en el modo de vista previa. No afecta al resto de p├íginas.
    ============================================================ */
 
-/* Página con nombre para el documento del reporte. @page solo actúa al
+/* P├ígina con nombre para el documento del reporte. @page solo act├║a al
    imprimir, por lo que no influye en la vista de pantalla, y al estar
-   asociado únicamente a .report-document no altera la impresión de otras
-   páginas de la aplicación. */
+   asociado ├║nicamente a .report-document no altera la impresi├│n de otras
+   p├íginas de la aplicaci├│n. */
 @page reporte {
     size: A4 portrait;
     margin: 15mm 14mm;
 
-    /* Numeración de página y texto institucional en el margen inferior.
+    /* Numeraci├│n de p├ígina y texto institucional en el margen inferior.
        Es una mejora progresiva: los motores que no soportan las cajas de
        margen de @page (p. ej. Chrome) simplemente las ignoran. */
     @bottom-left {
@@ -26,14 +26,14 @@
     }
 
     @bottom-right {
-        content: "Página " counter(page) " de " counter(pages);
+        content: "P├ígina " counter(page) " de " counter(pages);
         font-size: 9px;
         color: #6b7280;
     }
 }
 
 /* ------------------------------------------------------------
-   Panel de control (interfaz de la aplicación)
+   Panel de control (interfaz de la aplicaci├│n)
    ------------------------------------------------------------ */
 .report-controls {
     background: var(--church-surface);
@@ -147,7 +147,7 @@
     color: #374151;
 }
 
-/* Resumen estadístico */
+/* Resumen estad├¡stico */
 .report-summary {
     display: flex;
     flex-wrap: wrap;
@@ -302,21 +302,21 @@
 }
 
 /* ------------------------------------------------------------
-   Impresión
+   Impresi├│n
    ------------------------------------------------------------ */
 @media print {
-    /* Todo lo de impresión está acotado a las páginas de reporte
-       (body.report-page) para no afectar a la impresión del resto de la app. */
+    /* Todo lo de impresi├│n est├í acotado a las p├íginas de reporte
+       (body.report-page) para no afectar a la impresi├│n del resto de la app. */
     body.report-page {
         background: #ffffff !important;
     }
 
-    /* Evitar que el contenedor de la app (min-vh-100) fuerce una página extra. */
+    /* Evitar que el contenedor de la app (min-vh-100) fuerce una p├ígina extra. */
     body.report-page .min-vh-100 {
         min-height: 0 !important;
     }
 
-    /* Nada de la interfaz de la aplicación debe imprimirse. */
+    /* Nada de la interfaz de la aplicaci├│n debe imprimirse. */
     body.report-page .app-chrome,
     body.report-page .report-controls {
         display: none !important;
@@ -331,7 +331,7 @@
         padding: 0 !important;
     }
 
-    /* El documento usa una página A4 con nombre, solo para los reportes. */
+    /* El documento usa una p├ígina A4 con nombre, solo para los reportes. */
     body.report-page .report-document {
         width: 100% !important;
         max-width: none !important;

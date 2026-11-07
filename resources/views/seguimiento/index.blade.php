@@ -1,79 +1,111 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', 'Seguimiento de Actividades')
+@section('title', 'Seguimiento')
 
 @section('content')
-<div class="glass-panel" style="padding: 30px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="font-weight: 700; color: var(--text-primary);">Lista de Seguimientos</h2>
-        @if(auth()->user()->puede('seguimiento', 'crear'))
-        <a href="{{ route('seguimiento.create') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">
-            + Nuevo Seguimiento
-        </a>
+
+<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
+    <div>
+        <div class="text-muted small mb-1" style="letter-spacing:.18em; text-transform:uppercase;">Gesti├│n</div>
+        <h1 class="sidebar-title" style="font-size:2rem;">Seguimiento</h1>
+        <p class="text-muted mb-0">Registros de avance de actividades.</p>
+    </div>
+    <a href="{{ route('seguimiento.create') }}" class="btn btn-church">Nuevo seguimiento</a>
+</div>
+
+<form method="GET" action="{{ route('seguimiento.index') }}" class="mb-3">
+    <div class="input-group" style="max-width: 520px;">
+        <span class="input-group-text">­ƒöì</span>
+        <input type="text" name="busqueda" value="{{ $busqueda ?? '' }}" class="form-control" placeholder="Buscar seguimientoÔÇª">
+        <button class="btn btn-outline-church" type="submit">Buscar</button>
+        @if($busqueda)
+            <a class="btn btn-outline-secondary" href="{{ route('seguimiento.index') }}">Ô£ò</a>
         @endif
     </div>
+    @if($busqueda)
+        <div class="text-muted small mt-2">Resultados para: <strong>"{{ $busqueda }}"</strong></div>
+    @endif
+</form>
 
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Actividad</th>
-                    <th>Fecha Registro</th>
-                    <th>Responsable</th>
-                    <th>% Avance</th>
-                    <th>Estado</th>
-                    <th>Observación</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($seguimientos as $seguimiento)
-
-                    <?php
-                        $estadoBadge = match($seguimiento->estado?->value) {
-                            'Completado' => 'badge-active',
-                            'En Progreso' => 'badge-warning',
-                            default => 'badge-inactive',
-                        };
-                    ?>
-                    <tr style="@if($seguimiento->trashed()) opacity: 0.5; @endif">
-                        <td style="font-weight: 600;">{{ $seguimiento->actividad->nombre ?? 'N/A' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($seguimiento->fecha_registro)->format('d/m/Y') }}</td>
-                        <td>{{ $seguimiento->responsable }}</td>
-                        <td><span class="badge badge-info">{{ $seguimiento->porcentaje_avance }}%</span></td>
-                        <td><span class="badge {{ $estadoBadge }}">{{ $seguimiento->estado?->value }}</span></td>
-                        <td>{{ Str::limit($seguimiento->observacion, 50) ?: 'N/A' }}</td>
-                        <td>
-                            <div class="action-buttons">
-                                    @if(auth()->user()->puede('seguimiento', 'editar'))
-                                    <a href="{{ route('seguimiento.edit', $seguimiento->id) }}" class="btn-icon btn-edit" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.83 20.082a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg></a>
-                                    @endif
-                                    @if(auth()->user()->puede('seguimiento', 'eliminar'))
-                                    <form method="POST" action="{{ route('seguimiento.destroy', $seguimiento->id) }}" style="display: inline;">
-                                        @csrf
-                                        <?php echo method_field('DELETE'); ?>
-                                        <button type="submit" class="btn-icon btn-delete" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button>
-                                    </form>
-                                    @endif
-                            </div>
-                        </td>
-                    </tr>
-                
-@empty
+<div class="card shadow-sm">
+    @if($seguimientos->isEmpty())
+        <div class="card-body py-5 text-center text-muted">
+            @if($busqueda)
+                No se encontraron seguimientos para <strong>"{{ $busqueda }}"</strong>
+            @else
+                A├║n no hay seguimientos registrados.
+            @endif
+            @if(!$busqueda)
+                <div class="mt-3">
+                    <a href="{{ route('seguimiento.create') }}" class="btn btn-outline-church">Crear el primer seguimiento</a>
+                </div>
+            @endif
+        </div>
+    @else
+        <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0">
+                <thead>
                     <tr>
-                        <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 30px;">
-                            No hay seguimientos registrados.
-                        </td>
+                        <th style="width: 4rem;">#</th>
+                        <th>Actividad</th>
+                        <th>Fecha</th>
+                        <th>Avance</th>
+                        <th class="d-none d-md-table-cell">Estado</th>
+                        <th class="text-end" style="width: 14rem;">Acciones</th>
                     </tr>
-                
-@endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <div style="margin-top: 20px;">
-        {{ $seguimientos->links() }}
-
-    </div>
+                </thead>
+                <tbody>
+                    @foreach($seguimientos as $seg)
+                        @php
+                            $estadoStyle = match ($seg->estado) {
+                                'pendiente' => 'background:rgba(234,179,8,.15);color:#fcd34d;border:1px solid rgba(234,179,8,.35);',
+                                'en_proceso' => 'background:rgba(59,130,246,.15);color:#93c5fd;border:1px solid rgba(59,130,246,.35);',
+                                'finalizada' => 'background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.35);',
+                                default => 'background:rgba(255,255,255,.06);color:var(--church-muted);border:1px solid var(--church-border);',
+                            };
+                            $estadoLabel = match ($seg->estado) {
+                                'pendiente' => 'Pendiente',
+                                'en_proceso' => 'En proceso',
+                                'finalizada' => 'Finalizada',
+                                default => $seg->estado,
+                            };
+                        @endphp
+                        <tr>
+                            <td class="text-muted small">{{ $seg->id }}</td>
+                            <td>{{ $seg->actividad->nombre ?? 'ÔÇö' }}</td>
+                            <td class="text-muted small">{{ $seg->fecha->format('d/m/Y') }}</td>
+                            <td>
+                                <span class="badge" style="background: rgba(212,175,83,.12); color: var(--church-gold); border: 1px solid rgba(212,175,83,.35);">
+                                    {{ $seg->porcentaje_avance }}%
+                                </span>
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                                <span class="badge" style="{{ $estadoStyle }}">{{ $estadoLabel }}</span>
+                            </td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-secondary" href="{{ route('seguimiento.show', $seg) }}">Ver</a>
+                                <a class="btn btn-sm btn-outline-church" href="{{ route('seguimiento.edit', $seg) }}">Editar</a>
+                                <form method="POST" action="{{ route('seguimiento.destroy', $seg) }}" class="d-inline"
+                                      onsubmit="return confirm('┬┐Eliminar este seguimiento?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @if($seguimientos->hasPages())
+            <div class="card-body py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="text-muted small">
+                    Mostrando {{ $seguimientos->firstItem() }}ÔÇô{{ $seguimientos->lastItem() }} de {{ $seguimientos->total() }} registros
+                </div>
+                <div>{{ $seguimientos->links('pagination::bootstrap-5') }}</div>
+            </div>
+        @endif
+    @endif
 </div>
+
 @endsection

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Editar Seguimiento')
 
@@ -49,7 +49,7 @@
 
             <div class="col-md-6">
                 <label for="estado" class="form-label">Estado de la Tarea/Hito <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('estado') is-invalid @enderror" id="estado" name="estado" value="{{ old('estado', $seguimiento->estado) }}" required placeholder="Ej. En planificación, Compras listas, Coordinado con logística">
+                <input type="text" class="form-control @error('estado') is-invalid @enderror" id="estado" name="estado" value="{{ old('estado', $seguimiento->estado) }}" required placeholder="Ej. En planificaci├│n, Compras listas, Coordinado con log├¡stica">
                 @error('estado')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror

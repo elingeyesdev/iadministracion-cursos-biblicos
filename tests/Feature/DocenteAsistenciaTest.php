@@ -141,7 +141,7 @@ class DocenteAsistenciaTest extends TestCase
     {
         $this->actingAs($this->docenteUser)->get(route('miembros.index'))->assertForbidden();
         $this->actingAs($this->docenteUser)->get(route('ingresos.index'))->assertForbidden();
-        $this->actingAs($this->docenteUser)->get(route('users.index'))->assertForbidden();
+        $this->actingAs($this->docenteUser)->get(route('usuarios.index'))->assertForbidden();
     }
 
     public function test_docente_ve_sus_cursos_y_sesiones_asignados_directamente(): void

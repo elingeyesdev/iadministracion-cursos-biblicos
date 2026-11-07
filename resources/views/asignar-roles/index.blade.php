@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Asignar Roles')
 
@@ -76,7 +76,7 @@
         @if($usuarios->hasPages())
             <div class="card-footer border-0 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #151521;">
                 <div class="text-muted small">
-                    Mostrando {{ $usuarios->firstItem() }}–{{ $usuarios->lastItem() }} de {{ $usuarios->total() }} usuarios
+                    Mostrando {{ $usuarios->firstItem() }}ÔÇô{{ $usuarios->lastItem() }} de {{ $usuarios->total() }} usuarios
                 </div>
                 <div>
                     {{ $usuarios->links('pagination::bootstrap-5') }}

@@ -1,109 +1,95 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Reporte de Asistencia')
+@section('body_class', 'report-page')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('reportes.index') }}" class="text-gold-500 text-decoration-none">Reportes</a></li>
+    <li class="breadcrumb-item active text-muted" aria-current="page">Asistencia</li>
+@endsection
 
 @section('content')
 @php
-    $periodo = null;
-    if ($desde || $hasta) {
-        $periodo = ($desde ? \Carbon\Carbon::parse($desde)->format('d/m/Y') : 'inicio')
-            . ' — ' . ($hasta ? \Carbon\Carbon::parse($hasta)->format('d/m/Y') : 'actual');
-    }
-
     $cursoSeleccionado = $cursoId ? $cursos->firstWhere('id', $cursoId) : null;
+    $subtitulo = $cursoSeleccionado ? 'Curso: '.$cursoSeleccionado->nombre : 'Registro de asistencias por curso';
 
-    $meta = [];
-    if ($cursoSeleccionado) {
-        $meta['Curso'] = $cursoSeleccionado->nombre;
-    }
+    $periodo = ($desde || $hasta)
+        ? trim(($desde ? 'Desde '.\Carbon\Carbon::parse($desde)->format('d/m/Y') : '')
+            .($hasta ? ' hasta '.\Carbon\Carbon::parse($hasta)->format('d/m/Y') : ''))
+        : 'Todos los registros';
 
-    $indicadores = [
-        ['label' => 'Total de registros', 'value' => $registros->count(), 'tone' => 'neutral'],
-        ['label' => 'Presentes', 'value' => $resumen['presentes'], 'tone' => 'success'],
-        ['label' => 'Ausentes', 'value' => $resumen['ausentes'], 'tone' => 'danger'],
-        ['label' => 'Tardanzas', 'value' => $resumen['tardanzas'], 'tone' => 'warning'],
-        ['label' => 'Justificados', 'value' => $resumen['justificados'], 'tone' => 'info'],
+    $estadosAsistencia = [
+        'Presente' => 'is-success',
+        'Ausente' => 'is-danger',
+        'Tardanza' => 'is-warning',
+        'Justificado' => 'is-info',
     ];
-
-    $tonosEstado = [
-        'Presente' => 'success',
-        'Ausente' => 'danger',
-        'Tardanza' => 'warning',
-        'Justificado' => 'info',
-    ];
-
-    $columnas = [
-        ['label' => 'N.º', 'align' => 'center', 'width' => '48px'],
-        ['label' => 'Miembro'],
-        ['label' => 'Curso', 'width' => '150px'],
-        ['label' => 'Sesión / Tema'],
-        ['label' => 'Fecha', 'align' => 'center', 'width' => '110px'],
-        ['label' => 'Estado', 'align' => 'center', 'width' => '110px'],
-    ];
-
-    $filas = $registros->values()->map(function ($registro, $index) use ($tonosEstado) {
-        return [
-            $index + 1,
-            $registro->miembro->nombre ?? '—',
-            $registro->sesion->curso->nombre ?? '—',
-            $registro->sesion->tema ?? '—',
-            $registro->sesion ? \Carbon\Carbon::parse($registro->sesion->fecha)->format('d/m/Y') : '—',
-            ['badge' => $registro->estado?->value, 'tone' => $tonosEstado[$registro->estado?->value] ?? 'info'],
-        ];
-    })->all();
 @endphp
 
-{{-- ============ INTERFAZ DE LA APLICACIÓN (no se imprime) ============ --}}
-<div class="glass-panel report-panel">
-    <div class="report-panel__head">
-        <div>
-            <h2 class="report-panel__title">Reportes</h2>
-            <p class="report-panel__subtitle">Reporte de asistencia</p>
-        </div>
+{{-- Interfaz de la aplicaci├│n: filtros y acciones (no se imprime) --}}
+<div class="report-controls">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-clipboard-check me-2"></i>Reporte de Asistencia</h2>
+        <a href="{{ route('reportes.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver
+        </a>
     </div>
 
-    <form method="GET" action="{{ route('reportes.asistencia') }}" class="report-filters">
-        <div class="report-field">
-            <label class="form-label" for="filtro-curso">Curso</label>
-            <select name="curso_id" id="filtro-curso" class="form-control">
-                <option value="">Todos los cursos</option>
-                @foreach($cursos as $curso)
-                    <option value="{{ $curso->id }}" {{ $cursoId == $curso->id ? 'selected' : '' }}>{{ $curso->nombre }}</option>
-                @endforeach
-            </select>
+    <form method="GET" action="{{ route('reportes.asistencia') }}">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <select name="curso_id" class="form-select">
+                    <option value="">-- Curso --</option>
+                    @foreach($cursos as $curso)
+                        <option value="{{ $curso->id }}" {{ $cursoId == $curso->id ? 'selected' : '' }}>{{ $curso->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="date" name="desde" class="form-control" value="{{ $desde }}" title="Desde">
+            </div>
+            <div class="col-md-4">
+                <input type="date" name="hasta" class="form-control" value="{{ $hasta }}" title="Hasta">
+            </div>
         </div>
-        <div class="report-field">
-            <label class="form-label" for="filtro-desde">Desde</label>
-            <input type="date" name="desde" id="filtro-desde" class="form-control" value="{{ $desde }}">
-        </div>
-        <div class="report-field">
-            <label class="form-label" for="filtro-hasta">Hasta</label>
-            <input type="date" name="hasta" id="filtro-hasta" class="form-control" value="{{ $hasta }}">
-        </div>
-        <div class="report-field report-field--action">
-            <button type="submit" class="report-btn report-btn--primary">Aplicar filtros</button>
-        </div>
+
+        <x-report.actions class="mt-3" />
     </form>
 </div>
 
-<x-report.actions :back-route="route('reportes.index')" />
+{{-- Documento del reporte (es lo ├║nico que se imprime/exporta) --}}
+<x-report.document title="Reporte de Asistencia" :subtitle="$subtitulo" :period="$periodo">
+    <x-report.summary :items="[
+        ['label' => 'Presentes', 'value' => $resumen['presentes'], 'class' => 'is-success'],
+        ['label' => 'Ausentes', 'value' => $resumen['ausentes'], 'class' => 'is-danger'],
+        ['label' => 'Tardanzas', 'value' => $resumen['tardanzas'], 'class' => 'is-warning'],
+        ['label' => 'Justificados', 'value' => $resumen['justificados'], 'class' => 'is-info'],
+    ]" />
 
-{{-- ============ DOCUMENTO DEL REPORTE (se imprime / exporta) ============ --}}
-<x-report.layout
-    title="Reporte de Asistencia"
-    subtitle="Resumen de asistencia por curso y rango de fechas"
-    :generated-at="now()"
-    :period="$periodo"
-    :meta="$meta"
->
-    <x-slot:summary>
-        <x-report.summary :items="$indicadores" />
-    </x-slot:summary>
-
-    <x-report.table
-        :columns="$columnas"
-        :rows="$filas"
-        empty="No hay registros de asistencia que coincidan con los filtros aplicados."
-    />
-</x-report.layout>
+    <x-report.table :columns="[
+        ['label' => 'N.┬║', 'class' => 'center'],
+        ['label' => 'Miembro'],
+        ['label' => 'Curso'],
+        ['label' => 'Sesi├│n'],
+        ['label' => 'Fecha', 'class' => 'center'],
+        ['label' => 'Estado', 'class' => 'center'],
+    ]">
+        @forelse($registros as $i => $registro)
+            <tr>
+                <td class="cell-num">{{ $i + 1 }}</td>
+                <td class="cell-strong">{{ $registro->miembro->nombre ?? 'N/A' }}</td>
+                <td>{{ $registro->sesion?->curso?->nombre ?? 'N/A' }}</td>
+                <td>{{ $registro->sesion?->tema ?? 'N/A' }}</td>
+                <td class="center">{{ $registro->sesion?->fecha ? \Carbon\Carbon::parse($registro->sesion->fecha)->format('d/m/Y') : 'ÔÇö' }}</td>
+                <td class="center">
+                    <span class="report-badge {{ $estadosAsistencia[$registro->estado] ?? 'is-secondary' }}">{{ $registro->estado }}</span>
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="6" class="report-empty">No hay registros de asistencia que coincidan con los filtros.</td>
+            </tr>
+        @endforelse
+    </x-report.table>
+</x-report.document>
 @endsection

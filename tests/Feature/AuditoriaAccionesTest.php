@@ -34,12 +34,12 @@ class AuditoriaAccionesTest extends TestCase
     public function test_registra_acciones_de_escritura_con_modulo_y_usuario(): void
     {
         $this->actingAs($this->admin)
-            ->post(route('roles.user.save'), [
+            ->post(route('asignar-roles.store'), [
                 'user_id' => $this->objetivo->id,
                 'roles' => [],
                 'password' => 'no-debe-guardarse',
             ])
-            ->assertRedirect(route('roles.user'));
+            ->assertRedirect(route('asignar-roles.index'));
 
         $registro = DB::table('audit_logs')->first();
 
@@ -47,7 +47,7 @@ class AuditoriaAccionesTest extends TestCase
         $this->assertSame($this->admin->id, $registro->user_id);
         $this->assertSame('roles', $registro->modulo);
         $this->assertSame('crear', $registro->accion);
-        $this->assertSame('roles.user.save', $registro->entidad_type);
+        $this->assertSame('asignar-roles.store', $registro->entidad_type);
         $this->assertNotNull($registro->ip);
         $this->assertStringNotContainsString('no-debe-guardarse', (string) $registro->metadata);
 

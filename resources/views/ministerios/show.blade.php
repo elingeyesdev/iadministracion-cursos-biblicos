@@ -1,65 +1,112 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Detalle del Ministerio')
 
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('ministerios.index') }}" class="text-gold-500 text-decoration-none">Ministerios</a></li>
+    <li class="breadcrumb-item active text-muted" aria-current="page">Detalle</li>
+@endsection
+
 @section('content')
-<div class="glass-panel" style="padding: 30px; max-width: 850px; margin: 0 auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="font-weight: 700; color: var(--text-primary);">Detalle del Ministerio</h2>
-        <div style="display: flex; gap: 10px;">
-            @if(auth()->user()->puede('ministerios', 'editar'))
-            <a href="{{ route('ministerios.edit', $ministerio->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
-            @endif
-            <a href="{{ route('ministerios.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
-        </div>
-    </div>
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="card p-4 shadow-sm h-100">
+            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-diagram-3 me-2"></i>Informaci├│n del Ministerio</h3>
 
-    <div style="border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden; margin-bottom: 20px;">
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Nombre</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ $ministerio->nombre }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Líder</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ $ministerio->lider?->nombre ?? 'Sin asignar' }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Cargo del Líder</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ $ministerio->lider?->cargo?->nombre ?? 'N/A' }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px;">
-            <span style="color: var(--text-secondary);">Descripción</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ $ministerio->descripcion ?? 'N/A' }}</span>
-        </div>
-    </div>
-
-    <h3 style="font-weight: 700; margin-bottom: 14px; color: var(--text-primary);">Miembros del Ministerio</h3>
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
+            <table class="table table-borderless">
                 <tr>
-                    <th>Nombre</th>
-                    <th>Fecha de Inicio</th>
-                    <th>Fecha de Fin</th>
+                    <th class="ps-0 py-2 text-muted" style="width: 35%;">Nombre:</th>
+                    <td class="py-2"><strong>{{ $ministerio->nombre }}</strong></td>
                 </tr>
-            </thead>
-            <tbody>
-                @forelse($ministerio->miembros as $miembro)
+                <tr>
+                    <th class="ps-0 py-2 text-muted">L├¡der:</th>
+                    <td class="py-2">{{ $ministerio->lider->nombre ?? 'Sin l├¡der asignado' }}</td>
+                </tr>
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Email L├¡der:</th>
+                    <td class="py-2">{{ $ministerio->lider->email ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Descripci├│n:</th>
+                    <td class="py-2">{{ $ministerio->descripcion ?? 'Sin descripci├│n' }}</td>
+                </tr>
+            </table>
 
-                    <tr>
-                        <td>{{ $miembro->nombre }}</td>
-                        <td>{{ \Carbon\Carbon::parse($miembro->pivot->fecha_inicio)->format('d/m/Y') }}</td>
-                        <td>{{ $miembro->pivot->fecha_fin ? \Carbon\Carbon::parse($miembro->pivot->fecha_fin)->format('d/m/Y') : 'Actualidad' }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" style="text-align: center; color: var(--text-secondary); padding: 30px;">
-                            Este ministerio no tiene miembros asignados.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+            <div class="mt-4 d-flex gap-2">
+                <a href="{{ route('ministerios.edit', $ministerio->id) }}" class="btn btn-church">
+                    <i class="bi bi-pencil me-1"></i> Editar
+                </a>
+                <a href="{{ route('ministerios.index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card p-4 shadow-sm mb-4">
+            <h4 class="sidebar-title mb-3" style="color: var(--church-gold);"><i class="bi bi-calendar-event me-2"></i>Actividades</h4>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Actividad</th>
+                            <th>Fecha</th>
+                            <th>Lugar</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($ministerio->actividades as $actividad)
+                        <tr>
+                            <td><strong>{{ $actividad->nombre }}</strong></td>
+                            <td>{{ \Carbon\Carbon::parse($actividad->fecha)->format('d/m/Y') }}</td>
+                            <td>{{ $actividad->lugar ?? 'N/A' }}</td>
+                            <td>
+                                <span class="badge bg-{{ $actividad->estado == 'completada' ? 'success' : ($actividad->estado == 'cancelada' ? 'danger' : ($actividad->estado == 'en_curso' ? 'warning text-dark' : 'info')) }}">
+                                    {{ ucfirst(str_replace('_', ' ', $actividad->estado)) }}
+                                </span>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">No registra actividades vinculadas.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card p-4 shadow-sm">
+            <h4 class="sidebar-title mb-3" style="color: var(--church-gold);"><i class="bi bi-cash-stack me-2"></i>Egresos del Ministerio</h4>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Concepto</th>
+                            <th>Monto</th>
+                            <th>Responsable</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($ministerio->egresos as $egreso)
+                        <tr>
+                            <td>{{ \Carbon\Carbon::parse($egreso->fecha)->format('d/m/Y') }}</td>
+                            <td>{{ $egreso->tipo_egreso }}</td>
+                            <td>${{ number_format($egreso->monto, 2) }}</td>
+                            <td>{{ $egreso->responsable ?? 'N/A' }}</td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">No registra egresos para este ministerio.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

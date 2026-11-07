@@ -1,4 +1,4 @@
-<script>
+﻿<script>
     // Aplica el tema guardado antes del primer render para evitar parpadeos.
     // El modo claro es el predeterminado (la clase ya viene en <html>).
     (function () {

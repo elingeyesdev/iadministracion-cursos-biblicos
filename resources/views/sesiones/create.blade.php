@@ -1,161 +1,96 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', 'Nueva Sesión')
+@section('title', 'Nueva Sesi├│n')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('sesiones.index') }}" class="text-gold-500 text-decoration-none">Sesiones</a></li>
+    <li class="breadcrumb-item active text-muted" aria-current="page">Nueva</li>
+@endsection
 
 @section('content')
-<div class="glass-panel" style="padding: 30px; max-width: 600px; margin: 0 auto;">
-    <h2 style="font-weight: 700; margin-bottom: 20px; color: var(--text-primary);">Registrar Nueva Sesión</h2>
+<div class="card p-4 shadow-sm">
+    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-journal-plus me-2"></i>Registrar Nueva Sesi├│n</h2>
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach($errors->all() as $error)
-
-                    <li>{{ $error }}</li>
-                
-@endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('sesiones.store') }}">
+    <form action="{{ route('sesiones.store') }}" method="POST">
         @csrf
-
-        <div class="form-group">
-            <label for="id_curso" class="form-label">Curso</label>
-            <select name="id_curso" id="id_curso" class="form-control" required>
-                <option value="">Seleccione un curso...</option>
-                @foreach($cursos as $curso)
-
-                    <option value="{{ $curso->id }}" {{ old('id_curso') == $curso->id ? 'selected' : '' }}>{{ $curso->nombre }}</option>
-                
-@endforeach
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="id_docente" class="form-label">Docente (Opcional)</label>
-            <select name="id_docente" id="id_docente" class="form-control">
-                <option value="">Sin docente...</option>
-                @foreach($docentes as $docente)
-
-                    <option value="{{ $docente->id }}" {{ old('id_docente') == $docente->id ? 'selected' : '' }}>{{ $docente->miembro->nombre ?? 'Docente #' . $docente->id }}</option>
-                
-@endforeach
-            </select>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="form-group">
-                <label for="fecha" class="form-label">Fecha</label>
-                <input type="date" name="fecha" id="fecha" class="form-control" value="{{ old('fecha', date('Y-m-d')) }}" required>
+        
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="id_curso" class="form-label">Curso <span class="text-danger">*</span></label>
+                <select class="form-select @error('id_curso') is-invalid @enderror" id="id_curso" name="id_curso" required>
+                    <option value="" disabled selected>Seleccione el curso...</option>
+                    @foreach($cursos as $curso)
+                        <option value="{{ $curso->id }}" {{ old('id_curso') == $curso->id ? 'selected' : '' }}>
+                            {{ $curso->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('id_curso')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
             </div>
 
-            <div class="form-group">
+            <div class="col-md-6">
+                <label for="tema" class="form-label">Tema de la Sesi├│n</label>
+                <input type="text" class="form-control @error('tema') is-invalid @enderror" id="tema" name="tema" value="{{ old('tema') }}" placeholder="Ej. Introducci├│n al G├®nesis">
+                @error('tema')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-6">
+                <label for="fecha" class="form-label">Fecha de la Clase <span class="text-danger">*</span></label>
+                <input type="date" class="form-control @error('fecha') is-invalid @enderror" id="fecha" name="fecha" value="{{ old('fecha', date('Y-m-d')) }}" required>
+                @error('fecha')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-6">
                 <label for="hora" class="form-label">Hora</label>
-                <input type="time" name="hora" id="hora" class="form-control" value="{{ old('hora') }}" required>
+                <input type="time" class="form-control @error('hora') is-invalid @enderror" id="hora" name="hora" value="{{ old('hora', '19:30') }}">
+                @error('hora')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <label for="observacion" class="form-label">Observaciones</label>
+                <textarea class="form-control @error('observacion') is-invalid @enderror" id="observacion" name="observacion" rows="3" placeholder="Anotaciones importantes para la clase...">{{ old('observacion') }}</textarea>
+                @error('observacion')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12 mt-4">
+                <label class="form-label d-block fw-bold" style="color: var(--church-gold);">Inscribir Miembros en esta Sesi├│n</label>
+                <div class="row g-2" style="max-height: 250px; overflow-y: auto;">
+                    @forelse($miembros as $miembro)
+                        <div class="col-md-4 col-sm-6">
+                            <div class="p-2 rounded border" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="miembros[]" value="{{ $miembro->id }}" id="miembro_{{ $miembro->id }}" {{ is_array(old('miembros')) && in_array($miembro->id, old('miembros')) ? 'checked' : '' }}>
+                                    <label class="form-check-label text-truncate w-100" for="miembro_{{ $miembro->id }}">
+                                        {{ $miembro->nombre }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12 text-muted small">No hay miembros disponibles para inscribir.</div>
+                    @endforelse
+                </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="tema" class="form-label">Tema</label>
-            <input id="tema" type="text" name="tema" class="form-control" value="{{ old('tema') }}" required>
-        </div>
-
-        <div class="form-group">
-            <label for="observacion" class="form-label">Observación</label>
-            <textarea id="observacion" name="observacion" class="form-control" rows="3">{{ old('observacion') }}</textarea>
-        </div>
-
-        <div style="display: flex; gap: 15px; margin-top: 30px;">
-            <button type="submit" class="btn">Guardar Sesión</button>
-            <a href="{{ route('sesiones.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-church">
+                <i class="bi bi-save me-1"></i> Guardar
+            </button>
+            <a href="{{ route('sesiones.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
         </div>
     </form>
 </div>
-
-<script>
-    const cursosData = @json($cursosData);
-    const cursoSelect = document.getElementById('id_curso');
-    const fechaInput = document.getElementById('fecha');
-    const horaInput = document.getElementById('hora');
-
-    // Devuelve YYYY-MM-DD usando la fecha LOCAL del navegador.
-    // No usar toISOString() porque convierte a UTC y desfasa un día.
-    function fechaLocalISO(d) {
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, '0');
-        const dia = String(d.getDate()).padStart(2, '0');
-        return `${y}-${m}-${dia}`;
-    }
-
-    // Los días llegan como texto ("1"), así que comparamos numéricamente
-    function diasIncluyen(dias, iso) {
-        return (dias || []).map(Number).includes(iso);
-    }
-
-    function esDiaPermitido(fecha, cursoId) {
-        const data = cursosData[cursoId];
-        if (!data || !data.dias_semana || data.dias_semana.length === 0) return true;
-        const iso = fecha.getDay() === 0 ? 7 : fecha.getDay();
-        return diasIncluyen(data.dias_semana, iso);
-    }
-
-    function siguienteFechaPermitida(cursoId) {
-        const data = cursosData[cursoId];
-        if (!data) return '';
-        let fecha = new Date();
-        if (data.f_inicio) {
-            const ini = new Date(data.f_inicio + 'T00:00:00');
-            if (fecha < ini) fecha = new Date(ini);
-        }
-        for (let i = 0; i < 366; i++) {
-            const iso = fecha.getDay() === 0 ? 7 : fecha.getDay();
-            if ((!data.dias_semana || data.dias_semana.length === 0 || diasIncluyen(data.dias_semana, iso))
-                && (!data.f_fin || fechaLocalISO(fecha) <= data.f_fin)) {
-                return fechaLocalISO(fecha);
-            }
-            fecha.setDate(fecha.getDate() + 1);
-        }
-        return '';
-    }
-
-    function aplicarCurso() {
-        const cursoId = cursoSelect.value;
-        if (!cursoId) return;
-        const data = cursosData[cursoId];
-
-        horaInput.value = data.hora_inicio || '';
-
-        // Limita el selector de fecha al rango del curso
-        fechaInput.min = data.f_inicio || '';
-        fechaInput.max = data.f_fin || '';
-        fechaInput.setCustomValidity('');
-
-        const prox = siguienteFechaPermitida(cursoId);
-        if (prox) fechaInput.value = prox;
-    }
-
-    cursoSelect.addEventListener('change', aplicarCurso);
-
-    fechaInput.addEventListener('input', function () {
-        const cursoId = cursoSelect.value;
-        if (!cursoId) return;
-        const val = this.value;
-        if (!val) return;
-        const data = cursosData[cursoId];
-        const fecha = new Date(val + 'T00:00:00');
-        if (!esDiaPermitido(fecha, cursoId)) {
-            this.setCustomValidity('Este curso se dicta los días ' + (data.dias_nombres || '') + '. Elige una fecha dentro del horario asignado.');
-        } else if (data.f_inicio && val < data.f_inicio) {
-            this.setCustomValidity('La fecha es anterior al inicio del curso.');
-        } else if (data.f_fin && val > data.f_fin) {
-            this.setCustomValidity('La fecha es posterior al fin del curso.');
-        } else {
-            this.setCustomValidity('');
-        }
-    });
-
-    aplicarCurso();
-</script>
 @endsection

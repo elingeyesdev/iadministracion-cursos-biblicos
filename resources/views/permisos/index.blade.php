@@ -1,62 +1,202 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Administrar Permisos')
 
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('roles.index') }}" class="text-gold-500 text-decoration-none">Acceso y Seguridad</a></li>
+    <li class="breadcrumb-item active text-white" aria-current="page">Permisos</li>
+@endsection
+
 @section('content')
-<div class="glass-panel" style="padding: 30px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+<div class="container-fluid px-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
-            <h2 style="font-weight: 700; color: var(--text-primary); margin: 0;">Administrar Permisos</h2>
-            <p style="color: var(--text-secondary); margin: 6px 0 0;">Selecciona un rol para definir qué puede ver, crear, editar, eliminar y buscar en cada módulo.</p>
+            <h1 class="h2 text-white mb-1">Administrar Permisos</h1>
+            <p class="text-muted mb-0">Selecciona un rol y edita sus permisos aqu├¡ mismo.</p>
         </div>
-        <a href="{{ route('roles.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; width: auto; padding: 8px 16px; font-size: 0.9rem;">Administrar Roles</a>
+        <a href="{{ route('roles.index') }}" class="btn btn-secondary">
+            <i class="bi bi-shield-check me-1"></i> Administrar Roles
+        </a>
     </div>
 
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Rol</th>
-                    <th>Descripción</th>
-                    <th>Estado</th>
-                    <th>Módulos configurados</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($roles as $role)
-                    <tr style="@if($role->trashed()) opacity: 0.5; @endif">
-                        <td style="font-weight: 600;">{{ $role->nombre }}</td>
-                        <td>{{ $role->descripcion ?? 'N/A' }}</td>
-                        <td>
-                            @if($role->estado == 'Activo')
-                                <span class="badge badge-active">Activo</span>
-                            @else
-                                <span class="badge badge-inactive">Inactivo</span>
-                            @endif
-                        </td>
-                        <td>{{ $role->permisos_count }}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <a href="{{ route('permisos.edit', $role->id) }}" class="btn-icon btn-edit" title="Configurar permisos" aria-label="Configurar permisos">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" /></svg>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
+    @if(session('success'))
+        <div class="alert alert-success border-0 mb-4">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger border-0 mb-4 bg-danger text-white">
+            <h5 class="alert-heading fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>Por favor corrige los siguientes errores:</h5>
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <div class="card border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
+        <div class="card-header border-0 bg-dark py-3 d-flex align-items-center justify-content-between">
+            <h5 class="card-title text-white mb-0">
+                <i class="bi bi-shield-check text-gold-500 me-2"></i>Roles y sus permisos
+            </h5>
+            <span class="badge bg-secondary">{{ $roles->count() }} roles</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="color: #c5c5d2;">
+                <thead class="table-dark" style="background-color: #151521;">
                     <tr>
-                        <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 30px;">
-                            No hay roles registrados.
-                        </td>
+                        <th scope="col" class="border-0">Rol</th>
+                        <th scope="col" class="border-0">Descripci├│n</th>
+                        <th scope="col" class="border-0">Estado</th>
+                        <th scope="col" class="border-0">Permisos</th>
+                        <th scope="col" class="border-0 text-end">Acciones</th>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody x-data="{ abierto: {{ request('rol') ? (int) request('rol') : 'null' }} }">
+                    @forelse($roles as $rol)
+                        <tr>
+                            <td class="fw-bold text-white">
+                                @php
+                                    $badgeClass = 'bg-secondary';
+                                    if ($rol->nombre === 'Administrador') $badgeClass = 'bg-danger';
+                                    elseif ($rol->nombre === 'Secretario') $badgeClass = 'bg-primary';
+                                    elseif ($rol->nombre === 'Tesorero') $badgeClass = 'bg-warning text-dark';
+                                @endphp
+                                <span class="badge {{ $badgeClass }}">{{ $rol->nombre }}</span>
+                            </td>
+                            <td>{{ $rol->descripcion ?? 'Sin descripci├│n' }}</td>
+                            <td>
+                                @if($rol->estado === 'activo')
+                                    <span class="badge bg-success">Activo</span>
+                                @else
+                                    <span class="badge bg-danger">Inactivo</span>
+                                @endif
+                            </td>
+                            <td>
+                                <span class="badge bg-info text-dark fw-bold">{{ $rol->permisos_count }}</span>
+                                <span class="text-muted small">de {{ $totalPermisos }}</span>
+                            </td>
+                            <td class="text-end">
+                                @if(auth()->user()->tienePermiso('permisos.gestionar'))
+                                    <button type="button" class="btn btn-sm btn-outline-warning"
+                                            @click="abierto = (abierto === {{ $rol->id }} ? null : {{ $rol->id }})">
+                                        <i class="bi bi-sliders me-1"></i>
+                                        <span x-text="abierto === {{ $rol->id }} ? 'Cerrar' : 'Editar permisos'">Editar permisos</span>
+                                    </button>
+                                @else
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-eye me-1"></i> Solo lectura
+                                    </span>
+                                @endif
+                            </td>
+                        </tr>
 
-    <div style="margin-top: 20px;">
-        {{ $roles->links() }}
+                        @if(auth()->user()->tienePermiso('permisos.gestionar'))
+                            <tr x-show="abierto === {{ $rol->id }}" x-cloak>
+                                <td colspan="5" class="p-0 border-0">
+                                    <div class="p-4" style="background: var(--church-surface-2, #151521); border-top: 1px solid var(--church-border, #2b2b40);">
+                                        @if($rol->nombre === 'Administrador')
+                                            <div class="alert alert-info border-0 mb-3">
+                                                <i class="bi bi-info-circle-fill me-2"></i>
+                                                El rol <strong>Administrador</strong> tiene acceso total por definici├│n, independientemente de los permisos marcados aqu├¡.
+                                            </div>
+                                        @endif
+
+                                        <form method="POST" action="{{ route('permisos.roles.update', $rol->id) }}">
+                                            @csrf
+                                            @method('PUT')
+
+                                            @include('permisos.partials.editor', [
+                                                'uid' => $rol->id,
+                                                'permisosPorCategoria' => $permisosPorCategoria,
+                                                'asignados' => $rol->permisos->pluck('id')->all(),
+                                            ])
+
+                                            <div class="d-flex gap-3 mt-4">
+                                                <button type="submit" class="btn btn-primary px-4 py-2">
+                                                    <i class="bi bi-save-fill me-1"></i> Guardar permisos
+                                                </button>
+                                                <button type="button" class="btn btn-secondary px-4 py-2"
+                                                        @click="abierto = null">
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endif
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No hay roles registrados.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editorDe = (el) => el.closest('.permisos-editor');
+
+        function sincronizarGrupo(editor, indice) {
+            const delGrupo = editor.querySelectorAll('.js-permiso-check[data-grupo="' + indice + '"]');
+            const toggle = editor.querySelector('.js-permiso-grupo[data-grupo="' + indice + '"]');
+
+            if (! toggle || delGrupo.length === 0) return;
+
+            const marcados = Array.from(delGrupo).filter(c => c.checked).length;
+            toggle.checked = marcados === delGrupo.length;
+            toggle.indeterminate = marcados > 0 && marcados < delGrupo.length;
+        }
+
+        function sincronizarTodo(editor) {
+            editor.querySelectorAll('.js-permiso-grupo').forEach(toggle => {
+                sincronizarGrupo(editor, toggle.dataset.grupo);
+            });
+        }
+
+        // Estado inicial de los interruptores por categor├¡a (tambi├®n en paneles ocultos).
+        document.querySelectorAll('.permisos-editor').forEach(sincronizarTodo);
+
+        document.addEventListener('change', function (evento) {
+            const check = evento.target;
+
+            if (check.classList.contains('js-permiso-check')) {
+                const editor = editorDe(check);
+                if (editor) sincronizarGrupo(editor, check.dataset.grupo);
+                return;
+            }
+
+            if (check.classList.contains('js-permiso-grupo')) {
+                const editor = editorDe(check);
+                if (! editor) return;
+
+                editor.querySelectorAll('.js-permiso-check[data-grupo="' + check.dataset.grupo + '"]')
+                    .forEach(item => { item.checked = check.checked; });
+                check.indeterminate = false;
+            }
+        });
+
+        document.addEventListener('click', function (evento) {
+            const todos = evento.target.closest('.js-permisos-all');
+            const ninguno = evento.target.closest('.js-permisos-none');
+
+            if (! todos && ! ninguno) return;
+
+            const editor = editorDe(todos || ninguno);
+            if (! editor) return;
+
+            const valor = Boolean(todos);
+            editor.querySelectorAll('.js-permiso-check').forEach(check => { check.checked = valor; });
+            sincronizarTodo(editor);
+        });
+    });
+</script>
 @endsection

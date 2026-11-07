@@ -1,108 +1,98 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', 'Detalle de Contrato')
+@section('title', 'Detalle del Contrato')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('contratos.index') }}" class="text-gold-500 text-decoration-none">Contratos</a></li>
+    <li class="breadcrumb-item active text-muted" aria-current="page">Detalle</li>
+@endsection
 
 @section('content')
-<div class="glass-panel" style="padding: 30px; max-width: 900px; margin: 0 auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="font-weight: 700; color: var(--text-primary);">Detalle de Contrato</h2>
-        <div style="display: flex; gap: 10px;">
-            @if(!$contrato->trashed())
-                @if(auth()->user()->puede('contratos', 'editar'))
-                <a href="{{ route('contratos.edit', $contrato->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
-                @endif
-                @if(auth()->user()->puede('contratos', 'editar'))
-                <a href="{{ route('contratos.renovar', $contrato->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Renovar</a>
-                @endif
-            @endif
-            <a href="{{ route('contratos.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
-        </div>
-    </div>
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="card p-4 shadow-sm h-100">
+            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-file-earmark-text me-2"></i>Informaci├│n del Contrato</h3>
 
-    <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-        <?php
-            $badgeClase = match($contrato->vigencia) {
-                'Vigente' => 'badge-active',
-                'Por vencer', 'Futuro' => 'badge-warning',
-                default => 'badge-inactive',
-            };
-            $tipoBadge = match($contrato->tipo_compensacion?->value) {
-                'Salario' => 'badge-active',
-                'Bono' => 'badge-info',
-                'Beneficios' => 'badge-warning',
-                'Voluntario' => 'badge-inactive',
-            };
-        ?>
-        <span class="badge {{ $tipoBadge }}">{{ $contrato->tipo_compensacion?->value }}</span>
-        <span class="badge {{ $badgeClase }}">{{ $contrato->vigencia }}</span>
-    </div>
-
-    <div style="border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden; margin-bottom: 20px;">
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Miembro</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ $contrato->miembro->nombre ?? 'N/A' }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Líder Asignado</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ $contrato->lider?->nombre ?? 'N/A' }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Cargo</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ $contrato->lider?->cargo?->nombre ?? 'Sin cargo' }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Salario / Monto</span>
-            <span style="font-weight: 700; color: var(--success);">Bs {{ number_format($contrato->salario, 2) }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Fecha de Inicio</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ \Carbon\Carbon::parse($contrato->fecha_inicio)->format('d/m/Y') }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Fecha de Fin</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ $contrato->fecha_fin ? \Carbon\Carbon::parse($contrato->fecha_fin)->format('d/m/Y') : 'Indefinido' }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px;">
-            <span style="color: var(--text-secondary);">Total Pagado</span>
-            <span style="font-weight: 700; color: var(--primary);">Bs {{ number_format($totalPagado, 2) }}</span>
-        </div>
-    </div>
-
-    <h3 style="font-weight: 700; margin-bottom: 14px; color: var(--text-primary);">Egresos Asociados</h3>
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
+            <table class="table table-borderless">
                 <tr>
-                    <th>Fecha</th>
-                    <th>Tipo de Egreso</th>
-                    <th>Descripción</th>
-                    <th>Responsable</th>
-                    <th>Comprobante</th>
-                    <th>Monto</th>
+                    <th class="ps-0 py-2 text-muted" style="width: 35%;">Miembro:</th>
+                    <td class="py-2"><strong>{{ $contrato->miembro->nombre ?? 'N/A' }}</strong></td>
                 </tr>
-            </thead>
-            <tbody>
-                @forelse($contrato->egresos as $egreso)
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Email Miembro:</th>
+                    <td class="py-2">{{ $contrato->miembro->email ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Monto total:</th>
+                    <td class="py-2 text-warning fw-bold fs-5">${{ number_format($contrato->monto, 2) }}</td>
+                </tr>
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Fecha Inicio:</th>
+                    <td class="py-2">{{ \Carbon\Carbon::parse($contrato->fecha_inicio)->format('d/m/Y') }}</td>
+                </tr>
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Fecha Fin:</th>
+                    <td class="py-2">{{ $contrato->fecha_fin ? \Carbon\Carbon::parse($contrato->fecha_fin)->format('d/m/Y') : 'Vigente' }}</td>
+                </tr>
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Estado:</th>
+                    <td class="py-2">
+                        @if($contrato->estado == 'activo')
+                            <span class="badge bg-success">Activo / Vigente</span>
+                        @elseif($contrato->estado == 'finalizado')
+                            <span class="badge bg-secondary">Finalizado</span>
+                        @else
+                            <span class="badge bg-danger">Cancelado</span>
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Descripci├│n:</th>
+                    <td class="py-2">{{ $contrato->descripcion ?? 'Sin descripci├│n' }}</td>
+                </tr>
+            </table>
 
-                    <tr>
-                        <td>{{ \Carbon\Carbon::parse($egreso->fecha)->format('d/m/Y') }}</td>
-                        <td>{{ $egreso->tipo_egreso?->value }}</td>
-                        <td>{{ $egreso->descripcion ?? 'N/A' }}</td>
-                        <td>{{ $egreso->responsable }}</td>
-                        <td>{{ $egreso->comprobante ?? 'N/A' }}</td>
-                        <td style="font-weight: 600;">Bs {{ number_format($egreso->monto, 2) }}</td>
-                    </tr>
-                
-@empty
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 30px;">
-                            Este contrato no tiene egresos asociados.
-                        </td>
-                    </tr>
-                
-@endforelse
-            </tbody>
-        </table>
+            <div class="mt-4 d-flex gap-2">
+                <a href="{{ route('contratos.edit', $contrato->id) }}" class="btn btn-church">
+                    <i class="bi bi-pencil me-1"></i> Editar
+                </a>
+                <a href="{{ route('contratos.index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card p-4 shadow-sm h-100">
+            <h4 class="sidebar-title mb-3" style="color: var(--church-gold);"><i class="bi bi-cash-stack me-2"></i>Egresos Relacionados</h4>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo Egreso</th>
+                            <th>Monto</th>
+                            <th>Responsable</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($contrato->egresos as $egreso)
+                        <tr>
+                            <td>{{ \Carbon\Carbon::parse($egreso->fecha)->format('d/m/Y') }}</td>
+                            <td><strong>{{ $egreso->tipo_egreso }}</strong></td>
+                            <td class="text-danger fw-bold">${{ number_format($egreso->monto, 2) }}</td>
+                            <td>{{ $egreso->responsable ?? 'N/A' }}</td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">No hay egresos asociados a este contrato.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

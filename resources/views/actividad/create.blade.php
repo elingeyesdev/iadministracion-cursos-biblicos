@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Nueva Actividad')
 
@@ -9,7 +9,7 @@
         <h1 class="sidebar-title" style="font-size:2rem;">Nueva actividad</h1>
         <p class="text-muted mb-0">Agrega una actividad para la comunidad.</p>
     </div>
-    <a href="{{ route('actividad.index') }}" class="btn btn-outline-church">← Volver</a>
+    <a href="{{ route('actividad.index') }}" class="btn btn-outline-church">ÔåÉ Volver</a>
 </div>
 
 <div class="card shadow-sm">
@@ -20,18 +20,18 @@
                 <div class="col-12">
                     <label for="nombre" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Nombre</label>
                     <input type="text" id="nombre" name="nombre" value="{{ old('nombre') }}" autofocus
-                           placeholder="Ej: Oración, estudio bíblico…"
+                           placeholder="Ej: Oraci├│n, estudio b├¡blicoÔÇª"
                            class="form-control @error('nombre') is-invalid @enderror">
                     @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-12 col-md-6">
-                    <label for="id_categoria" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Categoría</label>
+                    <label for="id_categoria" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Categor├¡a</label>
                     <select id="id_categoria" name="id_categoria" class="form-select @error('id_categoria') is-invalid @enderror">
-                        <option value="">Selecciona una categoría</option>
+                        <option value="">Selecciona una categor├¡a</option>
                         @forelse($categorias as $cat)
                             <option value="{{ $cat->id }}" @selected(old('id_categoria') == $cat->id)>{{ $cat->nombre }}</option>
                         @empty
-                            <option disabled>No hay categorías disponibles</option>
+                            <option disabled>No hay categor├¡as disponibles</option>
                         @endforelse
                     </select>
                     @error('id_categoria') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -61,8 +61,8 @@
                     @error('fecha_fin') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-12">
-                    <label for="descripcion" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Descripción</label>
-                    <textarea id="descripcion" name="descripcion" rows="4" placeholder="Describe brevemente la actividad…"
+                    <label for="descripcion" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Descripci├│n</label>
+                    <textarea id="descripcion" name="descripcion" rows="4" placeholder="Describe brevemente la actividadÔÇª"
                               class="form-control @error('descripcion') is-invalid @enderror">{{ old('descripcion') }}</textarea>
                     @error('descripcion') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>

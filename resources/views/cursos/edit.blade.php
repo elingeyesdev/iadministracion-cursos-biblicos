@@ -1,85 +1,124 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Editar Curso')
 
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('cursos.index') }}" class="text-gold-500 text-decoration-none">Cursos</a></li>
+    <li class="breadcrumb-item active text-muted" aria-current="page">Editar</li>
+@endsection
+
 @section('content')
-<div class="glass-panel" style="padding: 30px; max-width: 600px; margin: 0 auto;">
-    <h2 style="font-weight: 700; margin-bottom: 20px; color: var(--text-primary);">Editar Curso</h2>
+<div class="card p-4 shadow-sm">
+    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-pencil-square me-2"></i>Editar Curso: {{ $curso->nombre }}</h2>
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('cursos.update', $curso->id) }}">
+    <form action="{{ route('cursos.update', $curso->id) }}" method="POST">
         @csrf
         @method('PUT')
-
-        <div class="form-group">
-            <label for="nombre" class="form-label">Nombre del Curso</label>
-            <input id="nombre" type="text" name="nombre" class="form-control" value="{{ old('nombre', $curso->nombre) }}" pattern="[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]+" title="Solo letras y espacios" oninput="soloLetras(this)" required>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="form-group">
-                <label for="f_inicio" class="form-label">Fecha de Inicio</label>
-                <input id="f_inicio" type="date" name="f_inicio" class="form-control" value="{{ old('f_inicio', \Carbon\Carbon::parse($curso->f_inicio)->format('Y-m-d')) }}" required>
+        
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="nombre" class="form-label">Nombre del Curso <span class="text-danger">*</span></label>
+                <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre', $curso->nombre) }}" required placeholder="Ej. Panorama del Antiguo Testamento">
+                @error('nombre')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
             </div>
 
-            <div class="form-group">
-                <label for="f_fin" class="form-label">Fecha de Fin</label>
-                <input id="f_fin" type="date" name="f_fin" class="form-control" value="{{ old('f_fin', $curso->f_fin ? \Carbon\Carbon::parse($curso->f_fin)->format('Y-m-d') : '') }}">
+            <div class="col-md-3">
+                <label for="f_inicio" class="form-label">Fecha de Inicio <span class="text-danger">*</span></label>
+                <input type="date" class="form-control @error('f_inicio') is-invalid @enderror" id="f_inicio" name="f_inicio" value="{{ old('f_inicio', $curso->f_inicio) }}" required>
+                @error('f_inicio')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="cupo_max" class="form-label">Cupo Máximo</label>
-            <input id="cupo_max" type="number" name="cupo_max" class="form-control" value="{{ old('cupo_max', $curso->cupo_max) }}" min="1" required>
-        </div>
+            <div class="col-md-3">
+                <label for="f_fin" class="form-label">Fecha de T├®rmino</label>
+                <input type="date" class="form-control @error('f_fin') is-invalid @enderror" id="f_fin" name="f_fin" value="{{ old('f_fin', $curso->f_fin) }}">
+                @error('f_fin')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
 
-        <fieldset class="form-group">
-            <legend class="form-label" style="display: block; margin-bottom: 8px;">Días de la Semana</legend>
-            <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-                @foreach([1 => 'Lunes', 2 => 'Martes', 3 => 'Miércoles', 4 => 'Jueves', 5 => 'Viernes', 6 => 'Sábado', 7 => 'Domingo'] as $d => $dia)
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="checkbox" name="dias_semana[]" value="{{ $d }}" {{ in_array($d, old('dias_semana', $curso->dias_semana ?? [])) ? 'checked' : '' }} style="width: auto;"> {{ $dia }}
+            <div class="col-md-4">
+                <label for="cupo_max" class="form-label">Cupo M├íximo</label>
+                <input type="number" class="form-control @error('cupo_max') is-invalid @enderror" id="cupo_max" name="cupo_max" value="{{ old('cupo_max', $curso->cupo_max) }}" placeholder="Ej. 30 (dejar vac├¡o si es ilimitado)">
+                @error('cupo_max')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-4 d-flex align-items-center">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" id="tiene_pago" name="tiene_pago" value="1" {{ old('tiene_pago', $curso->tiene_pago) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="tiene_pago">
+                        Curso requiere Pago / Matr├¡cula
                     </label>
-                @endforeach
-            </div>
-        </fieldset>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="form-group">
-                <label for="hora_inicio" class="form-label">Hora de Inicio</label>
-                <input id="hora_inicio" type="time" name="hora_inicio" class="form-control" value="{{ old('hora_inicio', $curso->hora_inicio) }}">
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="hora_fin" class="form-label">Hora de Fin</label>
-                <input id="hora_fin" type="time" name="hora_fin" class="form-control" value="{{ old('hora_fin', $curso->hora_fin) }}">
+            <div class="col-md-4" id="monto_container" style="display: none;">
+                <label for="monto_inscripcion" class="form-label">Monto Inscripci├│n ($) <span class="text-danger">*</span></label>
+                <input type="number" step="0.01" class="form-control @error('monto_inscripcion') is-invalid @enderror" id="monto_inscripcion" name="monto_inscripcion" value="{{ old('monto_inscripcion', $curso->monto_inscripcion) }}" placeholder="0.00">
+                @error('monto_inscripcion')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12 mt-4">
+                <label class="form-label d-block fw-bold" style="color: var(--church-gold);">Asignar Docentes</label>
+                <div class="row g-2">
+                    @forelse($docentes as $docente)
+                        <div class="col-md-4 col-sm-6">
+                            <div class="p-2 rounded border" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="docentes[]" value="{{ $docente->id }}" id="docente_{{ $docente->id }}" {{ (is_array(old('docentes')) && in_array($docente->id, old('docentes'))) || (!is_array(old('docentes')) && $curso->docentes->contains($docente->id)) ? 'checked' : '' }}>
+                                    <label class="form-check-label text-truncate w-100" for="docente_{{ $docente->id }}">
+                                        {{ $docente->miembro->nombre ?? 'Docente' }}
+                                        <span class="d-block text-muted small">{{ $docente->especialidad ?? 'Sin especialidad' }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12 text-muted small">No hay docentes registrados para asignar.</div>
+                    @endforelse
+                </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label style="display: flex; align-items: center; gap: 8px;">
-                <input type="checkbox" name="tiene_pago" value="1" {{ old('tiene_pago', $curso->tiene_pago) ? 'checked' : '' }} style="width: auto;"> ¿El curso tiene costo de inscripción?
-            </label>
-        </div>
-
-        <div class="form-group">
-            <label for="monto_inscripcion" class="form-label">Monto de Inscripción (Bs)</label>
-            <input id="monto_inscripcion" type="number" step="0.01" min="0" name="monto_inscripcion" class="form-control" value="{{ old('monto_inscripcion', $curso->monto_inscripcion) }}" required autocomplete="off">
-        </div>
-
-        <div style="display: flex; gap: 15px; margin-top: 30px;">
-            <button type="submit" class="btn">Actualizar Curso</button>
-            <a href="{{ route('cursos.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-church">
+                <i class="bi bi-save me-1"></i> Actualizar
+            </button>
+            <a href="{{ route('cursos.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
         </div>
     </form>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tienePago = document.getElementById('tiene_pago');
+    const montoContainer = document.getElementById('monto_container');
+    const montoInput = document.getElementById('monto_inscripcion');
+
+    function toggleMonto() {
+        if (tienePago.checked) {
+            montoContainer.style.display = 'block';
+            montoInput.setAttribute('required', 'required');
+        } else {
+            montoContainer.style.display = 'none';
+            montoInput.removeAttribute('required');
+            montoInput.value = '';
+        }
+    }
+
+    tienePago.addEventListener('change', toggleMonto);
+    toggleMonto(); // Run on load
+});
+</script>
 @endsection

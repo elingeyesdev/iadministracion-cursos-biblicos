@@ -1,80 +1,59 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Nuevo Ministerio')
 
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('ministerios.index') }}" class="text-gold-500 text-decoration-none">Ministerios</a></li>
+    <li class="breadcrumb-item active text-muted" aria-current="page">Nuevo</li>
+@endsection
+
 @section('content')
-<div class="glass-panel" style="padding: 30px; max-width: 700px; margin: 0 auto;">
-    <h2 style="font-weight: 700; margin-bottom: 20px; color: var(--text-primary);">Crear Nuevo Ministerio</h2>
+<div class="card p-4 shadow-sm">
+    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-folder-plus me-2"></i>Crear Nuevo Ministerio</h2>
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach($errors->all() as $error)
-
-                    <li>{{ $error }}</li>
-                
-@endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('ministerios.store') }}">
+    <form action="{{ route('ministerios.store') }}" method="POST">
         @csrf
-
-        <div class="form-group">
-            <label for="nombre" class="form-label">Nombre del Ministerio</label>
-            <input id="nombre" type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" pattern="[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]+" title="Solo letras y espacios" oninput="soloLetras(this)" required>
-        </div>
-
-        <div class="form-group">
-            <label for="descripcion" class="form-label">Descripción</label>
-            <textarea id="descripcion" name="descripcion" class="form-control" rows="3">{{ old('descripcion') }}</textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="id_lider_iglesia" class="form-label">Líder Asignado</label>
-            <select name="id_lider_iglesia" id="id_lider_iglesia" class="form-control">
-                <option value="">Sin líder asignado</option>
-                @foreach($lideres as $lider)
-                    <option value="{{ $lider->id }}" {{ old('id_lider_iglesia') == $lider->id ? 'selected' : '' }}>
-                        {{ $lider->nombre }}{{ $lider->cargo ? ' — '.$lider->cargo->nombre : '' }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Miembros del Ministerio</label>
-            <input type="hidden" name="miembros_presente" value="1">
-            <div style="max-height: 260px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 14px;">
-                @forelse($miembros as $miembro)
-                    @php
-                        $marcado = in_array($miembro->id, array_map('intval', (array) $seleccionados), true);
-                        $inactivo = $miembro->estado !== \App\Enums\EstadoMiembro::Activo;
-                    @endphp
-                    <label style="display: flex; align-items: center; gap: 8px; padding: 6px 0; cursor: pointer;">
-                        <input type="checkbox" name="miembros[]" value="{{ $miembro->id }}"
-                            {{ $marcado ? 'checked' : '' }}
-                            {{ $inactivo && ! $marcado ? 'disabled' : '' }}>
-                        <span>
-                            {{ $miembro->nombre }}
-                            @if($inactivo)
-                                <em style="color: var(--text-secondary); font-size: 12px;">(Inactivo)</em>
-                            @endif
-                        </span>
-                    </label>
-                @empty
-                    <p style="color: var(--text-secondary); margin: 0;">No hay miembros registrados.</p>
-                @endforelse
+        
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="nombre" class="form-label">Nombre del Ministerio <span class="text-danger">*</span></label>
+                <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre') }}" required placeholder="Ej. Ministerio de Alabanza">
+                @error('nombre')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
             </div>
-            <small style="color: var(--text-secondary); font-size: 12px;">
-                La composición se guarda únicamente en el pivote miembro_ministerio. El líder se asigna aparte y no se duplica como miembro.
-            </small>
+
+            <div class="col-md-6">
+                <label for="id_lider" class="form-label">L├¡der / Encargado</label>
+                <select class="form-select @error('id_lider') is-invalid @enderror" id="id_lider" name="id_lider">
+                    <option value="" selected>Seleccione un l├¡der...</option>
+                    @foreach($miembros as $miembro)
+                        <option value="{{ $miembro->id }}" {{ old('id_lider') == $miembro->id ? 'selected' : '' }}>
+                            {{ $miembro->nombre }} ({{ $miembro->email }})
+                        </option>
+                    @endforeach
+                </select>
+                @error('id_lider')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <label for="descripcion" class="form-label">Descripci├│n</label>
+                <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="4" placeholder="Describa el prop├│sito y actividades de este ministerio...">{{ old('descripcion') }}</textarea>
+                @error('descripcion')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
-        <div style="display: flex; gap: 15px; margin-top: 30px;">
-            <button type="submit" class="btn">Guardar Ministerio</button>
-            <a href="{{ route('ministerios.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-church">
+                <i class="bi bi-save me-1"></i> Guardar
+            </button>
+            <a href="{{ route('ministerios.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
         </div>
     </form>
 </div>

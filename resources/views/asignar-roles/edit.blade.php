@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Asignar Roles')
 
@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Asignar Roles</h1>
-            <p class="text-muted mb-0">Modifica la asignación de roles para el usuario <strong>{{ $usuario->name }}</strong>.</p>
+            <p class="text-muted mb-0">Modifica la asignaci├│n de roles para el usuario <strong>{{ $usuario->name }}</strong>.</p>
         </div>
         <a href="{{ route('asignar-roles.index') }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-1"></i> Volver al listado
@@ -38,11 +38,11 @@
                 </div>
                 <div class="card-body">
                     <div class="mb-4 p-3 rounded" style="background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--church-border, #2b2b40);">
-                        <h6 class="text-white mb-1">Información de Usuario:</h6>
+                        <h6 class="text-white mb-1">Informaci├│n de Usuario:</h6>
                         <div class="text-muted small">
                             <span class="me-3"><strong>Nombre:</strong> {{ $usuario->name }}</span>
                             <span class="me-3"><strong>Email:</strong> {{ $usuario->email }}</span>
-                            <span><strong>Username:</strong> {{ optional($usuario->profile)->username ?? '—' }}</span>
+                            <span><strong>Username:</strong> {{ optional($usuario->profile)->username ?? 'ÔÇö' }}</span>
                         </div>
                     </div>
 
@@ -50,7 +50,7 @@
                         @csrf
                         @method('PUT')
 
-                        <p class="text-muted mb-3">Marca los roles que el usuario poseerá en el sistema:</p>
+                        <p class="text-muted mb-3">Marca los roles que el usuario poseer├í en el sistema:</p>
 
                         <div class="row">
                             @forelse($roles as $rol)
@@ -63,7 +63,7 @@
                                             </label>
                                         </div>
                                         <p class="text-muted small mb-0 mt-1" style="padding-left: 1.5rem;">
-                                            {{ $rol->descripcion ?? 'Sin descripción disponible.' }}
+                                            {{ $rol->descripcion ?? 'Sin descripci├│n disponible.' }}
                                         </p>
                                     </div>
                                 </div>

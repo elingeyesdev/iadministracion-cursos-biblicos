@@ -1,110 +1,86 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', 'Detalle de Sesión')
+@section('title', 'Detalle de la Sesi├│n')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('sesiones.index') }}" class="text-gold-500 text-decoration-none">Sesiones</a></li>
+    <li class="breadcrumb-item active text-muted" aria-current="page">Detalle</li>
+@endsection
 
 @section('content')
-<div class="glass-panel" style="padding: 30px; margin-bottom: 20px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="font-weight: 700; color: var(--text-primary);">Detalle de Sesión</h2>
-        <div style="display: flex; gap: 10px;">
-            @if(auth()->user()->puede('asistencia', 'crear'))
-            <a href="{{ route('asistencia.registrar', ['sesion_id' => $sesion->id]) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">📋 Registrar Asistencia</a>
-            @endif
-            @if(auth()->user()->puede('sesiones', 'editar'))
-            <a href="{{ route('sesiones.edit', $sesion->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Editar</a>
-            @endif
-            <a href="{{ route('sesiones.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">← Volver</a>
-        </div>
-    </div>
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="card p-4 shadow-sm h-100">
+            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-journal-text me-2"></i>Detalle de la Sesi├│n</h3>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
-        <div style="background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.25); padding: 16px 18px; border-radius: 12px;">
-            <div style="font-size: 13px; color: var(--text-secondary);">Curso</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--text-primary);">{{ $sesion->curso->nombre ?? 'N/A' }}</div>
-        </div>
-        <div style="background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.25); padding: 16px 18px; border-radius: 12px;">
-            <div style="font-size: 13px; color: var(--text-secondary);">Docente</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--text-primary);">{{ $sesion->docente?->miembro?->nombre ?? 'N/A' }}</div>
-        </div>
-        <div style="background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.25); padding: 16px 18px; border-radius: 12px;">
-            <div style="font-size: 13px; color: var(--text-secondary);">Fecha</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--text-primary);">{{ \Carbon\Carbon::parse($sesion->fecha)->format('d/m/Y') }}</div>
-        </div>
-        <div style="background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.25); padding: 16px 18px; border-radius: 12px;">
-            <div style="font-size: 13px; color: var(--text-secondary);">Hora</div>
-            <div style="font-size: 18px; font-weight: 700; color: var(--text-primary);">{{ substr((string) $sesion->hora, 0, 5) }}</div>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="form-label" for="f_Tema">Tema</label><div id="f_Tema" style="color: var(--text-primary);">
-        <div style="padding: 12px 14px; background: rgba(255,255,255,.04); border: 1px solid var(--card-border); border-radius: 10px;">{{ $sesion->tema }}</div>
-    </div>
-
-    @if($sesion->observacion)
-    <div class="form-group">
-        <label class="form-label" for="f_Observación">Observación</label><div id="f_Observación" style="color: var(--text-primary);">
-        <div style="padding: 12px 14px; background: rgba(255,255,255,.04); border: 1px solid var(--card-border); border-radius: 10px;">{{ $sesion->observacion }}</div>
-    </div>
-    @endif
-
-    <div style="display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap;">
-        <div style="background: rgba(47,158,68,.12); padding: 10px 16px; border-radius: 10px;"><b>{{ $resumen['Presente'] }}</b> Presentes</div>
-        <div style="background: rgba(220,38,38,.12); padding: 10px 16px; border-radius: 10px;"><b>{{ $resumen['Ausente'] }}</b> Ausentes</div>
-        <div style="background: rgba(245,158,11,.12); padding: 10px 16px; border-radius: 10px;"><b>{{ $resumen['Tardanza'] }}</b> Tardanzas</div>
-        <div style="background: rgba(99,102,241,.12); padding: 10px 16px; border-radius: 10px;"><b>{{ $resumen['Justificado'] }}</b> Justificados</div>
-    </div>
-</div>
-
-<div class="glass-panel" style="padding: 30px;">
-    <h3 style="font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Inscritos del Curso</h3>
-
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
+            <table class="table table-borderless">
                 <tr>
-                    <th>Miembro</th>
-                    <th>Fecha Inscripción</th>
-                    <th>Estado Asistencia</th>
+                    <th class="ps-0 py-2 text-muted" style="width: 35%;">Curso:</th>
+                    <td class="py-2"><strong>{{ $sesion->curso->nombre ?? 'N/A' }}</strong></td>
                 </tr>
-            </thead>
-            <tbody>
-                @forelse($inscritos as $inscripcion)
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Tema:</th>
+                    <td class="py-2">{{ $sesion->tema ?? 'Sin Tema definido' }}</td>
+                </tr>
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Fecha:</th>
+                    <td class="py-2">{{ \Carbon\Carbon::parse($sesion->fecha)->format('d/m/Y') }}</td>
+                </tr>
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Hora:</th>
+                    <td class="py-2">{{ $sesion->hora ? \Carbon\Carbon::parse($sesion->hora)->format('H:i') : 'Sin hora' }}</td>
+                </tr>
+                <tr>
+                    <th class="ps-0 py-2 text-muted">Observaciones:</th>
+                    <td class="py-2">{{ $sesion->observacion ?? 'Sin observaciones' }}</td>
+                </tr>
+            </table>
 
-                    @php
-                        $asist = $asistencias->get($inscripcion->miembro_id);
-                    @endphp
-                    <tr>
-                        <td>{{ $inscripcion->miembro->nombre ?? 'N/A' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($inscripcion->fecha_inscripcion)->format('d/m/Y') }}</td>
-                        <td>
-                            @if($asist)
-                                <span class="badge
-                                    @if($asist->estado?->value === 'Presente') badge-active
-                                    @elseif($asist->estado?->value === 'Ausente') badge-inactive
-                                    @elseif($asist->estado?->value === 'Tardanza') badge-warning
-                                    @else badge-info
-                                    @endif">{{ $asist->estado?->value }}</span>
-                            @else
-                                @if($sesionPasada)
-                                    <span class="badge badge-inactive">Sin registrar</span>
-                                @else
-                                    <span class="badge" style="background: rgba(148,163,184,.15); color: #94a3b8;">Pendiente</span>
-                                @endif
-                            @endif
-                        </td>
-                    </tr>
-                
-@empty
-                    <tr>
-                        <td colspan="3" style="text-align: center; color: var(--text-secondary); padding: 30px;">
-                            No hay inscritos en este curso.
-                        </td>
-                    </tr>
-                
-@endforelse
-            </tbody>
-        </table>
+            <div class="mt-4 d-flex gap-2">
+                <a href="{{ route('sesiones.edit', $sesion->id) }}" class="btn btn-church">
+                    <i class="bi bi-pencil me-1"></i> Editar
+                </a>
+                <a href="{{ route('sesiones.index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card p-4 shadow-sm h-100">
+            <h4 class="sidebar-title mb-3" style="color: var(--church-gold);"><i class="bi bi-people me-2"></i>Miembros Registrados en esta Sesi├│n</h4>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Estado Asistencia</th>
+                            <th>Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($sesion->miembros as $miembro)
+                        <tr>
+                            <td><strong>{{ $miembro->nombre }}</strong></td>
+                            <td>{{ $miembro->email }}</td>
+                            <td>
+                                <span class="badge bg-{{ $miembro->pivot->estado == 'presente' ? 'success' : ($miembro->pivot->estado == 'ausente' ? 'danger' : 'warning text-dark') }}">
+                                    {{ ucfirst($miembro->pivot->estado) }}
+                                </span>
+                            </td>
+                            <td>{{ $miembro->pivot->observacion ?? 'N/A' }}</td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">No hay miembros registrados para esta clase.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

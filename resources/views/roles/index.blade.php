@@ -1,76 +1,171 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', 'Roles')
+@section('title', 'Gesti├│n de Roles')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item active text-white" aria-current="page">Roles</li>
+@endsection
 
 @section('content')
-<div class="glass-panel" style="padding: 30px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="font-weight: 700; color: var(--text-primary);">Lista de Roles</h2>
-        @if(auth()->user()->puede('roles', 'crear'))
-        <a href="{{ route('roles.create') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">
-            + Nuevo Rol
-        </a>
+<div class="container-fluid px-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="h2 text-white mb-1">Roles</h1>
+            <p class="text-muted mb-0">Administra los roles del sistema que controlan los permisos de acceso.</p>
+        </div>
+        <div class="d-flex gap-2">
+            @permiso('permisos.ver')
+                <a href="{{ route('permisos.index') }}" class="btn btn-outline-light">
+                    <i class="bi bi-key me-1"></i> Permisos
+                </a>
+            @endpermiso
+            @permiso('roles.gestionar')
+                <a href="{{ route('roles.create') }}" class="btn btn-success">
+                    <i class="bi bi-shield-plus me-1"></i> Nuevo Rol
+                </a>
+            @endpermiso
+        </div>
+    </div>
+
+    <!-- Buscador en tiempo real -->
+    <div class="card mb-4 border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
+        <div class="card-body">
+            <div class="input-group">
+                <span class="input-group-text bg-transparent text-muted border-secondary">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" id="realtimeSearch" class="form-control bg-transparent text-white border-secondary" placeholder="Buscar rol por nombre...">
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="rolesTable" style="color: #c5c5d2;">
+                <thead class="table-dark" style="background-color: #151521;">
+                    <tr>
+                        <th scope="col" class="border-0">Nombre</th>
+                        <th scope="col" class="border-0">Descripci├│n</th>
+                        <th scope="col" class="border-0">Estado</th>
+                        <th scope="col" class="border-0">Permisos</th>
+                        <th scope="col" class="border-0">Usuarios Asignados</th>
+                        <th scope="col" class="border-0 text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($roles as $rol)
+                        <tr class="rol-row" data-nombre="{{ strtolower($rol->nombre) }}">
+                            <td class="fw-bold text-white">
+                                @php
+                                    $badgeClass = 'bg-secondary';
+                                    if ($rol->nombre === 'Administrador') $badgeClass = 'bg-danger';
+                                    elseif ($rol->nombre === 'Secretario') $badgeClass = 'bg-primary';
+                                    elseif ($rol->nombre === 'Tesorero') $badgeClass = 'bg-warning text-dark';
+                                @endphp
+                                <span class="badge {{ $badgeClass }}">{{ $rol->nombre }}</span>
+                            </td>
+                            <td>{{ $rol->descripcion ?? 'Sin descripci├│n' }}</td>
+                            <td>
+                                @if($rol->estado === 'activo')
+                                    <span class="badge bg-success">Activo</span>
+                                @else
+                                    <span class="badge bg-danger">Inactivo</span>
+                                @endif
+                            </td>
+                            <td>
+                                <span class="badge bg-info text-dark fw-bold" title="Permisos asignados">{{ $rol->permisos_count ?? 0 }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-dark text-white fw-bold">{{ $rol->users_count ?? 0 }}</span>
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('roles.show', $rol->id) }}" class="btn btn-sm btn-outline-info" title="Ver Detalle">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    @permiso('roles.gestionar')
+                                        <a href="{{ route('roles.edit', $rol->id) }}" class="btn btn-sm btn-outline-warning" title="Editar">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger btn-delete-rol" data-id="{{ $rol->id }}" data-nombre="{{ $rol->nombre }}" title="Eliminar">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                        <form id="delete-form-{{ $rol->id }}" action="{{ route('roles.destroy', $rol->id) }}" method="POST" class="d-none">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                    @endpermiso
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No hay roles registrados.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        @if($roles->hasPages())
+            <div class="card-footer border-0 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #151521;">
+                <div class="text-muted small">
+                    Mostrando {{ $roles->firstItem() }}ÔÇô{{ $roles->lastItem() }} de {{ $roles->total() }} roles
+                </div>
+                <div>
+                    {{ $roles->links('pagination::bootstrap-5') }}
+                </div>
+            </div>
         @endif
     </div>
-
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Nivel de Acceso</th>
-                    <th>Guard</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($roles as $role)
-
-                    <tr style="@if($role->trashed()) opacity: 0.5; @endif">
-                        <td style="font-weight: 600;">{{ $role->nombre }}</td>
-                        <td>{{ $role->descripcion ?? 'N/A' }}</td>
-                        <td>{{ $role->nivel_acceso }}</td>
-                        <td>{{ $role->guard_name }}</td>
-                        <td>
-                            @if($role->estado == 'Activo')
-                                <span class="badge badge-active">Activo</span>
-                            @else
-                                <span class="badge badge-inactive">Inactivo</span>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                    @if(auth()->user()->puede('roles', 'editar'))
-                                    <a href="{{ route('roles.edit', $role->id) }}" class="btn-icon btn-edit" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.83 20.082a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg></a>
-                                    @endif
-                                    @if(auth()->user()->puede('roles', 'eliminar'))
-                                    <form method="POST" action="{{ route('roles.destroy', $role->id) }}" style="display: inline;">
-                                        @csrf
-                                        <?php echo method_field('DELETE'); ?>
-                                        <button type="submit" class="btn-icon btn-delete" title="Eliminar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button>
-                                    </form>
-                                    @endif
-                            </div>
-                        </td>
-                    </tr>
-                
-@empty
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 30px;">
-                            No hay roles registrados.
-                        </td>
-                    </tr>
-                
-@endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <div style="margin-top: 20px;">
-        {{ $roles->links() }}
-
-    </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Buscador en tiempo real (Client-side filtering)
+        const searchInput = document.getElementById('realtimeSearch');
+        const rows = document.querySelectorAll('.rol-row');
+
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value.toLowerCase().trim();
+            rows.forEach(row => {
+                const nombre = row.getAttribute('data-nombre') || '';
+                
+                if (nombre.includes(query)) {
+                    row.style.setProperty('display', '', 'important');
+                } else {
+                    row.style.setProperty('display', 'none', 'important');
+                }
+            });
+        });
+
+        // SweetAlert2 confirmaci├│n de borrado
+        const deleteButtons = document.querySelectorAll('.btn-delete-rol');
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const rolId = this.getAttribute('data-id');
+                const rolNombre = this.getAttribute('data-nombre');
+
+                Swal.fire({
+                    title: '┬┐Est├ís seguro?',
+                    text: `Vas a eliminar permanentemente el rol "${rolNombre}". Esta acci├│n no se puede deshacer.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'S├¡, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    background: '#1e1e2d',
+                    color: '#fff'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById(`delete-form-${rolId}`).submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
 @endsection

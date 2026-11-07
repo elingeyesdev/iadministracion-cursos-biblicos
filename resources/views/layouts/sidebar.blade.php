@@ -1,20 +1,20 @@
-<div class="d-flex flex-column h-100 sidebar p-3">
+﻿<div class="d-flex flex-column h-100 sidebar p-3">
     <div class="sidebar-header d-flex align-items-center justify-content-between mb-3">
         <div class="sidebar-brand d-flex align-items-center gap-2">
-            <span class="sidebar-logo fs-4 text-warning">✝</span>
+            <span class="sidebar-logo fs-4 text-warning">Ô£Ø</span>
             <div class="sidebar-brand-text">
                 <div class="sidebar-title fs-5 fw-bold lh-1 text-white">
                     Sistema Iglesia
                 </div>
-                <div class="text-muted small" style="letter-spacing:.1em; text-transform:uppercase; font-size: 0.75rem;">Administración</div>
+                <div class="text-muted small" style="letter-spacing:.1em; text-transform:uppercase; font-size: 0.75rem;">Administraci├│n</div>
             </div>
         </div>
         {{-- Contraer / expandir (solo escritorio) --}}
         <button class="btn btn-sm sidebar-toggle-btn" type="button" data-sidebar-toggle
-                title="Contraer menú" aria-label="Contraer menú" aria-pressed="false">
+                title="Contraer men├║" aria-label="Contraer men├║" aria-pressed="false">
             <i class="bi bi-chevron-double-left"></i>
         </button>
-        <button class="btn btn-sm btn-outline-light d-lg-none" type="button" data-bs-dismiss="offcanvas" aria-label="Cerrar menú">
+        <button class="btn btn-sm btn-outline-light d-lg-none" type="button" data-bs-dismiss="offcanvas" aria-label="Cerrar men├║">
             <i class="bi bi-x-lg"></i>
         </button>
     </div>
@@ -76,14 +76,14 @@
             </li>
             @endif
 
-            <!-- PARAMETRIZACIÓN COLLAPSIBLE MENU -->
+            <!-- PARAMETRIZACI├ôN COLLAPSIBLE MENU -->
             @if(auth()->user()->tienePermiso('miembros.ver', 'lideres.ver', 'docentes.ver', 'ministerios.ver', 'cargos.ver', 'actividades.ver', 'seguimientos.ver', 'cultos.ver', 'contratos.ver', 'cursos.ver'))
             <li class="nav-item mt-3" x-data="{ openParam: {{ request()->is('miembros*', 'cultos*', 'actividades*', 'cursos*', 'cargos*', 'lideres*', 'ministerios*', 'docentes*', 'seguimientos*', 'contratos*') ? 'true' : 'false' }} }">
                 <a class="nav-link sidebar-section-toggle d-flex align-items-center justify-content-between text-white" 
                    @click.prevent="openParam = !openParam"
                    href="#" 
                    style="background: rgba(255,255,255,0.03); cursor: pointer;">
-                    <span><i class="bi bi-sliders me-2 text-warning"></i> Parametrización</span>
+                    <span><i class="bi bi-sliders me-2 text-warning"></i> Parametrizaci├│n</span>
                     <i class="bi sidebar-caret" :class="openParam ? 'bi-chevron-up' : 'bi-chevron-down'" style="font-size: 0.8rem;"></i>
                 </a>
                 
@@ -103,7 +103,7 @@
                         @permiso('lideres.ver')
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('lideres.*') ? 'active' : '' }}" href="{{ route('lideres.index') }}">
-                                <i class="bi bi-person-badge me-2"></i> Líderes Iglesia
+                                <i class="bi bi-person-badge me-2"></i> L├¡deres Iglesia
                             </a>
                         </li>
                         @endpermiso
@@ -116,8 +116,8 @@
                         </li>
                         @endpermiso
 
-                        <!-- ORGANIZACIÓN -->
-                        <li class="nav-item sidebar-group-title text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Organización</li>
+                        <!-- ORGANIZACI├ôN -->
+                        <li class="nav-item sidebar-group-title text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Organizaci├│n</li>
                         @permiso('ministerios.ver')
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('ministerios.*') ? 'active' : '' }}" href="{{ route('ministerios.index') }}">
@@ -166,8 +166,8 @@
                         @endpermiso
                         @endif
 
-                        <!-- ACADÉMICO -->
-                        <li class="nav-item sidebar-group-title text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Académico</li>
+                        <!-- ACAD├ëMICO -->
+                        <li class="nav-item sidebar-group-title text-muted text-uppercase fw-bold mt-3 mb-1" style="font-size: 0.7rem; letter-spacing: .05em;">Acad├®mico</li>
                         @permiso('cursos.ver')
                         <li class="nav-item">
                             <a class="nav-link py-1 {{ request()->routeIs('cursos.*') ? 'active' : '' }}" href="{{ route('cursos.index') }}">
@@ -263,10 +263,10 @@
         </ul>
     </div>
 
-    {{-- Menú de usuario flotante. La lógica de estado y posicionamiento está
+    {{-- Men├║ de usuario flotante. La l├│gica de estado y posicionamiento est├í
          en resources/js/sidebar.js (componente Alpine "userMenu"). --}}
     <div class="mt-auto pt-3 border-top border-secondary">
-        <div class="user-menu-wrap"
+        <div id="user-menu-wrap" class="user-menu-wrap"
              x-data="userMenu"
              @click.outside="close()"
              @keydown.escape.window="close()">
@@ -286,7 +286,7 @@
                 </span>
             </button>
 
-            {{-- Panel: pensado para ir añadiendo más opciones (Perfil, Ajustes…) --}}
+            {{-- Panel: pensado para ir a├▒adiendo m├ís opciones (Perfil, AjustesÔÇª) --}}
             <div class="user-menu"
                  x-ref="menu"
                  x-show="open"
@@ -299,13 +299,13 @@
                  x-transition:leave-start="user-menu-leave-start"
                  x-transition:leave-end="user-menu-leave-end"
                  role="menu"
-                 aria-label="Menú de usuario">
+                 aria-label="Men├║ de usuario">
                 <div class="user-menu-header">
                     <span class="d-block fw-semibold text-truncate">{{ auth()->user()->name ?? 'Usuario' }}</span>
                     <span class="d-block text-muted small text-truncate">{{ auth()->user()->email ?? '' }}</span>
                 </div>
                 <div class="user-menu-divider"></div>
-                {{-- Cierre de sesión: usa la misma ruta/POST y @csrf que ya existían --}}
+                {{-- Cierre de sesi├│n: usa la misma ruta/POST y @csrf que ya exist├¡an --}}
                 <form method="POST" action="{{ route('logout') }}" class="m-0">
                     @csrf
                     <button type="submit" class="user-menu-item text-danger" role="menuitem">
