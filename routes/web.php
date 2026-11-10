@@ -26,6 +26,7 @@ use App\Http\Controllers\MiembroController;
 use App\Http\Controllers\MinisterioController;
 use App\Http\Controllers\PagoCursoController;
 use App\Http\Controllers\PermisoController;
+use App\Http\Controllers\Web\PermisoController as PermisoInlineController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SeguimientoActividadController;
@@ -95,7 +96,8 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
     // Administrar Permisos (solo Administrador)
     Route::middleware('role:Administrador')->group(function () {
-        Route::get('permisos', [PermisoController::class, 'index'])->name('permisos.index');
+        Route::get('permisos', [PermisoInlineController::class, 'index'])->name('permisos.index');
+        Route::put('permisos/{role}/inline', [PermisoInlineController::class, 'update'])->name('permisos.roles.update');
         Route::get('permisos/{role}', [PermisoController::class, 'edit'])->name('permisos.edit');
         Route::put('permisos/{role}', [PermisoController::class, 'update'])->name('permisos.update');
     });

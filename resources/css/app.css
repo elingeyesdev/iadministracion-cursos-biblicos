@@ -1,4 +1,6 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
 @import "./church-theme.css";
 @import "./report.css";
 @import "./dashboard.css";
+@import "./legacy.css";

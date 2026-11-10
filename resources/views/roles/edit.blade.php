@@ -35,43 +35,45 @@
             <h5 class="card-title text-white mb-0"><i class="bi bi-shield-lock-fill text-gold-500 me-2"></i>Detalles del Rol</h5>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('roles.update', $rol->id) }}">
+            <form method="POST" action="{{ route('roles.update', $role->id) }}">
                 @csrf
                 @method('PUT')
 
                 <div class="mb-3">
                     <label for="nombre" class="form-label text-white fw-semibold">Nombre del Rol <span class="text-danger">*</span></label>
-                    <input type="text" name="nombre" id="nombre" class="form-control bg-transparent text-white border-secondary @error('nombre') is-invalid @enderror" value="{{ old('nombre', $rol->nombre) }}" required>
+                    <input type="text" name="nombre" id="nombre" class="form-control bg-transparent text-white border-secondary @error('nombre') is-invalid @enderror" value="{{ old('nombre', $role->nombre) }}" required>
                     @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="descripcion" class="form-label text-white fw-semibold">Descripción</label>
-                    <textarea name="descripcion" id="descripcion" rows="4" class="form-control bg-transparent text-white border-secondary @error('descripcion') is-invalid @enderror" placeholder="Describe brevemente las responsabilidades o permisos asociados a este rol...">{{ old('descripcion', $rol->descripcion) }}</textarea>
+                    <textarea name="descripcion" id="descripcion" rows="4" class="form-control bg-transparent text-white border-secondary @error('descripcion') is-invalid @enderror" placeholder="Describe brevemente las responsabilidades o permisos asociados a este rol...">{{ old('descripcion', $role->descripcion) }}</textarea>
                     @error('descripcion') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="estado" class="form-label text-white fw-semibold">Estado <span class="text-danger">*</span></label>
-                    <select name="estado" id="estado" class="form-select bg-transparent text-white border-secondary @error('estado') is-invalid @enderror" required style="background-color: var(--church-surface, #1e1e2d) !important;">
-                        <option value="activo" {{ old('estado', $rol->estado) === 'activo' ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">Activo</option>
-                        <option value="inactivo" {{ old('estado', $rol->estado) === 'inactivo' ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">Inactivo</option>
+                    <select name="estado" id="estado" class="form-select bg-transparent text-white border-secondary @error('estado') is-invalid @enderror" required>
+                        <option value="Activo" {{ strcasecmp((string) old('estado', $role->estado), 'activo') === 0 ? 'selected' : '' }}>Activo</option>
+                        <option value="Inactivo" {{ strcasecmp((string) old('estado', $role->estado), 'inactivo') === 0 ? 'selected' : '' }}>Inactivo</option>
                     </select>
                     @error('estado') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
+
+                <input type="hidden" name="nivel_acceso" value="{{ old('nivel_acceso', $role->nivel_acceso ?? 1) }}">
 
                 <div class="alert alert-info border-0 mb-4">
                     <i class="bi bi-info-circle-fill me-2"></i>
                     Los permisos de este rol se editan desde
                     @permiso('permisos.ver')
-                        <a href="{{ route('permisos.index', ['rol' => $rol->id]) }}" class="alert-link">Administrar Permisos</a>.
+                        <a href="{{ route('permisos.index', ['rol' => $role->id]) }}" class="alert-link">Administrar Permisos</a>.
                     @else
                         la pantalla Administrar Permisos.
                     @endpermiso
                 </div>
 
                 <div class="mt-4 d-flex gap-3">
-                    <button type="submit" class="btn btn-primary px-4 py-2">
+                    <button type="submit" class="btn btn-church px-4 py-2">
                         <i class="bi bi-save-fill me-1"></i> Actualizar Rol
                     </button>
                     <a href="{{ route('roles.index') }}" class="btn btn-secondary px-4 py-2">

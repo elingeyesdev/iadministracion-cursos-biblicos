@@ -1,0 +1,286 @@
+/* ============================================================
+   COMPATIBILIDAD CON VISTAS ANTIGUAS
+   ------------------------------------------------------------
+   Algunas pantallas (historial de asistencia, acceso de docentes,
+   registro de pagos…) siguen usando las clases del antiguo
+   style.css (glass-panel, data-table, badge-info, btn-icon…).
+   Aquí se redefinen con los tokens del tema para que se vean
+   correctamente tanto en modo claro como oscuro, sin reescribir
+   cada vista.
+   ============================================================ */
+
+/* ---------- Contenedor principal tipo tarjeta ---------- */
+.glass-panel {
+    background: var(--church-surface);
+    border: 1px solid var(--church-border);
+    border-radius: .9rem;
+    box-shadow: 0 .25rem .75rem rgba(34, 30, 25, .07);
+    color: var(--church-text);
+}
+
+.church-dark .glass-panel {
+    box-shadow: 0 .25rem .9rem rgba(0, 0, 0, .45);
+}
+
+/* ---------- Tablas ---------- */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    background: var(--church-surface);
+    border: 1px solid var(--church-border);
+    border-radius: .75rem;
+}
+
+.data-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    color: var(--church-text);
+    vertical-align: middle;
+}
+
+.data-table thead th {
+    padding: .7rem 1rem;
+    background: var(--church-surface-2);
+    color: var(--church-muted);
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--church-border);
+}
+
+.data-table tbody td {
+    padding: .7rem 1rem;
+    border-top: 1px solid var(--church-border);
+    color: var(--church-text);
+}
+
+.data-table tbody tr:first-child td {
+    border-top: 0;
+}
+
+.data-table tbody tr:hover {
+    background: rgba(184, 134, 11, .08);
+}
+
+.church-dark .data-table tbody tr:hover {
+    background: rgba(212, 175, 83, .10);
+}
+
+/* ---------- Badges de estado ---------- */
+.badge-info {
+    background-color: rgba(13, 110, 253, .15) !important;
+    color: #0a58ca !important;
+    border: 1px solid rgba(13, 110, 253, .3);
+}
+
+.badge-active {
+    background-color: rgba(25, 135, 84, .16) !important;
+    color: #146c43 !important;
+    border: 1px solid rgba(25, 135, 84, .32);
+}
+
+.badge-inactive {
+    background-color: rgba(220, 53, 69, .15) !important;
+    color: #b02a37 !important;
+    border: 1px solid rgba(220, 53, 69, .32);
+}
+
+.badge-warning {
+    background-color: rgba(217, 154, 10, .18) !important;
+    color: #7a5608 !important;
+    border: 1px solid rgba(217, 154, 10, .35);
+}
+
+.badge-danger {
+    background-color: rgba(220, 53, 69, .15) !important;
+    color: #b02a37 !important;
+    border: 1px solid rgba(220, 53, 69, .32);
+}
+
+.church-dark .badge-info {
+    background-color: rgba(59, 130, 246, .22) !important;
+    color: #a9c9ff !important;
+    border-color: rgba(59, 130, 246, .45);
+}
+
+.church-dark .badge-active {
+    background-color: rgba(25, 135, 84, .25) !important;
+    color: #9be3b8 !important;
+    border-color: rgba(25, 135, 84, .5);
+}
+
+.church-dark .badge-inactive,
+.church-dark .badge-danger {
+    background-color: rgba(220, 53, 69, .22) !important;
+    color: #ffb3ba !important;
+    border-color: rgba(220, 53, 69, .5);
+}
+
+.church-dark .badge-warning {
+    background-color: rgba(217, 154, 10, .22) !important;
+    color: #ffe08a !important;
+    border-color: rgba(217, 154, 10, .5);
+}
+
+/* ---------- Botones de acción en tablas ---------- */
+.action-buttons {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    flex-wrap: wrap;
+}
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 1px solid var(--church-border);
+    border-radius: .55rem;
+    background: transparent;
+    color: var(--church-muted);
+    line-height: 1;
+    text-decoration: none;
+    transition: all .15s ease;
+}
+
+.btn-icon:hover,
+.btn-icon:focus-visible {
+    color: var(--church-text);
+    background: var(--church-surface-2);
+    border-color: var(--church-muted);
+    outline: none;
+}
+
+.btn-icon.btn-edit {
+    color: var(--church-gold-2);
+    border-color: rgba(184, 134, 11, .45);
+}
+
+.btn-icon.btn-edit:hover {
+    background: rgba(184, 134, 11, .12);
+    color: var(--church-gold-2);
+}
+
+.btn-icon.btn-delete {
+    color: #b02a37;
+    border-color: rgba(220, 53, 69, .4);
+}
+
+.btn-icon.btn-delete:hover {
+    background: rgba(220, 53, 69, .12);
+    color: #b02a37;
+}
+
+.church-dark .btn-icon.btn-edit {
+    color: var(--church-gold);
+    border-color: rgba(212, 175, 83, .5);
+}
+
+.church-dark .btn-icon.btn-delete {
+    color: #f08a94;
+    border-color: rgba(220, 53, 69, .55);
+}
+
+/* ---------- Avatar de usuario ---------- */
+.user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    background: var(--church-gold);
+    color: #0e0e12;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* ---------- Formularios ---------- */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.btn-toggle-password {
+    background: transparent;
+    border: 0;
+    padding: .15rem;
+    color: var(--church-muted);
+    line-height: 1;
+}
+
+.btn-toggle-password:hover {
+    color: var(--church-text);
+}
+
+/* Botón principal dentro de los paneles antiguos (los enlaces de
+   "Cancelar"/"Volver" llevan estilos en línea y conservan su aspecto
+   de botón secundario). */
+.glass-panel .btn:not([style]) {
+    --bs-btn-color: #0e0e12;
+    --bs-btn-bg: var(--church-gold);
+    --bs-btn-border-color: var(--church-gold);
+    --bs-btn-hover-bg: var(--church-gold-2);
+    --bs-btn-hover-border-color: var(--church-gold-2);
+    --bs-btn-hover-color: #0e0e12;
+    --bs-btn-active-bg: var(--church-gold-2);
+    --bs-btn-active-border-color: var(--church-gold-2);
+    --bs-btn-active-color: #0e0e12;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+/* ---------- Asignación de roles ---------- */
+.role-tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: .75rem;
+}
+
+.role-option {
+    display: flex;
+    align-items: flex-start;
+    gap: .65rem;
+    padding: .8rem .9rem;
+    background: var(--church-surface);
+    border: 1px solid var(--church-border);
+    border-radius: .7rem;
+    cursor: pointer;
+    transition: border-color .15s ease, background-color .15s ease;
+}
+
+.role-option:hover {
+    border-color: rgba(184, 134, 11, .55);
+    background: rgba(184, 134, 11, .06);
+}
+
+.role-option .form-check-input {
+    margin-top: .2rem;
+    flex: 0 0 auto;
+}
+
+.role-option__name {
+    display: block;
+    font-weight: 700;
+    color: var(--church-text);
+}
+
+.role-option__desc {
+    display: block;
+    margin-top: .15rem;
+    font-size: .85rem;
+    color: var(--church-muted);
+}

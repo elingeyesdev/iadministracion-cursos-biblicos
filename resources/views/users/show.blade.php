@@ -2,59 +2,94 @@
 
 @section('title', 'Detalle de Usuario')
 
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('usuarios.index') }}" class="text-gold-500 text-decoration-none">Usuarios</a></li>
+    <li class="breadcrumb-item active text-white" aria-current="page">{{ $user->name }}</li>
+@endsection
+
 @section('content')
-<div class="glass-panel" style="padding: 30px; max-width: 700px; margin: 0 auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="font-weight: 700; color: var(--text-primary);">Detalle de Usuario</h2>
-        <div style="display: flex; gap: 10px;">
-            @if(!$user->trashed())
-                @if(auth()->user()->puede('usuarios', 'editar'))
-                <a href="{{ route('usuarios.edit', $user->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
-                @endif
+<div class="container-fluid px-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="h2 text-white mb-1">Detalle de Usuario</h1>
+            <p class="text-muted mb-0">Información de la cuenta y roles asignados.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ route('usuarios.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Volver al listado
+            </a>
+            @if(!$user->trashed() && auth()->user()->puede('usuarios', 'editar'))
+                <a href="{{ route('usuarios.edit', $user->id) }}" class="btn btn-church">
+                    <i class="bi bi-pencil-fill me-1"></i> Editar Usuario
+                </a>
             @endif
-            <a href="{{ route('usuarios.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
         </div>
     </div>
 
-    <div style="margin-bottom: 20px;">
-            <span class="badge badge-active">Activo</span>
-    </div>
+    <div class="row g-4">
+        <div class="col-12 col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <div class="user-avatar mx-auto mb-4">
+                        {{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}
+                    </div>
+                    <h4 class="mb-1 fw-bold">{{ $user->name }}</h4>
+                    <p class="text-muted mb-4">{{ $user->email }}</p>
 
-    <div style="border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden;">
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Nombre</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ $user->name }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Correo Electrónico</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ $user->email }}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Roles</span>
-            <span style="font-weight: 600; color: var(--text-primary);">
-                @if($user->roles->isNotEmpty())
-
-                        @foreach($user->roles as $role)
-
-                            <span class="badge badge-info">{{ $role->nombre }}</span>
-                        
-@endforeach
-                @else
-                    Sin roles
-                @endif
-            </span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--card-border);">
-            <span style="color: var(--text-secondary);">Fecha de Registro</span>
-            <span style="font-weight: 600; color: var(--text-primary);">{{ \Carbon\Carbon::parse($user->created_at)->format('d/m/Y H:i') }}</span>
-        </div>
-        @if($user->deleted_at)
-            <div style="display: flex; justify-content: space-between; padding: 14px 18px;">
-                <span style="color: var(--text-secondary);">Fecha de Eliminación</span>
-                <span style="font-weight: 600; color: var(--error);">{{ \Carbon\Carbon::parse($user->deleted_at)->format('d/m/Y H:i') }}</span>
+                    @if($user->trashed())
+                        <span class="badge bg-danger">Cuenta eliminada</span>
+                    @else
+                        <span class="badge bg-success">Cuenta activa</span>
+                    @endif
+                </div>
             </div>
-        @endif
-    </div>
+        </div>
 
+        <div class="col-12 col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header border-0 bg-body-secondary py-3">
+                    <h5 class="card-title mb-0"><i class="bi bi-person-vcard-fill text-gold-500 me-2"></i>Información</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center gap-3 py-3 px-4">
+                            <span class="text-muted">Nombre</span>
+                            <span class="fw-semibold text-end">{{ $user->name }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center gap-3 py-3 px-4">
+                            <span class="text-muted">Correo Electrónico</span>
+                            <span class="fw-semibold text-end">{{ $user->email }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start gap-3 py-3 px-4">
+                            <span class="text-muted">Roles</span>
+                            <span class="text-end">
+                                @forelse($user->roles as $role)
+                                    @php
+                                        $badgeClass = 'bg-secondary';
+                                        if ($role->nombre === 'Administrador') $badgeClass = 'bg-danger';
+                                        elseif ($role->nombre === 'Secretario') $badgeClass = 'bg-primary';
+                                        elseif ($role->nombre === 'Tesorero') $badgeClass = 'bg-warning text-dark';
+                                    @endphp
+                                    <span class="badge {{ $badgeClass }} me-1 mb-1">{{ $role->nombre }}</span>
+                                @empty
+                                    <span class="text-muted">Sin roles</span>
+                                @endforelse
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center gap-3 py-3 px-4">
+                            <span class="text-muted">Fecha de Registro</span>
+                            <span class="fw-semibold text-end">{{ \Carbon\Carbon::parse($user->created_at)->format('d/m/Y H:i') }}</span>
+                        </li>
+                        @if($user->deleted_at)
+                            <li class="list-group-item d-flex justify-content-between align-items-center gap-3 py-3 px-4">
+                                <span class="text-muted">Fecha de Eliminación</span>
+                                <span class="fw-semibold text-end text-danger">{{ \Carbon\Carbon::parse($user->deleted_at)->format('d/m/Y H:i') }}</span>
+                            </li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

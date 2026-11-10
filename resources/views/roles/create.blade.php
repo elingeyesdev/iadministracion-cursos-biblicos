@@ -52,12 +52,14 @@
 
                 <div class="mb-3">
                     <label for="estado" class="form-label text-white fw-semibold">Estado <span class="text-danger">*</span></label>
-                    <select name="estado" id="estado" class="form-select bg-transparent text-white border-secondary @error('estado') is-invalid @enderror" required style="background-color: var(--church-surface, #1e1e2d) !important;">
-                        <option value="activo" {{ old('estado') !== 'inactivo' ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">Activo</option>
-                        <option value="inactivo" {{ old('estado') === 'inactivo' ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">Inactivo</option>
+                    <select name="estado" id="estado" class="form-select bg-transparent text-white border-secondary @error('estado') is-invalid @enderror" required>
+                        <option value="Activo" {{ strcasecmp((string) old('estado', 'Activo'), 'activo') === 0 ? 'selected' : '' }}>Activo</option>
+                        <option value="Inactivo" {{ strcasecmp((string) old('estado'), 'inactivo') === 0 ? 'selected' : '' }}>Inactivo</option>
                     </select>
                     @error('estado') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
+
+                <input type="hidden" name="nivel_acceso" value="{{ old('nivel_acceso', 1) }}">
 
                 <div class="alert alert-info border-0 mb-4">
                     <i class="bi bi-info-circle-fill me-2"></i>
@@ -70,7 +72,7 @@
                 </div>
 
                 <div class="mt-4 d-flex gap-3">
-                    <button type="submit" class="btn btn-primary px-4 py-2">
+                    <button type="submit" class="btn btn-church px-4 py-2">
                         <i class="bi bi-save-fill me-1"></i> Guardar Rol
                     </button>
                     <a href="{{ route('roles.index') }}" class="btn btn-secondary px-4 py-2">

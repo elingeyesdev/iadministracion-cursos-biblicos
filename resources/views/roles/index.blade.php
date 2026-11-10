@@ -15,12 +15,12 @@
         </div>
         <div class="d-flex gap-2">
             @permiso('permisos.ver')
-                <a href="{{ route('permisos.index') }}" class="btn btn-outline-light">
+                <a href="{{ route('permisos.index') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-key me-1"></i> Permisos
                 </a>
             @endpermiso
             @permiso('roles.gestionar')
-                <a href="{{ route('roles.create') }}" class="btn btn-success">
+                <a href="{{ route('roles.create') }}" class="btn btn-church">
                     <i class="bi bi-shield-plus me-1"></i> Nuevo Rol
                 </a>
             @endpermiso
@@ -41,8 +41,8 @@
 
     <div class="card border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="rolesTable" style="color: #c5c5d2;">
-                <thead class="table-dark" style="background-color: #151521;">
+            <table class="table table-hover align-middle mb-0" id="rolesTable">
+                <thead>
                     <tr>
                         <th scope="col" class="border-0">Nombre</th>
                         <th scope="col" class="border-0">Descripción</th>
@@ -66,7 +66,7 @@
                             </td>
                             <td>{{ $rol->descripcion ?? 'Sin descripción' }}</td>
                             <td>
-                                @if($rol->estado === 'activo')
+                                @if(strcasecmp((string) $rol->estado, 'activo') === 0)
                                     <span class="badge bg-success">Activo</span>
                                 @else
                                     <span class="badge bg-danger">Inactivo</span>
@@ -108,7 +108,7 @@
         </div>
 
         @if($roles->hasPages())
-            <div class="card-footer border-0 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #151521;">
+            <div class="card-footer border-0 d-flex align-items-center justify-content-between flex-wrap gap-2 bg-body-secondary">
                 <div class="text-muted small">
                     Mostrando {{ $roles->firstItem() }}–{{ $roles->lastItem() }} de {{ $roles->total() }} roles
                 </div>

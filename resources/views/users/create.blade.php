@@ -2,61 +2,118 @@
 
 @section('title', 'Nuevo Usuario')
 
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('usuarios.index') }}" class="text-gold-500 text-decoration-none">Usuarios</a></li>
+    <li class="breadcrumb-item active text-white" aria-current="page">Nuevo Usuario</li>
+@endsection
+
 @section('content')
-<div class="glass-panel" style="padding: 30px; max-width: 600px; margin: 0 auto;">
-    <h2 style="font-weight: 700; margin-bottom: 20px; color: var(--text-primary);">Nuevo Usuario</h2>
+<div class="container-fluid px-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="h2 text-white mb-1">Nuevo Usuario</h1>
+            <p class="text-muted mb-0">Crea una cuenta de acceso para el personal de la iglesia.</p>
+        </div>
+        <a href="{{ route('usuarios.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver
+        </a>
+    </div>
 
     @if($errors->any())
-        <div class="alert alert-danger">
-            <ul>
+        <div class="alert alert-danger border-0 mb-4">
+            <h5 class="alert-heading fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>Corrige los siguientes errores:</h5>
+            <ul class="mb-0">
                 @foreach($errors->all() as $error)
-
                     <li>{{ $error }}</li>
-                
-@endforeach
+                @endforeach
             </ul>
         </div>
     @endif
 
     @if(auth()->user()->puede('usuarios', 'crear'))
-    <form method="POST" action="{{ route('usuarios.store') }}">
-        @csrf
+        <div class="card border-0 shadow-sm" style="max-width: 720px;">
+            <div class="card-header border-0 bg-body-secondary py-3">
+                <h5 class="card-title mb-0"><i class="bi bi-person-plus-fill text-gold-500 me-2"></i>Datos de la Cuenta</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ route('usuarios.store') }}">
+                    @csrf
 
-        <div class="form-group">
-            <label for="name" class="form-label">Nombre *</label>
-            <input id="name" type="text" name="name" class="form-control" value="{{ old('name') }}" pattern="[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]+" title="Solo letras y espacios" oninput="soloLetras(this)" required autocomplete="name">
-        </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-semibold">Nombre Completo <span class="text-danger">*</span></label>
+                        <input id="name" type="text" name="name" value="{{ old('name') }}"
+                               class="form-control @error('name') is-invalid @enderror"
+                               pattern="[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]+" title="Solo letras y espacios"
+                               oninput="soloLetras(this)" required autocomplete="name">
+                        @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
 
-        <div class="form-group">
-            <label for="email" class="form-label">Correo Electrónico *</label>
-            <input id="email" type="email" name="email" class="form-control" value="{{ old('email') }}" required autocomplete="email">
-        </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Correo Electrónico <span class="text-danger">*</span></label>
+                        <input id="email" type="email" name="email" value="{{ old('email') }}"
+                               class="form-control @error('email') is-invalid @enderror"
+                               required autocomplete="email">
+                        @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
 
-        <div class="form-group">
-            <label for="password" class="form-label">Contraseña *</label>
-            <div style="position: relative; display: flex; align-items: center;">
-                <input id="password" type="password" class="form-control" name="password" required autocomplete="new-password" style="padding-right: 45px;">
-                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('password')" style="position: absolute; right: 15px;">
-                    <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
-                    <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px; display: none;"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-2.202-2.202-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
-                </button>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label fw-semibold">Contraseña <span class="text-danger">*</span></label>
+                            <div class="position-relative">
+                                <input id="password" type="password" name="password"
+                                       class="form-control pe-5 @error('password') is-invalid @enderror"
+                                       required autocomplete="new-password">
+                                <button type="button" class="btn-toggle-password position-absolute top-50 end-0 translate-middle-y me-2"
+                                        onclick="togglePasswordVisibility('password', this)" aria-label="Mostrar u ocultar contraseña">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="password-confirm" class="form-label fw-semibold">Confirmar Contraseña <span class="text-danger">*</span></label>
+                            <input id="password-confirm" type="password" name="password_confirmation"
+                                   class="form-control" required autocomplete="new-password">
+                        </div>
+                    </div>
+
+                    <p class="text-muted small">La contraseña debe tener al menos 12 caracteres. Los roles se asignan desde «Roles Usuario».</p>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-church px-4">
+                            <i class="bi bi-save-fill me-1"></i> Crear Usuario
+                        </button>
+                        <a href="{{ route('usuarios.index') }}" class="btn btn-outline-secondary px-4">Cancelar</a>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <div class="form-group">
-            <label for="password-confirm" class="form-label">Confirmar Contraseña *</label>
-            <input id="password-confirm" type="password" name="password_confirmation" class="form-control" required autocomplete="new-password">
-        </div>
-
-        <p style="color: var(--text-secondary); font-size: 0.85rem;">
-            La contraseña debe tener al menos 6 caracteres. Los roles se asignan desde "Administrar Rol Usuario".
-        </p>
-
-        <div style="display: flex; gap: 15px; margin-top: 30px;">
-            <button type="submit" class="btn">Crear Usuario</button>
-            <a href="{{ route('usuarios.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
-        </div>
-    </form>
     @endif
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    function soloLetras(input) {
+        input.value = input.value.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]/g, '');
+    }
+
+    function togglePasswordVisibility(id, button) {
+        const input = document.getElementById(id);
+        const icon = button ? button.querySelector('i') : null;
+
+        if (!input) {
+            return;
+        }
+
+        const visible = input.type === 'text';
+        input.type = visible ? 'password' : 'text';
+
+        if (icon) {
+            icon.classList.toggle('bi-eye', visible);
+            icon.classList.toggle('bi-eye-slash', !visible);
+        }
+    }
+</script>
 @endsection

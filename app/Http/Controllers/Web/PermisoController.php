@@ -37,7 +37,7 @@ class PermisoController extends Controller
             ->values();
 
         $permisosPorCategoria = $categorias->map(fn (array $datos, string $clave) => [
-            'nombre'   => $datos['nombre'],
+            'nombre'   => $datos['nombre'] ?? $clave,
             'icono'    => $datos['icono'] ?? 'bi-key',
             'permisos' => $permisos->filter(fn (Permiso $permiso) => $permiso->categoria() === $clave)->values(),
         ]);

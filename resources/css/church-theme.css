@@ -80,6 +80,20 @@ html,body{height:100%}
 }
 
 /* Botón para alternar entre tema claro y oscuro */
+.theme-toggle{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.35rem;
+  padding:.35rem .55rem;
+  line-height:1;
+  overflow:visible;
+}
+.theme-toggle i{
+  display:inline-block;
+  font-size:1rem;
+  line-height:1;
+}
 .theme-toggle .theme-icon-sun{display:none}
 .church-light .theme-toggle .theme-icon-sun{display:inline-block}
 .church-light .theme-toggle .theme-icon-moon{display:none}
@@ -616,6 +630,12 @@ html,body{height:100%}
   html.sidebar-collapsed .sidebar .user-menu-text{
     display:none!important;
   }
+
+  /* Con el menú contraído el panel se abre hacia la derecha del avatar */
+  html.sidebar-collapsed .sidebar .user-menu{
+    left:calc(100% + .6rem);
+    bottom:0;
+  }
 }
 
 /* ============================================================
@@ -638,10 +658,14 @@ html,body{height:100%}
   line-height:1;
 }
 
+.user-menu-wrap{
+  position:relative;
+}
 .user-menu{
-  position:fixed;
-  top:0;
+  position:absolute;
   left:0;
+  bottom:calc(100% + .5rem);
+  top:auto;
   z-index:1080;
   min-width:13rem;
   max-width:min(18rem, calc(100vw - 1rem));

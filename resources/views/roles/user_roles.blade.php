@@ -2,75 +2,80 @@
 
 @section('title', 'Asignar Rol')
 
+@section('breadcrumb')
+    <li class="breadcrumb-item active text-white" aria-current="page">Roles Usuario</li>
+@endsection
+
 @section('content')
-<div class="glass-panel" style="padding: 30px;">
-    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 20px; margin-bottom: 20px;">
+<div class="container-fluid px-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
-            <h2 style="font-weight: 700; color: var(--text-primary);">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 28px; height: 28px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
-                Asignar Rol
-            </h2>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Gestiona los roles asignados a los usuarios del sistema.</p>
+            <h1 class="h2 text-white mb-1">Roles Usuario</h1>
+            <p class="text-muted mb-0">Gestiona los roles asignados a los usuarios del sistema.</p>
         </div>
     </div>
 
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Correo Electrónico</th>
-                    <th>Roles Actuales</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($users as $user)
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
                     <tr>
-                        <td style="font-weight: 600;">{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>
-                            @if($user->roles->isNotEmpty())
-                                <div class="role-tags" style="margin-bottom: 0;">
-                                    @foreach($user->roles as $role)
-                                        <span class="badge badge-info">{{ $role->nombre }}</span>
-                                    @endforeach
+                        <th scope="col" class="border-0">Usuario</th>
+                        <th scope="col" class="border-0">Correo Electrónico</th>
+                        <th scope="col" class="border-0">Roles Actuales</th>
+                        <th scope="col" class="border-0 text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($users as $user)
+                        <tr>
+                            <td class="fw-semibold">{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>
+                                @if($user->roles->isNotEmpty())
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach($user->roles as $role)
+                                            <span class="badge bg-info text-dark">{{ $role->nombre }}</span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-muted">Sin roles</span>
+                                @endif
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group">
+                                    @if(auth()->user()->puede('roles', 'editar'))
+                                        <a href="{{ route('asignar-roles.edit', $user->id) }}"
+                                           class="btn btn-sm btn-outline-secondary"
+                                           title="Asignar roles" aria-label="Asignar roles a {{ $user->name }}">
+                                            <i class="bi bi-shield-check"></i>
+                                        </a>
+                                        <form method="POST" action="{{ route('asignar-roles.destroy', $user->id) }}"
+                                              onsubmit="return confirm('¿Quitar todos los roles asignados a este usuario?');">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    title="Limpiar roles" aria-label="Limpiar roles de {{ $user->name }}">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
-                            @else
-                                <span style="color: var(--text-secondary);">Sin roles</span>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                @if(auth()->user()->puede('roles', 'editar'))
-                                <a href="{{ route('asignar-roles.edit', $user->id) }}" class="btn-icon btn-edit" title="Asignar roles" aria-label="Asignar roles a {{ $user->name }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
-                                </a>
-                                @endif
-                                @if(auth()->user()->puede('roles', 'editar'))
-                                <form method="POST" action="{{ route('asignar-roles.destroy', $user->id) }}" style="display: inline-flex;" onsubmit="return confirm('¿Quitar todos los roles asignados a este usuario?');">
-                                    @csrf
-                                    <button type="submit" class="btn-icon btn-delete" title="Limpiar roles" aria-label="Limpiar roles de {{ $user->name }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                                    </button>
-                                </form>
-                                @endif
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 30px;">
-                            No hay usuarios registrados.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">No hay usuarios registrados.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-    <div style="margin-top: 20px;">
-        {{ $users->links() }}
+        @if($users->hasPages())
+            <div class="card-footer border-0 bg-body-secondary">
+                {{ $users->links('pagination::bootstrap-5') }}
+            </div>
+        @endif
     </div>
 </div>
 @endsection

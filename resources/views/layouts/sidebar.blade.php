@@ -291,7 +291,6 @@
                  x-ref="menu"
                  x-show="open"
                  x-cloak
-                 :style="style"
                  x-transition:enter="user-menu-transition"
                  x-transition:enter-start="user-menu-enter-start"
                  x-transition:enter-end="user-menu-enter-end"

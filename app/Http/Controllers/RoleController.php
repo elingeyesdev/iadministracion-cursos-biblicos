@@ -41,6 +41,13 @@ class RoleController extends Controller
         return redirect()->route('roles.index')->with('success', 'Rol creado con éxito.');
     }
 
+    public function show($id)
+    {
+        $rol = Role::withTrashed()->with(['permisos', 'users'])->findOrFail($id);
+
+        return view('roles.show', compact('rol'));
+    }
+
     public function edit($id)
     {
         $role = Role::withTrashed()->findOrFail($id);

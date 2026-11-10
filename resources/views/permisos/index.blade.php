@@ -44,8 +44,8 @@
             <span class="badge bg-secondary">{{ $roles->count() }} roles</span>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" style="color: #c5c5d2;">
-                <thead class="table-dark" style="background-color: #151521;">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
                     <tr>
                         <th scope="col" class="border-0">Rol</th>
                         <th scope="col" class="border-0">Descripción</th>
@@ -68,7 +68,7 @@
                             </td>
                             <td>{{ $rol->descripcion ?? 'Sin descripción' }}</td>
                             <td>
-                                @if($rol->estado === 'activo')
+                                @if(strcasecmp((string) $rol->estado, 'activo') === 0)
                                     <span class="badge bg-success">Activo</span>
                                 @else
                                     <span class="badge bg-danger">Inactivo</span>

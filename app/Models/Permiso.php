@@ -34,4 +34,18 @@ class Permiso extends Model
     {
         return $this->belongsTo(Role::class);
     }
+
+    /**
+     * Categoría (grupo) a la que pertenece el módulo de este permiso.
+     */
+    public function categoria(): string
+    {
+        foreach (config('permisos.categorias', []) as $clave => $modulos) {
+            if (array_key_exists($this->modulo, $modulos)) {
+                return $clave;
+            }
+        }
+
+        return 'otros';
+    }
 }

@@ -52,7 +52,7 @@
 
                     <div class="mb-4">
                         <label class="text-muted small fw-semibold d-block mb-1">Estado del Rol</label>
-                        @if($rol->estado === 'activo')
+                        @if(strcasecmp((string) $rol->estado, 'activo') === 0)
                             <span class="badge bg-success">Activo</span>
                         @else
                             <span class="badge bg-danger">Inactivo</span>
@@ -89,7 +89,7 @@
 
                             <div class="mb-3">
                                 <div class="text-muted small fw-bold text-uppercase mb-2" style="letter-spacing:.05em;">
-                                    <i class="bi {{ $categoria['icono'] ?? 'bi-key' }} me-1"></i>{{ $categoria['nombre'] }}
+                                    <i class="bi {{ $categoria['icono'] ?? 'bi-key' }} me-1"></i>{{ $categoria['nombre'] ?? $claveCategoria }}
                                 </div>
                                 <div class="d-flex flex-wrap gap-1">
                                     @foreach($permisosCategoria as $permiso)
@@ -129,8 +129,8 @@
                 </div>
                 <div class="card-body px-0">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" style="color: #c5c5d2;">
-                            <thead class="table-dark" style="background-color: #151521;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="border-0 px-4">Usuario</th>
                                     <th scope="col" class="border-0">Username</th>
@@ -152,7 +152,7 @@
                                             {{ $u->pivot->fecha_asignacion ? \Carbon\Carbon::parse($u->pivot->fecha_asignacion)->format('d/m/Y') : '—' }}
                                         </td>
                                         <td class="px-4">
-                                            @if($u->pivot->estado === 'activo')
+                                            @if(strcasecmp((string) $u->pivot->estado, 'activo') === 0)
                                                 <span class="badge bg-success">Activo</span>
                                             @else
                                                 <span class="badge bg-danger">Inactivo</span>
