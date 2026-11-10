@@ -52,7 +52,7 @@ RUN printf '%s\n' \
   'php artisan route:cache' \
   'php artisan view:cache' \
   'php artisan migrate --force' \
-  'php artisan db:seed --force' \
+  'if [ "${RUN_SEED:-0}" = "1" ]; then php artisan db:seed --force; fi' \
   'exec apache2-foreground' \
   > /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
 
