@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detalle del Contrato')
 
@@ -11,7 +11,7 @@
 <div class="row g-4">
     <div class="col-md-5">
         <div class="card p-4 shadow-sm h-100">
-            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-file-earmark-text me-2"></i>Informaci├│n del Contrato</h3>
+            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-file-earmark-text me-2"></i>Información del Contrato</h3>
 
             <table class="table table-borderless">
                 <tr>
@@ -47,8 +47,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <th class="ps-0 py-2 text-muted">Descripci├│n:</th>
-                    <td class="py-2">{{ $contrato->descripcion ?? 'Sin descripci├│n' }}</td>
+                    <th class="ps-0 py-2 text-muted">Descripción:</th>
+                    <td class="py-2">{{ $contrato->descripcion ?? 'Sin descripción' }}</td>
                 </tr>
             </table>
 

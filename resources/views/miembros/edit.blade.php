@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Editar Miembro')
 
@@ -18,14 +18,14 @@
         <div class="row g-3">
             <div class="col-md-6">
                 <label for="nombre" class="form-label">Nombre Completo <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre', $miembro->nombre) }}" required placeholder="Ej. Juan P├®rez">
+                <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre', $miembro->nombre) }}" required placeholder="Ej. Juan Pérez">
                 @error('nombre')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="col-md-6">
-                <label for="email" class="form-label">Correo Electr├│nico <span class="text-danger">*</span></label>
+                <label for="email" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
                 <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $miembro->email) }}" required placeholder="juan@ejemplo.com">
                 @error('email')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -33,8 +33,8 @@
             </div>
 
             <div class="col-md-4">
-                <label for="telefono" class="form-label">Tel├®fono</label>
-                <input type="text" class="form-control @error('telefono') is-invalid @enderror" id="telefono" name="telefono" value="{{ old('telefono', $miembro->telefono) }}" placeholder="Ej. +56912345678" pattern="[0-9+\s\-()]+" title="El tel├®fono no puede contener letras.">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="text" class="form-control @error('telefono') is-invalid @enderror" id="telefono" name="telefono" value="{{ old('telefono', $miembro->telefono) }}" placeholder="Ej. +56912345678" pattern="[0-9+\s\-()]+" title="El teléfono no puede contener letras.">
                 @error('telefono')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -82,7 +82,7 @@
             </div>
 
             <div class="col-12">
-                <label for="direccion" class="form-label">Direcci├│n</label>
+                <label for="direccion" class="form-label">Dirección</label>
                 <input type="text" class="form-control @error('direccion') is-invalid @enderror" id="direccion" name="direccion" value="{{ old('direccion', $miembro->direccion) }}" placeholder="Ej. Calle Principal #123, Ciudad">
                 @error('direccion')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -108,7 +108,7 @@
         const telefonoInput = document.getElementById('telefono');
         if (telefonoInput) {
             telefonoInput.addEventListener('input', function (e) {
-                // Elimina letras y cualquier car├ícter que no sea n├║mero, espacio, +, -, ( o )
+                // Elimina letras y cualquier carácter que no sea número, espacio, +, -, ( o )
                 e.target.value = e.target.value.replace(/[^0-9+\s\-()]/g, '');
             });
         }

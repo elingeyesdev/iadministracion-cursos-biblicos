@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Editar Ministerio')
 
@@ -25,9 +25,9 @@
             </div>
 
             <div class="col-md-6">
-                <label for="id_lider" class="form-label">L├¡der / Encargado</label>
+                <label for="id_lider" class="form-label">Líder / Encargado</label>
                 <select class="form-select @error('id_lider') is-invalid @enderror" id="id_lider" name="id_lider">
-                    <option value="">Seleccione un l├¡der...</option>
+                    <option value="">Seleccione un líder...</option>
                     @foreach($miembros as $miembro)
                         <option value="{{ $miembro->id }}" {{ old('id_lider', $ministerio->id_lider) == $miembro->id ? 'selected' : '' }}>
                             {{ $miembro->nombre }} ({{ $miembro->email }})
@@ -40,8 +40,8 @@
             </div>
 
             <div class="col-12">
-                <label for="descripcion" class="form-label">Descripci├│n</label>
-                <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="4" placeholder="Describa el prop├│sito y actividades de este ministerio...">{{ old('descripcion', $ministerio->descripcion) }}</textarea>
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="4" placeholder="Describa el propósito y actividades de este ministerio...">{{ old('descripcion', $ministerio->descripcion) }}</textarea>
                 @error('descripcion')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror

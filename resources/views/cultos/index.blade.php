@@ -1,6 +1,6 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Gesti├│n de Cultos')
+@section('title', 'Gestión de Cultos')
 
 @section('breadcrumb')
     <li class="breadcrumb-item active text-white" aria-current="page">Cultos</li>
@@ -11,7 +11,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Cultos</h1>
-            <p class="text-muted mb-0">Administra las reuniones y horarios de culto de la congregaci├│n.</p>
+            <p class="text-muted mb-0">Administra las reuniones y horarios de culto de la congregación.</p>
         </div>
         <a href="{{ route('cultos.create') }}" class="btn btn-success">
             <i class="bi bi-calendar-heart me-1"></i> Nuevo Culto
@@ -36,9 +36,9 @@
                 <thead class="table-dark" style="background-color: #151521;">
                     <tr>
                         <th scope="col" class="border-0">Nombre</th>
-                        <th scope="col" class="border-0">D├¡a de la semana</th>
+                        <th scope="col" class="border-0">Día de la semana</th>
                         <th scope="col" class="border-0">Hora</th>
-                        <th scope="col" class="border-0">Descripci├│n</th>
+                        <th scope="col" class="border-0">Descripción</th>
                         <th scope="col" class="border-0 text-end">Total Recaudado</th>
                         <th scope="col" class="border-0 text-end">Acciones</th>
                     </tr>
@@ -49,7 +49,7 @@
                             <td class="fw-bold text-white">{{ $c->nombre }}</td>
                             <td class="text-capitalize">{{ $c->dia_semana }}</td>
                             <td>{{ \Carbon\Carbon::parse($c->hora)->format('H:i') }} hs</td>
-                            <td>{{ $c->descripcion ?? 'Sin descripci├│n' }}</td>
+                            <td>{{ $c->descripcion ?? 'Sin descripción' }}</td>
                             <td class="text-end fw-bold text-success">
                                 Bs. {{ number_format($c->ingresos_sum_monto_total ?? 0, 2) }}
                             </td>
@@ -83,7 +83,7 @@
         @if($cultos->hasPages())
             <div class="card-footer border-0 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #151521;">
                 <div class="text-muted small">
-                    Mostrando {{ $cultos->firstItem() }}ÔÇô{{ $cultos->lastItem() }} de {{ $cultos->total() }} cultos
+                    Mostrando {{ $cultos->firstItem() }}–{{ $cultos->lastItem() }} de {{ $cultos->total() }} cultos
                 </div>
                 <div>
                     {{ $cultos->links('pagination::bootstrap-5') }}
@@ -113,7 +113,7 @@
             });
         });
 
-        // SweetAlert2 confirmaci├│n de borrado
+        // SweetAlert2 confirmación de borrado
         const deleteButtons = document.querySelectorAll('.btn-delete-culto');
         deleteButtons.forEach(btn => {
             btn.addEventListener('click', function() {
@@ -121,13 +121,13 @@
                 const cultoNombre = this.getAttribute('data-nombre');
 
                 Swal.fire({
-                    title: '┬┐Est├ís seguro?',
-                    text: `Vas a eliminar el culto "${cultoNombre}". Esta acci├│n no se puede deshacer y fallar├í si tiene ingresos registrados.`,
+                    title: '¿Estás seguro?',
+                    text: `Vas a eliminar el culto "${cultoNombre}". Esta acción no se puede deshacer y fallará si tiene ingresos registrados.`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'S├¡, eliminar',
+                    confirmButtonText: 'Sí, eliminar',
                     cancelButtonText: 'Cancelar',
                     background: '#1e1e2d',
                     color: '#fff'

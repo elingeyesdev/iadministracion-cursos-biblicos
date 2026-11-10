@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Gestionar Inscripciones - ' . $curso->nombre)
 
@@ -35,7 +35,7 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="fecha_inscripcion" class="form-label">Fecha de Inscripci├│n <span class="text-danger">*</span></label>
+                        <label for="fecha_inscripcion" class="form-label">Fecha de Inscripción <span class="text-danger">*</span></label>
                         <input type="date" class="form-control" id="fecha_inscripcion" name="fecha_inscripcion" value="{{ date('Y-m-d') }}" required>
                     </div>
                     <button type="submit" class="btn btn-church w-100">
@@ -99,7 +99,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">A├║n no hay inscripciones para este curso.</td>
+                            <td colspan="4" class="text-center text-muted py-4">Aún no hay inscripciones para este curso.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -121,13 +121,13 @@
 document.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', function() {
         Swal.fire({
-            title: '┬┐Est├ís seguro?',
-            text: 'Esta acci├│n no se puede deshacer',
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'S├¡, eliminar',
+            confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         }).then(result => {
             if (result.isConfirmed) {

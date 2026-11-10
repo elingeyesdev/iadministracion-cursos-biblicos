@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Editar Miembro')
 
@@ -7,9 +7,9 @@
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
     <div>
         <h1 class="sidebar-title" style="font-size:2rem;">Editar Miembro</h1>
-        <p class="text-muted mb-0">Actualiza la informaci├│n del miembro.</p>
+        <p class="text-muted mb-0">Actualiza la información del miembro.</p>
     </div>
-    <a href="{{ route('miembro.index') }}" class="btn btn-outline-church">ÔåÉ Volver</a>
+    <a href="{{ route('miembro.index') }}" class="btn btn-outline-church">← Volver</a>
 </div>
 
 <div class="card shadow-sm">
@@ -35,7 +35,7 @@
                     @error('correo') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-12 col-md-6">
-                    <label class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Tel├®fono (opcional)</label>
+                    <label class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Teléfono (opcional)</label>
                     <input type="text" name="telefono" value="{{ old('telefono', $miembro->telefono) }}" class="form-control">
                 </div>
                 <div class="col-12 col-md-6">

@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Listado de Ministerios')
 
@@ -27,8 +27,8 @@
             <thead class="table-dark">
                 <tr>
                     <th>Nombre</th>
-                    <th>Descripci├│n</th>
-                    <th>L├¡der</th>
+                    <th>Descripción</th>
+                    <th>Líder</th>
                     <th class="text-end">Acciones</th>
                 </tr>
             </thead>
@@ -36,8 +36,8 @@
                 @forelse($ministerios as $ministerio)
                 <tr>
                     <td><strong>{{ $ministerio->nombre }}</strong></td>
-                    <td>{{ Str::limit($ministerio->descripcion, 50) ?? 'Sin descripci├│n' }}</td>
-                    <td>{{ $ministerio->lider->nombre ?? 'Sin l├¡der asignado' }}</td>
+                    <td>{{ Str::limit($ministerio->descripcion, 50) ?? 'Sin descripción' }}</td>
+                    <td>{{ $ministerio->lider->nombre ?? 'Sin líder asignado' }}</td>
                     <td class="text-end">
                         <a href="{{ route('ministerios.show', $ministerio->id) }}" class="btn btn-sm btn-outline-info me-1" title="Ver Detalle">
                             <i class="bi bi-eye"></i>
@@ -81,13 +81,13 @@ document.getElementById('buscador').addEventListener('keyup', function() {
 document.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', function() {
         Swal.fire({
-            title: '┬┐Est├ís seguro?',
-            text: 'Esta acci├│n no se puede deshacer',
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'S├¡, eliminar',
+            confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         }).then(result => {
             if (result.isConfirmed) {

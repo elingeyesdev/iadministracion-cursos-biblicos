@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Editar Ingreso')
 
@@ -45,7 +45,7 @@
                         <select name="id_culto" id="id_culto" class="form-select bg-transparent text-white border-secondary @error('id_culto') is-invalid @enderror" required style="background-color: var(--church-surface, #1e1e2d) !important;">
                             @foreach($cultos as $culto)
                                 <option value="{{ $culto->id_culto }}" {{ old('id_culto', $ingreso->id_culto) == $culto->id_culto ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">
-                                    {{ $culto->nombre }} ÔÇö {{ ucfirst($culto->dia_semana) }}
+                                    {{ $culto->nombre }} — {{ ucfirst($culto->dia_semana) }}
                                 </option>
                             @endforeach
                         </select>
@@ -67,7 +67,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="metodo_pago" class="form-label text-white fw-semibold">M├®todo de Pago <span class="text-danger">*</span></label>
+                        <label for="metodo_pago" class="form-label text-white fw-semibold">Método de Pago <span class="text-danger">*</span></label>
                         <select name="metodo_pago" id="metodo_pago" class="form-select bg-transparent text-white border-secondary @error('metodo_pago') is-invalid @enderror" required style="background-color: var(--church-surface, #1e1e2d) !important;">
                             <option value="efectivo" {{ old('metodo_pago', $ingreso->metodo_pago) === 'efectivo' ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">Efectivo</option>
                             <option value="transferencia" {{ old('metodo_pago', $ingreso->metodo_pago) === 'transferencia' ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">Transferencia</option>

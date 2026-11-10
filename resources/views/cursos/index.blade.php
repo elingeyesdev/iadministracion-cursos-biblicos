@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Listado de Cursos')
 
@@ -9,7 +9,7 @@
 @section('content')
 <div class="card p-4 shadow-sm">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-book me-2"></i>Cursos Acad├®micos</h2>
+        <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-book me-2"></i>Cursos Académicos</h2>
         <a href="{{ route('cursos.create') }}" class="btn btn-church">
             <i class="bi bi-plus-circle me-1"></i> Nuevo Curso
         </a>
@@ -28,9 +28,9 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Inicio</th>
-                    <th>T├®rmino</th>
-                    <th>Cupo M├íximo</th>
-                    <th>Costo Inscripci├│n</th>
+                    <th>Término</th>
+                    <th>Cupo Máximo</th>
+                    <th>Costo Inscripción</th>
                     <th class="text-end">Acciones</th>
                 </tr>
             </thead>
@@ -40,7 +40,7 @@
                     <td><strong>{{ $curso->nombre }}</strong></td>
                     <td>{{ \Carbon\Carbon::parse($curso->f_inicio)->format('d/m/Y') }}</td>
                     <td>{{ $curso->f_fin ? \Carbon\Carbon::parse($curso->f_fin)->format('d/m/Y') : 'N/A' }}</td>
-                    <td>{{ $curso->cupo_max ?? 'Sin l├¡mite' }}</td>
+                    <td>{{ $curso->cupo_max ?? 'Sin límite' }}</td>
                     <td>
                         @if($curso->tiene_pago)
                             <span class="badge bg-warning text-dark">${{ number_format($curso->monto_inscripcion, 2) }}</span>
@@ -91,13 +91,13 @@ document.getElementById('buscador').addEventListener('keyup', function() {
 document.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', function() {
         Swal.fire({
-            title: '┬┐Est├ís seguro?',
-            text: 'Esta acci├│n no se puede deshacer',
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'S├¡, eliminar',
+            confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         }).then(result => {
             if (result.isConfirmed) {

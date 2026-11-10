@@ -1,6 +1,6 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Detalle de la Sesi├│n')
+@section('title', 'Detalle de la Sesión')
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('sesiones.index') }}" class="text-gold-500 text-decoration-none">Sesiones</a></li>
@@ -11,7 +11,7 @@
 <div class="row g-4">
     <div class="col-md-5">
         <div class="card p-4 shadow-sm h-100">
-            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-journal-text me-2"></i>Detalle de la Sesi├│n</h3>
+            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-journal-text me-2"></i>Detalle de la Sesión</h3>
 
             <table class="table table-borderless">
                 <tr>
@@ -49,7 +49,7 @@
 
     <div class="col-md-7">
         <div class="card p-4 shadow-sm h-100">
-            <h4 class="sidebar-title mb-3" style="color: var(--church-gold);"><i class="bi bi-people me-2"></i>Miembros Registrados en esta Sesi├│n</h4>
+            <h4 class="sidebar-title mb-3" style="color: var(--church-gold);"><i class="bi bi-people me-2"></i>Miembros Registrados en esta Sesión</h4>
             <div class="table-responsive">
                 <table class="table table-sm table-striped">
                     <thead>

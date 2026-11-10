@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detalle del Docente')
 
@@ -11,7 +11,7 @@
 <div class="row g-4">
     <div class="col-md-5">
         <div class="card p-4 shadow-sm h-100">
-            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-mortarboard me-2"></i>Informaci├│n del Docente</h3>
+            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-mortarboard me-2"></i>Información del Docente</h3>
 
             <table class="table table-borderless">
                 <tr>
@@ -23,8 +23,8 @@
                     <td class="py-2">{{ $docente->especialidad ?? 'Sin especialidad registrada' }}</td>
                 </tr>
                 <tr>
-                    <th class="ps-0 py-2 text-muted">T├¡tulo:</th>
-                    <td class="py-2">{{ $docente->titulo ?? 'Sin t├¡tulo registrado' }}</td>
+                    <th class="ps-0 py-2 text-muted">Título:</th>
+                    <td class="py-2">{{ $docente->titulo ?? 'Sin título registrado' }}</td>
                 </tr>
                 <tr>
                     <th class="ps-0 py-2 text-muted">Estado:</th>
@@ -63,7 +63,7 @@
                             <th>Curso</th>
                             <th>Fecha Inicio</th>
                             <th>Fecha Fin</th>
-                            <th>Cupo M├íx.</th>
+                            <th>Cupo Máx.</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,7 +76,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-3">No dicta ning├║n curso en este momento.</td>
+                            <td colspan="4" class="text-center text-muted py-3">No dicta ningún curso en este momento.</td>
                         </tr>
                         @endforelse
                     </tbody>

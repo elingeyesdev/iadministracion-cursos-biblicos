@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Listado de Contratos')
 
@@ -27,7 +27,7 @@
             <thead class="table-dark">
                 <tr>
                     <th>Miembro</th>
-                    <th>Descripci├│n</th>
+                    <th>Descripción</th>
                     <th>Inicio</th>
                     <th>Fin</th>
                     <th>Monto</th>
@@ -39,7 +39,7 @@
                 @forelse($contratos as $contrato)
                 <tr>
                     <td><strong>{{ $contrato->miembro->nombre ?? 'N/A' }}</strong></td>
-                    <td>{{ Str::limit($contrato->descripcion, 40) ?? 'Sin descripci├│n' }}</td>
+                    <td>{{ Str::limit($contrato->descripcion, 40) ?? 'Sin descripción' }}</td>
                     <td>{{ \Carbon\Carbon::parse($contrato->fecha_inicio)->format('d/m/Y') }}</td>
                     <td>{{ $contrato->fecha_fin ? \Carbon\Carbon::parse($contrato->fecha_fin)->format('d/m/Y') : 'Vigente' }}</td>
                     <td class="text-warning fw-bold">${{ number_format($contrato->monto, 2) }}</td>
@@ -95,13 +95,13 @@ document.getElementById('buscador').addEventListener('keyup', function() {
 document.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', function() {
         Swal.fire({
-            title: '┬┐Est├ís seguro?',
-            text: 'Esta acci├│n no se puede deshacer',
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'S├¡, eliminar',
+            confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         }).then(result => {
             if (result.isConfirmed) {

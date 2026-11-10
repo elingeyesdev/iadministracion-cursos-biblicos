@@ -1,16 +1,16 @@
-﻿@props(['title', 'subtitle' => null, 'period' => null])
+@props(['title', 'subtitle' => null, 'period' => null])
 
 {{--
     Encabezado institucional del documento del reporte.
-    La identidad (marca "Ô£Ø", "Sistema Iglesia" y su descriptor) ya existe en
+    La identidad (marca "✝", "Sistema Iglesia" y su descriptor) ya existe en
     el proyecto; no se inventan datos institucionales.
 --}}
 <header class="report-header">
     <div class="report-header-brand">
-        <span class="report-header-logo" aria-hidden="true">Ô£Ø</span>
+        <span class="report-header-logo" aria-hidden="true">✝</span>
         <div>
             <div class="report-header-org">Sistema Iglesia</div>
-            <div class="report-header-org-sub">Sistema de Gesti├│n Eclesi├ística</div>
+            <div class="report-header-org-sub">Sistema de Gestión Eclesiástica</div>
         </div>
     </div>
 
@@ -22,7 +22,7 @@
         <div class="report-header-meta">
             <div><span>Generado:</span> {{ now()->format('d/m/Y H:i') }}</div>
             @if($period)
-                <div><span>Per├¡odo:</span> {{ $period }}</div>
+                <div><span>Período:</span> {{ $period }}</div>
             @endif
         </div>
     </div>

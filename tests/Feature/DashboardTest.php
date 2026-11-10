@@ -12,7 +12,7 @@ class DashboardTest extends TestCase
 {
     use RefreshDatabase;
 
-    private const TEXT_VER_TODAS = 'Ver todos';
+    private const TEXT_VER_TODAS = 'Ver todas';
 
     /**
      * Crea un usuario con el rol indicado para comprobar la visibilidad de accesos.
@@ -28,6 +28,8 @@ class DashboardTest extends TestCase
 
         $user->roles()->attach($rol->id);
 
+        // Los roles creados dentro del test no pasan por la migración que
+        // siembra permisos; se aplican aquí para reproducir el escenario real.
         (new PermisosPorRolSeeder)->sembrarPara($rol);
         $user->limpiarPermisos();
 
@@ -40,69 +42,45 @@ class DashboardTest extends TestCase
     private function datosDashboard(): array
     {
         return [
-            'total_miembros' => 42,
-            'miembros_activos' => 30,
-            'total_cursos' => 6,
-            'total_sesiones' => 25,
-            'total_ministerios' => 5,
-            'total_actividades' => 8,
-            'actividades_en_curso' => 3,
-            'actividades_completadas' => 5,
-            'ultimas_actividades' => collect([
+            'stats' => [
+                'miembros' => 42,
+                'miembros_activos' => 30,
+                'ministerios' => 5,
+                'lideres' => 4,
+                'cargos' => 3,
+                'cultos' => 8,
+                'cursos' => 6,
+                'docentes' => 4,
+                'inscripciones' => 25,
+                'contratos_activos' => 2,
+                'ingresos_mes' => 1500.5,
+                'egresos_mes' => 500.25,
+                'ingresos_totales' => 10000.0,
+                'egresos_totales' => 7000.0,
+                'balance' => 3000.0,
+                'balance_mes' => 1000.25,
+            ],
+            'asistenciaStats' => ['presentes' => 80, 'ausentes' => 15, 'tardanzas' => 5],
+            'ingresosUltimos6' => collect(['2026-09' => 1000.0, '2026-10' => 1500.5]),
+            'egresosUltimos6' => collect(['2026-09' => 400.0, '2026-10' => 500.25]),
+            'ingresosPorTipo' => collect(['Diezmo' => 1200.0]),
+            'egresosPorTipo' => collect(['Servicios' => 300.0]),
+            'proximasActividades' => collect([
                 (object) [
                     'nombre' => 'Ensayo general',
                     'fecha' => '2026-10-20',
+                    'lugar' => 'Templo',
+                    'estado' => 'Programado',
                     'ministerio' => (object) ['nombre' => 'Alabanza'],
-                    'estado' => 'programada',
                 ],
             ]),
-            'miembros_recientes' => collect([
+            'proximasSesiones' => collect([
                 (object) [
-                    'nombre' => 'Juan Pérez',
-                    'email' => 'juan@proyecto.com',
-                    'estado' => 'activo',
-                ],
-            ]),
-            'total_ingresos' => 10000.0,
-            'total_egresos' => 7000.0,
-            'balance' => 3000.0,
-            'contratos_activos' => 2,
-            'ingresos_mes' => 1500.5,
-            'egresos_mes' => 500.25,
-            'balance_mes' => 1000.25,
-            'top_cultos' => collect([
-                (object) [
-                    'nombre' => 'Culto Dominical',
-                    'dia_semana' => 'domingo',
-                    'hora' => '10:00:00',
-                    'ingresos_sum_monto_total' => 1500.0,
-                ],
-            ]),
-            'ultimos_ingresos' => collect([
-                (object) [
-                    'culto' => (object) ['nombre' => 'Culto Dominical'],
-                    'fecha' => '2026-10-15',
-                    'tipo' => 'Diezmo',
-                    'monto_total' => 500.0,
-                ],
-            ]),
-            'ultimos_egresos' => collect([
-                (object) [
-                    'tipo_egreso' => 'Servicios',
-                    'fecha' => '2026-10-10',
-                    'responsable' => 'Juan',
-                    'monto' => 300.0,
-                ],
-            ]),
-            'total_usuarios' => 10,
-            'total_roles' => 4,
-            'ultimos_usuarios' => collect([
-                (object) [
-                    'name' => 'Admin User',
-                    'email' => 'admin@proyecto.com',
-                    'roles' => collect([
-                        (object) ['nombre' => 'Administrador'],
-                    ]),
+                    'tema' => 'Clase introductoria',
+                    'fecha' => '2026-10-22',
+                    'hora' => '19:00:00',
+                    'curso' => (object) ['nombre' => 'Discipulado'],
+                    'docente' => (object) ['miembro' => (object) ['nombre' => 'Juan Pérez']],
                 ],
             ]),
         ];
@@ -114,38 +92,17 @@ class DashboardTest extends TestCase
 
         $this->actingAs($user)
             ->view('dashboard', $this->datosDashboard())
-            // Encabezado
-            ->assertSee('Dashboard', false)
-            // Bloque 1: KPIs principales (todos los roles)
-            ->assertSee('Total Miembros', false)
-            ->assertSee('Miembros Activos', false)
-            ->assertSee('Cursos', false)
-            ->assertSee('Sesiones', false)
-            // Bloque 2: Secretario/Admin
-            ->assertSee('Organización', false)
-            ->assertSee('Ministerios', false)
-            ->assertSee('Actividades', false)
-            ->assertSee('En Curso', false)
-            ->assertSee('Completadas', false)
-            ->assertSee('Últimas Actividades', false)
-            ->assertSee('Miembros Recientes', false)
-            // Bloque 3: Tesorero/Admin
-            ->assertSee('Finanzas', false)
-            ->assertSee('Total Ingresos', false)
-            ->assertSee('Total Egresos', false)
-            ->assertSee('Balance General', false)
-            ->assertSee('Contratos Activos', false)
-            ->assertSee('Ingresos —', false)
-            ->assertSee('Egresos —', false)
-            ->assertSee('Balance —', false)
-            ->assertSee('Top Cultos por Recaudación', false)
-            ->assertSee('Últimos Ingresos', false)
-            ->assertSee('Últimos Egresos', false)
-            // Bloque 4: Admin
-            ->assertSee('Administración', false)
-            ->assertSee('Usuarios del Sistema', false)
-            ->assertSee('Roles Definidos', false)
-            ->assertSee('Últimos Usuarios Registrados', false);
+            ->assertSee('Dashboard')
+            ->assertSee('Resumen general de la gestión de la iglesia')
+            ->assertSee('Flujo Financiero')
+            ->assertSee('Resumen General')
+            ->assertSee('Asistencia general')
+            ->assertSee('Ingresos del mes por tipo')
+            ->assertSee('Próximas Actividades')
+            ->assertSee('Próximas Sesiones')
+            ->assertSee('Accesos Rápidos')
+            ->assertSee('dash-bar--in', false)
+            ->assertSee('dash-bar--out', false);
     }
 
     public function test_el_dashboard_muestra_los_valores_reales(): void
@@ -154,10 +111,11 @@ class DashboardTest extends TestCase
 
         $this->actingAs($user)
             ->view('dashboard', $this->datosDashboard())
-            ->assertSee('30 activos', false)
-            ->assertSee('1.500,50', false) // number_format con 2 decimales
-            ->assertSee('1.000,25', false)
-            ->assertSee('80%', false); // 30/42 ≈ 71%, pero la barra de progreso muestra 71% -> ajustar test
+            ->assertSee('Miembros registrados')
+            ->assertSee('30 activos')
+            ->assertSee('1,500.50')
+            ->assertSee('1,000.25')
+            ->assertSee('80%');
     }
 
     public function test_el_dashboard_muestra_estado_vacio_del_grafico_sin_movimientos(): void
@@ -165,13 +123,12 @@ class DashboardTest extends TestCase
         $user = $this->usuarioConRol('Administrador');
 
         $datos = $this->datosDashboard();
-        $datos['top_cultos'] = collect();
-        $datos['ultimos_ingresos'] = collect();
-        $datos['ultimos_egresos'] = collect();
+        $datos['ingresosUltimos6'] = collect();
+        $datos['egresosUltimos6'] = collect();
 
         $this->actingAs($user)
             ->view('dashboard', $datos)
-            ->assertSee('Sin datos aún', false);
+            ->assertSee('Sin movimientos financieros en los últimos 6 meses.');
     }
 
     public function test_el_dashboard_carga_los_kpis_del_controlador(): void
@@ -181,8 +138,8 @@ class DashboardTest extends TestCase
         $this->actingAs($user)
             ->get('/dashboard')
             ->assertOk()
-            ->assertSee('Dashboard', false)
-            ->assertSee('Total Miembros', false);
+            ->assertSee('Indicadores clave')
+            ->assertSee('Alertas accionables');
     }
 
     public function test_el_administrador_ve_todos_los_accesos_rapidos(): void
@@ -194,7 +151,7 @@ class DashboardTest extends TestCase
             ->assertSee(route('miembros.create'), false)
             ->assertSee(route('ingresos.create'), false)
             ->assertSee(route('contratos.create'), false)
-            ->assertSee(self::TEXT_VER_TODAS, false);
+            ->assertSee(self::TEXT_VER_TODAS);
     }
 
     public function test_el_secretario_no_ve_accesos_de_finanzas(): void
@@ -204,7 +161,7 @@ class DashboardTest extends TestCase
         $this->actingAs($user)
             ->view('dashboard', $this->datosDashboard())
             ->assertSee(route('miembros.create'), false)
-            ->assertSee(self::TEXT_VER_TODAS, false)
+            ->assertSee(self::TEXT_VER_TODAS)
             ->assertDontSee(route('ingresos.create'), false)
             ->assertDontSee(route('contratos.create'), false);
     }
@@ -218,6 +175,6 @@ class DashboardTest extends TestCase
             ->assertSee(route('ingresos.create'), false)
             ->assertDontSee(route('miembros.create'), false)
             ->assertDontSee(route('cursos.create'), false)
-            ->assertDontSee(self::TEXT_VER_TODAS, false);
+            ->assertDontSee(self::TEXT_VER_TODAS);
     }
 }

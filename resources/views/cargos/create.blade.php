@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Nuevo Cargo')
 
@@ -24,7 +24,7 @@
             </div>
 
             <div class="col-md-3">
-                <label for="nivel_jerarquico" class="form-label">Nivel Jer├írquico</label>
+                <label for="nivel_jerarquico" class="form-label">Nivel Jerárquico</label>
                 <input type="number" min="1" class="form-control @error('nivel_jerarquico') is-invalid @enderror" id="nivel_jerarquico" name="nivel_jerarquico" value="{{ old('nivel_jerarquico', 1) }}">
                 @error('nivel_jerarquico')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -32,7 +32,7 @@
             </div>
 
             <div class="col-12">
-                <label for="descripcion" class="form-label">Descripci├│n</label>
+                <label for="descripcion" class="form-label">Descripción</label>
                 <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="3" placeholder="Responsabilidades del cargo...">{{ old('descripcion') }}</textarea>
                 @error('descripcion')
                     <div class="invalid-feedback d-block">{{ $message }}</div>

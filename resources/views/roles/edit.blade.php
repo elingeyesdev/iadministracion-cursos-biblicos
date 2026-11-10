@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Editar Rol')
 
@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="descripcion" class="form-label text-white fw-semibold">Descripci├│n</label>
+                    <label for="descripcion" class="form-label text-white fw-semibold">Descripción</label>
                     <textarea name="descripcion" id="descripcion" rows="4" class="form-control bg-transparent text-white border-secondary @error('descripcion') is-invalid @enderror" placeholder="Describe brevemente las responsabilidades o permisos asociados a este rol...">{{ old('descripcion', $rol->descripcion) }}</textarea>
                     @error('descripcion') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>

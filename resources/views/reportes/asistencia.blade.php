@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Reporte de Asistencia')
 @section('body_class', 'report-page')
@@ -26,7 +26,7 @@
     ];
 @endphp
 
-{{-- Interfaz de la aplicaci├│n: filtros y acciones (no se imprime) --}}
+{{-- Interfaz de la aplicación: filtros y acciones (no se imprime) --}}
 <div class="report-controls">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-clipboard-check me-2"></i>Reporte de Asistencia</h2>
@@ -57,7 +57,7 @@
     </form>
 </div>
 
-{{-- Documento del reporte (es lo ├║nico que se imprime/exporta) --}}
+{{-- Documento del reporte (es lo único que se imprime/exporta) --}}
 <x-report.document title="Reporte de Asistencia" :subtitle="$subtitulo" :period="$periodo">
     <x-report.summary :items="[
         ['label' => 'Presentes', 'value' => $resumen['presentes'], 'class' => 'is-success'],
@@ -67,10 +67,10 @@
     ]" />
 
     <x-report.table :columns="[
-        ['label' => 'N.┬║', 'class' => 'center'],
+        ['label' => 'N.º', 'class' => 'center'],
         ['label' => 'Miembro'],
         ['label' => 'Curso'],
-        ['label' => 'Sesi├│n'],
+        ['label' => 'Sesión'],
         ['label' => 'Fecha', 'class' => 'center'],
         ['label' => 'Estado', 'class' => 'center'],
     ]">
@@ -80,7 +80,7 @@
                 <td class="cell-strong">{{ $registro->miembro->nombre ?? 'N/A' }}</td>
                 <td>{{ $registro->sesion?->curso?->nombre ?? 'N/A' }}</td>
                 <td>{{ $registro->sesion?->tema ?? 'N/A' }}</td>
-                <td class="center">{{ $registro->sesion?->fecha ? \Carbon\Carbon::parse($registro->sesion->fecha)->format('d/m/Y') : 'ÔÇö' }}</td>
+                <td class="center">{{ $registro->sesion?->fecha ? \Carbon\Carbon::parse($registro->sesion->fecha)->format('d/m/Y') : '—' }}</td>
                 <td class="center">
                     <span class="report-badge {{ $estadosAsistencia[$registro->estado] ?? 'is-secondary' }}">{{ $registro->estado }}</span>
                 </td>

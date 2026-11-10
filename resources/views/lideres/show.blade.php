@@ -1,9 +1,9 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Detalle del L├¡der de Iglesia')
+@section('title', 'Detalle del Líder de Iglesia')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('lideres.index') }}" class="text-gold-500 text-decoration-none">L├¡deres</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('lideres.index') }}" class="text-gold-500 text-decoration-none">Líderes</a></li>
     <li class="breadcrumb-item active text-muted" aria-current="page">{{ $lider->nombre }}</li>
 @endsection
 
@@ -25,7 +25,7 @@
         </div>
         <div class="col-md-4">
             <div class="p-3 rounded border" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
-                <div class="text-muted small text-uppercase">Tel├®fono</div>
+                <div class="text-muted small text-uppercase">Teléfono</div>
                 <div class="fs-5 fw-bold">{{ $lider->telefono ?? 'N/A' }}</div>
             </div>
         </div>

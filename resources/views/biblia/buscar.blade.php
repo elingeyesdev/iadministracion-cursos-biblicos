@@ -1,11 +1,11 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Buscador b├¡blico')
+@section('title', 'Buscador bíblico')
 
 @section('content')
 <div class="mb-4">
-    <h1 class="sidebar-title" style="font-size:2rem;">Buscador b├¡blico</h1>
-    <p class="text-muted mb-0">Busca referencias b├¡blicas en espa├▒ol (Reina-Valera 1909).</p>
+    <h1 class="sidebar-title" style="font-size:2rem;">Buscador bíblico</h1>
+    <p class="text-muted mb-0">Busca referencias bíblicas en español (Reina-Valera 1909).</p>
 </div>
 
 <div class="row">
@@ -14,7 +14,7 @@
             <div class="card-body">
                 <form id="search-form" class="row g-3">
                     <div class="col-12 col-md-9">
-                        <label for="query" class="form-label">Referencia b├¡blica</label>
+                        <label for="query" class="form-label">Referencia bíblica</label>
                         <input id="query" name="q" type="text" class="form-control" placeholder="Ej: Juan 3:16, Salmos 23 o 1 Corintios 13:4-7" autocomplete="off">
                     </div>
                     <div class="col-12 col-md-3 d-grid align-self-end">
@@ -22,7 +22,7 @@
                     </div>
                 </form>
 
-                <div id="search-feedback" class="text-muted small mt-3">Escribe una referencia y presiona Buscar. Tambi├®n se busca autom├íticamente mientras escribes.</div>
+                <div id="search-feedback" class="text-muted small mt-3">Escribe una referencia y presiona Buscar. También se busca automáticamente mientras escribes.</div>
                 <div id="search-results" class="mt-4"></div>
             </div>
         </div>
@@ -89,7 +89,7 @@
             return;
         }
 
-        setFeedback('Buscando vers├¡culos...', 'text-primary');
+        setFeedback('Buscando versículos...', 'text-primary');
         resultsContainer.innerHTML = '';
 
         try {
@@ -98,13 +98,13 @@
             const data = await response.json();
 
             if (!response.ok) {
-                renderError(data.error || 'No se encontr├│ el vers├¡culo.');
+                renderError(data.error || 'No se encontró el versículo.');
                 setFeedback('Error al buscar la referencia.', 'text-danger');
                 return;
             }
 
             renderResult(data);
-            setFeedback('Vers├¡culo cargado correctamente.', 'text-success');
+            setFeedback('Versículo cargado correctamente.', 'text-success');
         } catch (error) {
             renderError('Error al conectar con la API.');
             setFeedback('No se pudo conectar con Bible API.', 'text-danger');

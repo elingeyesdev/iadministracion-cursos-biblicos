@@ -9,10 +9,10 @@
         <div style="display: flex; gap: 10px;">
             @if(!$user->trashed())
                 @if(auth()->user()->puede('usuarios', 'editar'))
-                <a href="{{ route('users.edit', $user->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
+                <a href="{{ route('usuarios.edit', $user->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
                 @endif
             @endif
-            <a href="{{ route('users.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
+            <a href="{{ route('usuarios.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
         </div>
     </div>
 

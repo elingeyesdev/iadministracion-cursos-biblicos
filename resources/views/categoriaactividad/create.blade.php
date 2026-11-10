@@ -1,15 +1,15 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Nueva Categor├¡a')
+@section('title', 'Nueva Categoría')
 
 @section('content')
 
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
     <div>
-        <h1 class="sidebar-title" style="font-size:2rem;">Nueva categor├¡a</h1>
-        <p class="text-muted mb-0">Agrega una categor├¡a para organizar actividades.</p>
+        <h1 class="sidebar-title" style="font-size:2rem;">Nueva categoría</h1>
+        <p class="text-muted mb-0">Agrega una categoría para organizar actividades.</p>
     </div>
-    <a href="{{ route('categoriaactividad.index') }}" class="btn btn-outline-church">ÔåÉ Volver</a>
+    <a href="{{ route('categoriaactividad.index') }}" class="btn btn-outline-church">← Volver</a>
 </div>
 
 <div class="card shadow-sm">
@@ -23,7 +23,7 @@
                 @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             <div class="mb-3">
-                <label for="descripcion" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Descripci├│n</label>
+                <label for="descripcion" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Descripción</label>
                 <textarea id="descripcion" name="descripcion" rows="4" class="form-control @error('descripcion') is-invalid @enderror">{{ old('descripcion') }}</textarea>
                 @error('descripcion') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
@@ -42,7 +42,7 @@
                 @error('estado') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
             </div>
             <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="btn btn-church">Guardar categor├¡a</button>
+                <button type="submit" class="btn btn-church">Guardar categoría</button>
                 <a href="{{ route('categoriaactividad.index') }}" class="btn btn-outline-secondary">Cancelar</a>
             </div>
         </form>

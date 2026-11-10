@@ -1,17 +1,17 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Listado de L├¡deres de Iglesia')
+@section('title', 'Listado de Líderes de Iglesia')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active text-muted" aria-current="page">L├¡deres de Iglesia</li>
+    <li class="breadcrumb-item active text-muted" aria-current="page">Líderes de Iglesia</li>
 @endsection
 
 @section('content')
 <div class="card p-4 shadow-sm">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-person-badge me-2"></i>L├¡deres de Iglesia</h2>
+        <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-person-badge me-2"></i>Líderes de Iglesia</h2>
         <a href="{{ route('lideres.create') }}" class="btn btn-church">
-            <i class="bi bi-plus-circle me-1"></i> Nuevo L├¡der
+            <i class="bi bi-plus-circle me-1"></i> Nuevo Líder
         </a>
     </div>
 
@@ -21,7 +21,7 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Cargo</th>
-                    <th>Tel├®fono</th>
+                    <th>Teléfono</th>
                     <th>Fecha de Inicio</th>
                     <th>Estado</th>
                     <th class="text-end">Acciones</th>
@@ -59,7 +59,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-center text-muted py-4">No hay l├¡deres de iglesia registrados.</td>
+                    <td colspan="6" class="text-center text-muted py-4">No hay líderes de iglesia registrados.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -77,13 +77,13 @@
 document.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', function() {
         Swal.fire({
-            title: '┬┐Est├ís seguro?',
-            text: 'Esta acci├│n no se puede deshacer',
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'S├¡, eliminar',
+            confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         }).then(result => {
             if (result.isConfirmed) {

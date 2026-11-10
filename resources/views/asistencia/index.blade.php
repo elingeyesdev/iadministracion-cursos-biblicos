@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Administrar Asistencia')
 
@@ -46,7 +46,7 @@
                 <tr>
                     <th>Miembro</th>
                     <th>Curso</th>
-                    <th>Sesi├│n</th>
+                    <th>Sesión</th>
                     <th>Fecha</th>
                     <th>Estado</th>
                 </tr>

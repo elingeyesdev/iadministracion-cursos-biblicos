@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Editar Culto')
 
@@ -47,7 +47,7 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="dia_semana" class="form-label text-white fw-semibold">D├¡a de la semana <span class="text-danger">*</span></label>
+                        <label for="dia_semana" class="form-label text-white fw-semibold">Día de la semana <span class="text-danger">*</span></label>
                         <select name="dia_semana" id="dia_semana" class="form-select bg-transparent text-white border-secondary @error('dia_semana') is-invalid @enderror" required style="background-color: var(--church-surface, #1e1e2d) !important;">
                             @foreach(['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'] as $dia)
                                 <option value="{{ $dia }}" {{ old('dia_semana', $culto->dia_semana) === $dia ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">{{ ucfirst($dia) }}</option>
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="descripcion" class="form-label text-white fw-semibold">Descripci├│n</label>
+                    <label for="descripcion" class="form-label text-white fw-semibold">Descripción</label>
                     <textarea name="descripcion" id="descripcion" rows="4" class="form-control bg-transparent text-white border-secondary @error('descripcion') is-invalid @enderror" placeholder="Agrega notas o detalles sobre este culto...">{{ old('descripcion', $culto->descripcion) }}</textarea>
                     @error('descripcion') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>

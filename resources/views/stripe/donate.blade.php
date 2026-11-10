@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Donar')
 
@@ -25,7 +25,7 @@
                 </form>
 
                 <hr>
-                <div class="text-muted small">Tarjeta de prueba: <strong>4242 4242 4242 4242</strong> ÔÇö Cualquier fecha futura / CVC</div>
+                <div class="text-muted small">Tarjeta de prueba: <strong>4242 4242 4242 4242</strong> — Cualquier fecha futura / CVC</div>
             </div>
         </div>
     </div>

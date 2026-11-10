@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Listado de Cargos')
 
@@ -20,8 +20,8 @@
             <thead class="table-dark">
                 <tr>
                     <th>Nombre</th>
-                    <th>Nivel Jer├írquico</th>
-                    <th>L├¡deres Asignados</th>
+                    <th>Nivel Jerárquico</th>
+                    <th>Líderes Asignados</th>
                     <th class="text-end">Acciones</th>
                 </tr>
             </thead>
@@ -67,13 +67,13 @@
 document.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', function() {
         Swal.fire({
-            title: '┬┐Est├ís seguro?',
-            text: 'Esta acci├│n no se puede deshacer',
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'S├¡, eliminar',
+            confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         }).then(result => {
             if (result.isConfirmed) {

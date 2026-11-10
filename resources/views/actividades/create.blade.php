@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Nueva Actividad')
 
@@ -32,14 +32,14 @@
 
             <div class="col-md-6">
                 <label for="nombre" class="form-label">Nombre de la Actividad <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre') }}" required placeholder="Ej. Campamento de J├│venes">
+                <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre') }}" required placeholder="Ej. Campamento de Jóvenes">
                 @error('nombre')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="col-md-4">
-                <label for="fecha" class="form-label">Fecha de Realizaci├│n <span class="text-danger">*</span></label>
+                <label for="fecha" class="form-label">Fecha de Realización <span class="text-danger">*</span></label>
                 <input type="date" class="form-control @error('fecha') is-invalid @enderror" id="fecha" name="fecha" value="{{ old('fecha', date('Y-m-d')) }}" required>
                 @error('fecha')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -47,7 +47,7 @@
             </div>
 
             <div class="col-md-4">
-                <label for="lugar" class="form-label">Lugar / Ubicaci├│n</label>
+                <label for="lugar" class="form-label">Lugar / Ubicación</label>
                 <input type="text" class="form-control @error('lugar') is-invalid @enderror" id="lugar" name="lugar" value="{{ old('lugar') }}" placeholder="Ej. Templo Central, Auditorio B">
                 @error('lugar')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -68,7 +68,7 @@
             </div>
 
             <div class="col-12">
-                <label for="descripcion" class="form-label">Descripci├│n / Detalles</label>
+                <label for="descripcion" class="form-label">Descripción / Detalles</label>
                 <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="4" placeholder="Describa el objetivo y programa de la actividad...">{{ old('descripcion') }}</textarea>
                 @error('descripcion')
                     <div class="invalid-feedback d-block">{{ $message }}</div>

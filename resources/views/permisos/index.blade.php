@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Administrar Permisos')
 
@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Administrar Permisos</h1>
-            <p class="text-muted mb-0">Selecciona un rol y edita sus permisos aqu├¡ mismo.</p>
+            <p class="text-muted mb-0">Selecciona un rol y edita sus permisos aquí mismo.</p>
         </div>
         <a href="{{ route('roles.index') }}" class="btn btn-secondary">
             <i class="bi bi-shield-check me-1"></i> Administrar Roles
@@ -48,7 +48,7 @@
                 <thead class="table-dark" style="background-color: #151521;">
                     <tr>
                         <th scope="col" class="border-0">Rol</th>
-                        <th scope="col" class="border-0">Descripci├│n</th>
+                        <th scope="col" class="border-0">Descripción</th>
                         <th scope="col" class="border-0">Estado</th>
                         <th scope="col" class="border-0">Permisos</th>
                         <th scope="col" class="border-0 text-end">Acciones</th>
@@ -66,7 +66,7 @@
                                 @endphp
                                 <span class="badge {{ $badgeClass }}">{{ $rol->nombre }}</span>
                             </td>
-                            <td>{{ $rol->descripcion ?? 'Sin descripci├│n' }}</td>
+                            <td>{{ $rol->descripcion ?? 'Sin descripción' }}</td>
                             <td>
                                 @if($rol->estado === 'activo')
                                     <span class="badge bg-success">Activo</span>
@@ -100,7 +100,7 @@
                                         @if($rol->nombre === 'Administrador')
                                             <div class="alert alert-info border-0 mb-3">
                                                 <i class="bi bi-info-circle-fill me-2"></i>
-                                                El rol <strong>Administrador</strong> tiene acceso total por definici├│n, independientemente de los permisos marcados aqu├¡.
+                                                El rol <strong>Administrador</strong> tiene acceso total por definición, independientemente de los permisos marcados aquí.
                                             </div>
                                         @endif
 
@@ -162,7 +162,7 @@
             });
         }
 
-        // Estado inicial de los interruptores por categor├¡a (tambi├®n en paneles ocultos).
+        // Estado inicial de los interruptores por categoría (también en paneles ocultos).
         document.querySelectorAll('.permisos-editor').forEach(sincronizarTodo);
 
         document.addEventListener('change', function (evento) {

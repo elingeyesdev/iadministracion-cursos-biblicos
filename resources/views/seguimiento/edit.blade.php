@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Editar Seguimiento')
 
@@ -9,7 +9,7 @@
         <h1 class="sidebar-title" style="font-size:2rem;">Editar seguimiento</h1>
         <p class="text-muted mb-0">Actualiza el avance registrado.</p>
     </div>
-    <a href="{{ route('seguimiento.index') }}" class="btn btn-outline-church">ÔåÉ Volver</a>
+    <a href="{{ route('seguimiento.index') }}" class="btn btn-outline-church">← Volver</a>
 </div>
 
 <div class="card shadow-sm">
@@ -21,7 +21,7 @@
                 <div class="col-12">
                     <label for="id_actividad" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Actividad</label>
                     <select id="id_actividad" name="id_actividad" class="form-select @error('id_actividad') is-invalid @enderror">
-                        <option value="">SeleccionarÔÇª</option>
+                        <option value="">Seleccionar…</option>
                         @foreach($actividades as $act)
                             <option value="{{ $act->id }}" @selected(old('id_actividad', $seguimiento->id_actividad) == $act->id)>{{ $act->nombre }}</option>
                         @endforeach

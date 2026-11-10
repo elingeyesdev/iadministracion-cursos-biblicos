@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Inscripciones a Cursos')
 
@@ -18,9 +18,9 @@
                 <tr>
                     <th>Curso</th>
                     <th>Inicio</th>
-                    <th>T├®rmino</th>
+                    <th>Término</th>
                     <th>Inscritos</th>
-                    <th>Cupo M├íximo</th>
+                    <th>Cupo Máximo</th>
                     <th class="text-end">Acciones</th>
                 </tr>
             </thead>
@@ -31,7 +31,7 @@
                     <td>{{ \Carbon\Carbon::parse($curso->f_inicio)->format('d/m/Y') }}</td>
                     <td>{{ $curso->f_fin ? \Carbon\Carbon::parse($curso->f_fin)->format('d/m/Y') : 'N/A' }}</td>
                     <td><span class="badge bg-info text-dark">{{ $curso->inscripciones_count }}</span></td>
-                    <td>{{ $curso->cupo_max ?? 'Sin l├¡mite' }}</td>
+                    <td>{{ $curso->cupo_max ?? 'Sin límite' }}</td>
                     <td class="text-end">
                         <a href="{{ route('inscripciones.gestion', $curso->id) }}" class="btn btn-sm btn-church" title="Gestionar Inscripciones">
                             <i class="bi bi-people me-1"></i> Gestionar

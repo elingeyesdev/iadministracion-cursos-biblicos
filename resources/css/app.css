@@ -1,3 +1,4 @@
-﻿@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap/dist/css/bootstrap.min.css";
 @import "./church-theme.css";
 @import "./report.css";
+@import "./dashboard.css";

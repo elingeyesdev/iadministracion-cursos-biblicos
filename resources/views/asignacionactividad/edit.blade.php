@@ -1,15 +1,15 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Editar Asignaci├│n')
+@section('title', 'Editar Asignación')
 
 @section('content')
 
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
     <div>
-        <h1 class="sidebar-title" style="font-size:2rem;">Editar asignaci├│n</h1>
-        <p class="text-muted mb-0">Actualiza la asignaci├│n.</p>
+        <h1 class="sidebar-title" style="font-size:2rem;">Editar asignación</h1>
+        <p class="text-muted mb-0">Actualiza la asignación.</p>
     </div>
-    <a href="{{ route('asignacionactividad.index') }}" class="btn btn-outline-church">ÔåÉ Volver</a>
+    <a href="{{ route('asignacionactividad.index') }}" class="btn btn-outline-church">← Volver</a>
 </div>
 
 <div class="card shadow-sm">
@@ -21,7 +21,7 @@
                 <div class="col-12 col-md-6">
                     <label for="id_actividad" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Actividad</label>
                     <select id="id_actividad" name="id_actividad" class="form-select @error('id_actividad') is-invalid @enderror">
-                        <option value="">SeleccionarÔÇª</option>
+                        <option value="">Seleccionar…</option>
                         @foreach($actividades as $act)
                             <option value="{{ $act->id }}" @selected(old('id_actividad', $asignacion->id_actividad) == $act->id)>{{ $act->nombre }}</option>
                         @endforeach
@@ -31,7 +31,7 @@
                 <div class="col-12 col-md-6">
                     <label for="id_miembro" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Miembro</label>
                     <select id="id_miembro" name="id_miembro" class="form-select @error('id_miembro') is-invalid @enderror">
-                        <option value="">SeleccionarÔÇª</option>
+                        <option value="">Seleccionar…</option>
                         @foreach($miembros as $m)
                             <option value="{{ $m->id }}" @selected(old('id_miembro', $asignacion->id_miembro) == $m->id)>
                                 {{ $m->nombre }} {{ $m->apellido }} ({{ $m->correo }})
@@ -47,7 +47,7 @@
                     @error('rol_en_actividad') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-12 col-md-6">
-                    <label for="fecha_asignacion" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Fecha de asignaci├│n (opcional)</label>
+                    <label for="fecha_asignacion" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Fecha de asignación (opcional)</label>
                     <input type="date" id="fecha_asignacion" name="fecha_asignacion" value="{{ old('fecha_asignacion', optional($asignacion->fecha_asignacion)->format('Y-m-d')) }}"
                            class="form-control @error('fecha_asignacion') is-invalid @enderror">
                     @error('fecha_asignacion') <div class="invalid-feedback">{{ $message }}</div> @enderror

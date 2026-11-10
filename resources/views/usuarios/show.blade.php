@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detalle de Usuario')
 
@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Detalles del Usuario</h1>
-            <p class="text-muted mb-0">Visualiza el perfil del usuario, informaci├│n de contacto y sus asignaciones de rol.</p>
+            <p class="text-muted mb-0">Visualiza el perfil del usuario, información de contacto y sus asignaciones de rol.</p>
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('usuarios.index') }}" class="btn btn-secondary">
@@ -25,7 +25,7 @@
     </div>
 
     <div class="row g-4">
-        <!-- Tarjeta Izquierda: Avatar e Informaci├│n General -->
+        <!-- Tarjeta Izquierda: Avatar e Información General -->
         <div class="col-12 col-lg-5">
             <div class="card border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
                 <div class="card-body text-center py-5">
@@ -41,11 +41,11 @@
                     <div class="text-start border-top border-secondary pt-4">
                         <div class="row mb-3">
                             <div class="col-5 text-muted fw-semibold">Nombre de usuario:</div>
-                            <div class="col-7 text-white fw-bold">{{ optional($usuario->profile)->username ?? 'ÔÇö' }}</div>
+                            <div class="col-7 text-white fw-bold">{{ optional($usuario->profile)->username ?? '—' }}</div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-5 text-muted fw-semibold">Tel├®fono:</div>
-                            <div class="col-7 text-white">{{ optional($usuario->profile)->telefono ?? 'ÔÇö' }}</div>
+                            <div class="col-5 text-muted fw-semibold">Teléfono:</div>
+                            <div class="col-7 text-white">{{ optional($usuario->profile)->telefono ?? '—' }}</div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-5 text-muted fw-semibold">Estado de Cuenta:</div>
@@ -60,7 +60,7 @@
                         <div class="row mb-3">
                             <div class="col-5 text-muted fw-semibold">Fecha de Registro:</div>
                             <div class="col-7 text-white">
-                                {{ optional($usuario->profile)->fecha_registro ? \Carbon\Carbon::parse(optional($usuario->profile)->fecha_registro)->format('d/m/Y') : 'ÔÇö' }}
+                                {{ optional($usuario->profile)->fecha_registro ? \Carbon\Carbon::parse(optional($usuario->profile)->fecha_registro)->format('d/m/Y') : '—' }}
                             </div>
                         </div>
                         <div class="row mb-0">
@@ -84,9 +84,9 @@
                             <thead class="table-dark" style="background-color: #151521;">
                                 <tr>
                                     <th scope="col" class="border-0 px-4">Rol</th>
-                                    <th scope="col" class="border-0">Fecha Asignaci├│n</th>
+                                    <th scope="col" class="border-0">Fecha Asignación</th>
                                     <th scope="col" class="border-0">Estado</th>
-                                    <th scope="col" class="border-0 text-end px-4">Acci├│n</th>
+                                    <th scope="col" class="border-0 text-end px-4">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -103,7 +103,7 @@
                                             <small class="text-muted d-block mt-1 font-normal">{{ $r->descripcion }}</small>
                                         </td>
                                         <td>
-                                            {{ $r->pivot->fecha_asignacion ? \Carbon\Carbon::parse($r->pivot->fecha_asignacion)->format('d/m/Y') : 'ÔÇö' }}
+                                            {{ $r->pivot->fecha_asignacion ? \Carbon\Carbon::parse($r->pivot->fecha_asignacion)->format('d/m/Y') : '—' }}
                                         </td>
                                         <td>
                                             @if($r->pivot->estado === 'activo')
@@ -117,11 +117,11 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 @if($r->pivot->estado === 'activo')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Desactivar asignaci├│n">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Desactivar asignación">
                                                         <i class="bi bi-x-circle-fill me-1"></i> Desactivar
                                                     </button>
                                                 @else
-                                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Activar asignaci├│n">
+                                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Activar asignación">
                                                         <i class="bi bi-check-circle-fill me-1"></i> Activar
                                                     </button>
                                                 @endif
@@ -130,7 +130,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted py-4 px-4">Este usuario no tiene ning├║n rol asignado.</td>
+                                        <td colspan="4" class="text-center text-muted py-4 px-4">Este usuario no tiene ningún rol asignado.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

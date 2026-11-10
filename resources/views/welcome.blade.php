@@ -1,4 +1,4 @@
-﻿<x-guest-layout>
+<x-guest-layout>
     <div class="card shadow-sm">
         <div class="card-body p-4 p-md-5">
             <div class="text-muted small mb-2" style="letter-spacing:.18em; text-transform:uppercase;">Inicio</div>
@@ -16,7 +16,7 @@
                 <div class="d-grid gap-2">
                     @if (Route::has('login'))
                         <a href="{{ route('login') }}" class="btn btn-church py-2">
-                            Iniciar sesi├│n
+                            Iniciar sesión
                         </a>
                     @endif
                     @if (Route::has('register'))
@@ -28,7 +28,7 @@
             @endauth
 
             <p class="text-center text-muted small mt-4 mb-0">
-                Ô£Ø Sistema de gesti├│n eclesi├ística
+                ✝ Sistema de gestión eclesiástica
             </p>
         </div>
     </div>

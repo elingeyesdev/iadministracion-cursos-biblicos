@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Reporte de Miembros')
 @section('body_class', 'report-page')
@@ -16,7 +16,7 @@
         : 'Todos los registros';
 @endphp
 
-{{-- Interfaz de la aplicaci├│n: filtros y acciones (no se imprime) --}}
+{{-- Interfaz de la aplicación: filtros y acciones (no se imprime) --}}
 <div class="report-controls">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-people me-2"></i>Reporte de Miembros</h2>
@@ -47,7 +47,7 @@
     </form>
 </div>
 
-{{-- Documento del reporte (es lo ├║nico que se imprime/exporta) --}}
+{{-- Documento del reporte (es lo único que se imprime/exporta) --}}
 <x-report.document title="Reporte de Miembros" subtitle="Listado y estado de los miembros" :period="$periodo">
     <x-report.summary :items="[
         ['label' => 'Total', 'value' => $totales['total']],
@@ -56,9 +56,9 @@
     ]" />
 
     <x-report.table :columns="[
-        ['label' => 'N.┬║', 'class' => 'center'],
+        ['label' => 'N.º', 'class' => 'center'],
         ['label' => 'Nombre completo'],
-        ['label' => 'Tel├®fono'],
+        ['label' => 'Teléfono'],
         ['label' => 'Fecha de ingreso', 'class' => 'center'],
         ['label' => 'Estado', 'class' => 'center'],
     ]">
@@ -73,10 +73,10 @@
             <tr>
                 <td class="cell-num">{{ $i + 1 }}</td>
                 <td class="cell-strong">{{ $miembro->nombre }}</td>
-                <td>{{ $miembro->telefono ?: 'ÔÇö' }}</td>
-                <td class="center">{{ $miembro->fecha_ingreso ? \Carbon\Carbon::parse($miembro->fecha_ingreso)->format('d/m/Y') : 'ÔÇö' }}</td>
+                <td>{{ $miembro->telefono ?: '—' }}</td>
+                <td class="center">{{ $miembro->fecha_ingreso ? \Carbon\Carbon::parse($miembro->fecha_ingreso)->format('d/m/Y') : '—' }}</td>
                 <td class="center">
-                    <span class="report-badge {{ $estadoClase }}">{{ $miembro->estado ? strtoupper($miembro->estado) : 'ÔÇö' }}</span>
+                    <span class="report-badge {{ $estadoClase }}">{{ $miembro->estado ? strtoupper($miembro->estado) : '—' }}</span>
                 </td>
             </tr>
         @empty

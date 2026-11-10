@@ -1,7 +1,7 @@
-﻿@props(['items' => []])
+@props(['items' => []])
 
 {{--
-    Resumen estad├¡stico compacto.
+    Resumen estadístico compacto.
     $items: [ ['label' => 'Total', 'value' => 12, 'class' => 'is-success'], ... ]
     Los valores siempre provienen de los datos filtrados reales.
 --}}

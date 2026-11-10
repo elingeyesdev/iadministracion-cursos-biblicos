@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Nuevo Docente')
 
@@ -32,15 +32,15 @@
 
             <div class="col-md-6">
                 <label for="especialidad" class="form-label">Especialidad</label>
-                <input type="text" class="form-control @error('especialidad') is-invalid @enderror" id="especialidad" name="especialidad" value="{{ old('especialidad') }}" placeholder="Ej. Teolog├¡a, Consejer├¡a Familiar">
+                <input type="text" class="form-control @error('especialidad') is-invalid @enderror" id="especialidad" name="especialidad" value="{{ old('especialidad') }}" placeholder="Ej. Teología, Consejería Familiar">
                 @error('especialidad')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="col-md-6">
-                <label for="titulo" class="form-label">T├¡tulo Profesional / Acad├®mico</label>
-                <input type="text" class="form-control @error('titulo') is-invalid @enderror" id="titulo" name="titulo" value="{{ old('titulo') }}" placeholder="Ej. Bachiller en Teolog├¡a">
+                <label for="titulo" class="form-label">Título Profesional / Académico</label>
+                <input type="text" class="form-control @error('titulo') is-invalid @enderror" id="titulo" name="titulo" value="{{ old('titulo') }}" placeholder="Ej. Bachiller en Teología">
                 @error('titulo')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror

@@ -1,15 +1,15 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Nuevo L├¡der de Iglesia')
+@section('title', 'Nuevo Líder de Iglesia')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('lideres.index') }}" class="text-gold-500 text-decoration-none">L├¡deres</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('lideres.index') }}" class="text-gold-500 text-decoration-none">Líderes</a></li>
     <li class="breadcrumb-item active text-muted" aria-current="page">Nuevo</li>
 @endsection
 
 @section('content')
 <div class="card p-4 shadow-sm">
-    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-person-badge me-2"></i>Registrar L├¡der de Iglesia</h2>
+    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-person-badge me-2"></i>Registrar Líder de Iglesia</h2>
 
     <form action="{{ route('lideres.store') }}" method="POST">
         @csrf
@@ -37,7 +37,7 @@
             </div>
 
             <div class="col-md-4">
-                <label for="telefono" class="form-label">Tel├®fono</label>
+                <label for="telefono" class="form-label">Teléfono</label>
                 <input type="text" class="form-control @error('telefono') is-invalid @enderror" id="telefono" name="telefono" value="{{ old('telefono') }}">
                 @error('telefono')
                     <div class="invalid-feedback d-block">{{ $message }}</div>

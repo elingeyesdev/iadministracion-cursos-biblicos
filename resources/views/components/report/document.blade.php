@@ -1,9 +1,9 @@
-﻿@props(['title', 'subtitle' => null, 'period' => null])
+@props(['title', 'subtitle' => null, 'period' => null])
 
 {{--
-    Documento del reporte: es lo ├║nico que se imprime/exporta.
+    Documento del reporte: es lo único que se imprime/exporta.
     En pantalla se muestra como una "hoja"; al imprimir se expande a A4 y la
-    interfaz de la aplicaci├│n (marcada con .app-chrome y .report-controls) se
+    interfaz de la aplicación (marcada con .app-chrome y .report-controls) se
     oculta desde resources/css/report.css.
 --}}
 <div class="report-document">

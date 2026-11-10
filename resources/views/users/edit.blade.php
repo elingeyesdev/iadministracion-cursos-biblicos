@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('users.update', $user->id) }}">
+    <form method="POST" action="{{ route('usuarios.update', $user->id) }}">
         @csrf
         @method('PUT')
 
@@ -50,7 +50,7 @@
 
         <div style="display: flex; gap: 15px; margin-top: 30px;">
             <button type="submit" class="btn">Actualizar Usuario</button>
-            <a href="{{ route('users.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
+            <a href="{{ route('usuarios.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
         </div>
     </form>
 </div>

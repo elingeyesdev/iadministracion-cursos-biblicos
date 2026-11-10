@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Listado de Docentes')
 
@@ -28,7 +28,7 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Especialidad</th>
-                    <th>T├¡tulo</th>
+                    <th>Título</th>
                     <th>Estado</th>
                     <th class="text-end">Acciones</th>
                 </tr>
@@ -38,7 +38,7 @@
                 <tr>
                     <td><strong>{{ $docente->miembro->nombre ?? 'N/A' }}</strong></td>
                     <td>{{ $docente->especialidad ?? 'Sin especialidad' }}</td>
-                    <td>{{ $docente->titulo ?? 'Sin t├¡tulo' }}</td>
+                    <td>{{ $docente->titulo ?? 'Sin título' }}</td>
                     <td>
                         @if($docente->activo)
                             <span class="badge bg-success">Activo</span>
@@ -89,13 +89,13 @@ document.getElementById('buscador').addEventListener('keyup', function() {
 document.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', function() {
         Swal.fire({
-            title: '┬┐Est├ís seguro?',
-            text: 'Esta acci├│n no se puede deshacer',
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'S├¡, eliminar',
+            confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         }).then(result => {
             if (result.isConfirmed) {

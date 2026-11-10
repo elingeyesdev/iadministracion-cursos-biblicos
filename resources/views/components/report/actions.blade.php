@@ -1,9 +1,9 @@
-﻿@props([])
+@props([])
 
 {{--
     Acciones de la interfaz (no forman parte del documento imprimible):
-    - "Aplicar filtros" env├¡a el formulario de filtros que lo contiene.
-    - "Imprimir / Guardar PDF" abre el di├ílogo de impresi├│n del navegador,
+    - "Aplicar filtros" envía el formulario de filtros que lo contiene.
+    - "Imprimir / Guardar PDF" abre el diálogo de impresión del navegador,
       que ya incluye la vista previa y permite guardar como PDF.
       No requiere dependencias nuevas.
 --}}

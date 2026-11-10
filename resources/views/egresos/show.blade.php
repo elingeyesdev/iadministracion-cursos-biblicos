@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detalle del Egreso')
 
@@ -31,7 +31,7 @@
                     <td class="py-2">{{ $egreso->responsable ?? 'No registrado' }}</td>
                 </tr>
                 <tr>
-                    <th class="ps-0 py-2 text-muted">N┬░ Comprobante:</th>
+                    <th class="ps-0 py-2 text-muted">N° Comprobante:</th>
                     <td class="py-2">{{ $egreso->comprobante ?? 'Sin comprobante' }}</td>
                 </tr>
             </table>
@@ -56,8 +56,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <th class="ps-0 py-2 text-muted">Descripci├│n:</th>
-                    <td class="py-2">{{ $egreso->descripcion ?? 'Sin descripci├│n adicional' }}</td>
+                    <th class="ps-0 py-2 text-muted">Descripción:</th>
+                    <td class="py-2">{{ $egreso->descripcion ?? 'Sin descripción adicional' }}</td>
                 </tr>
             </table>
         </div>

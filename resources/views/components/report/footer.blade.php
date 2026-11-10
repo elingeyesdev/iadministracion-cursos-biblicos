@@ -1,12 +1,12 @@
-﻿{{--
+{{--
     Pie del documento del reporte.
-    El navegador no permite numerar p├íginas de forma fiable por CSS, as├¡ que se
-    muestra la fecha de generaci├│n; la numeraci├│n por p├ígina se solicita v├¡a
-    las cajas de margen de @page cuando el motor de impresi├│n lo soporta.
+    El navegador no permite numerar páginas de forma fiable por CSS, así que se
+    muestra la fecha de generación; la numeración por página se solicita vía
+    las cajas de margen de @page cuando el motor de impresión lo soporta.
 --}}
 <footer class="report-footer">
     <div class="report-footer-text">
-        Sistema Iglesia ┬À Documento generado autom├íticamente.
+        Sistema Iglesia · Documento generado automáticamente.
     </div>
     <div class="report-footer-meta">
         <span>Generado el {{ now()->format('d/m/Y H:i') }}</span>

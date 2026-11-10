@@ -1,25 +1,25 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Categor├¡as de Actividad')
+@section('title', 'Categorías de Actividad')
 
 @section('content')
 
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
     <div>
-        <div class="text-muted small mb-1" style="letter-spacing:.18em; text-transform:uppercase;">Gesti├│n</div>
-        <h1 class="sidebar-title" style="font-size:2rem;">Categor├¡as de actividad</h1>
-        <p class="text-muted mb-0">Organiza las actividades por categor├¡a.</p>
+        <div class="text-muted small mb-1" style="letter-spacing:.18em; text-transform:uppercase;">Gestión</div>
+        <h1 class="sidebar-title" style="font-size:2rem;">Categorías de actividad</h1>
+        <p class="text-muted mb-0">Organiza las actividades por categoría.</p>
     </div>
-    <a href="{{ route('categoriaactividad.create') }}" class="btn btn-church">Nueva categor├¡a</a>
+    <a href="{{ route('categoriaactividad.create') }}" class="btn btn-church">Nueva categoría</a>
 </div>
 
 <form method="GET" action="{{ route('categoriaactividad.index') }}" class="mb-3">
     <div class="input-group" style="max-width: 520px;">
         <span class="input-group-text">­ƒöì</span>
-        <input type="text" name="busqueda" value="{{ $busqueda ?? '' }}" class="form-control" placeholder="Buscar categor├¡aÔÇª">
+        <input type="text" name="busqueda" value="{{ $busqueda ?? '' }}" class="form-control" placeholder="Buscar categoría…">
         <button class="btn btn-outline-church" type="submit">Buscar</button>
         @if($busqueda)
-            <a class="btn btn-outline-secondary" href="{{ route('categoriaactividad.index') }}">Ô£ò</a>
+            <a class="btn btn-outline-secondary" href="{{ route('categoriaactividad.index') }}">✕</a>
         @endif
     </div>
     @if($busqueda)
@@ -31,13 +31,13 @@
     @if($categorias->isEmpty())
         <div class="card-body py-5 text-center text-muted">
             @if($busqueda)
-                No se encontraron categor├¡as para <strong>"{{ $busqueda }}"</strong>
+                No se encontraron categorías para <strong>"{{ $busqueda }}"</strong>
             @else
-                A├║n no hay categor├¡as registradas.
+                Aún no hay categorías registradas.
             @endif
             @if(!$busqueda)
                 <div class="mt-3">
-                    <a href="{{ route('categoriaactividad.create') }}" class="btn btn-outline-church">Crear la primera categor├¡a</a>
+                    <a href="{{ route('categoriaactividad.create') }}" class="btn btn-outline-church">Crear la primera categoría</a>
                 </div>
             @endif
         </div>
@@ -48,7 +48,7 @@
                     <tr>
                         <th style="width: 4rem;">#</th>
                         <th>Nombre</th>
-                        <th class="d-none d-md-table-cell">Descripci├│n</th>
+                        <th class="d-none d-md-table-cell">Descripción</th>
                         <th>Estado</th>
                         <th class="d-none d-lg-table-cell">Creado</th>
                         <th class="text-end" style="width: 14rem;">Acciones</th>
@@ -60,7 +60,7 @@
                             <td class="text-muted small">{{ $cat->id }}</td>
                             <td>{{ $cat->nombre }}</td>
                             <td class="text-muted small d-none d-md-table-cell" style="max-width: 14rem;">
-                                {{ $cat->descripcion ? \Illuminate\Support\Str::limit($cat->descripcion, 65) : 'ÔÇö' }}
+                                {{ $cat->descripcion ? \Illuminate\Support\Str::limit($cat->descripcion, 65) : '—' }}
                             </td>
                             <td>
                                 @if($cat->estado)
@@ -74,7 +74,7 @@
                                 <a class="btn btn-sm btn-outline-secondary" href="{{ route('categoriaactividad.show', $cat) }}">Ver</a>
                                 <a class="btn btn-sm btn-outline-church" href="{{ route('categoriaactividad.edit', $cat) }}">Editar</a>
                                 <form method="POST" action="{{ route('categoriaactividad.destroy', $cat) }}" class="d-inline"
-                                      onsubmit="return confirm('┬┐Eliminar la categor├¡a ┬½{{ addslashes($cat->nombre) }}┬╗?')">
+                                      onsubmit="return confirm('¿Eliminar la categoría «{{ addslashes($cat->nombre) }}»?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
@@ -88,7 +88,7 @@
         @if($categorias->hasPages())
             <div class="card-body py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div class="text-muted small">
-                    Mostrando {{ $categorias->firstItem() }}ÔÇô{{ $categorias->lastItem() }} de {{ $categorias->total() }} categor├¡as
+                    Mostrando {{ $categorias->firstItem() }}–{{ $categorias->lastItem() }} de {{ $categorias->total() }} categorías
                 </div>
                 <div>{{ $categorias->links('pagination::bootstrap-5') }}</div>
             </div>

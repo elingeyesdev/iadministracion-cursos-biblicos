@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detalle del Ingreso')
 
@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Detalle del Ingreso</h1>
-            <p class="text-muted mb-0">Informaci├│n detallada del ingreso o diezmo registrado.</p>
+            <p class="text-muted mb-0">Información detallada del ingreso o diezmo registrado.</p>
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('ingresos.index') }}" class="btn btn-secondary">
@@ -28,7 +28,7 @@
         <div class="col-12 col-lg-8">
             <div class="card border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
                 <div class="card-header border-0 bg-dark py-3">
-                    <h5 class="card-title text-white mb-0"><i class="bi bi-cash-coin text-gold-500 me-2"></i>Informaci├│n de Transacci├│n</h5>
+                    <h5 class="card-title text-white mb-0"><i class="bi bi-cash-coin text-gold-500 me-2"></i>Información de Transacción</h5>
                 </div>
                 <div class="card-body">
                     <div class="row mb-3">
@@ -39,7 +39,7 @@
                                     {{ $ingreso->culto->nombre }} ({{ ucfirst($ingreso->culto->dia_semana) }})
                                 </a>
                             @else
-                                ÔÇö
+                                —
                             @endif
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-4 text-muted fw-semibold">Fecha de Recaudaci├│n:</div>
+                        <div class="col-md-4 text-muted fw-semibold">Fecha de Recaudación:</div>
                         <div class="col-md-8 text-white">{{ \Carbon\Carbon::parse($ingreso->fecha)->format('d/m/Y') }}</div>
                     </div>
 
@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="row mb-0">
-                        <div class="col-md-4 text-muted fw-semibold">M├®todo de Pago:</div>
+                        <div class="col-md-4 text-muted fw-semibold">Método de Pago:</div>
                         <div class="col-md-8 text-capitalize">
                             <span class="badge bg-secondary">{{ $ingreso->metodo_pago }}</span>
                         </div>

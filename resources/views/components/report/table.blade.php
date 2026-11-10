@@ -1,4 +1,4 @@
-﻿@props(['columns' => []])
+@props(['columns' => []])
 
 {{--
     Tabla profesional reutilizable.

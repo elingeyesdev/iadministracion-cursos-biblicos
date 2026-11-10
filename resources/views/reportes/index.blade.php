@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Reportes')
 
@@ -15,7 +15,7 @@
             <div class="p-4 rounded border text-center h-100" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
                 <i class="bi bi-people display-4 text-warning"></i>
                 <h5 class="fw-bold mt-3">Reporte de Miembros</h5>
-                <p class="text-muted small">Listado y detalle de miembros seg├║n estado y fecha de ingreso.</p>
+                <p class="text-muted small">Listado y detalle de miembros según estado y fecha de ingreso.</p>
                 <a href="{{ route('reportes.miembros') }}" class="btn btn-church w-100">
                     <i class="bi bi-eye me-1"></i> Ver Reporte
                 </a>
@@ -35,7 +35,7 @@
             <div class="p-4 rounded border text-center h-100" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
                 <i class="bi bi-cash-coin display-4 text-warning"></i>
                 <h5 class="fw-bold mt-3">Reporte Financiero</h5>
-                <p class="text-muted small">Ingresos, egresos y balance del per├¡odo seleccionado.</p>
+                <p class="text-muted small">Ingresos, egresos y balance del período seleccionado.</p>
                 <a href="{{ route('reportes.financiero') }}" class="btn btn-church w-100">
                     <i class="bi bi-eye me-1"></i> Ver Reporte
                 </a>

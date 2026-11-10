@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detalle del Ministerio')
 
@@ -11,7 +11,7 @@
 <div class="row g-4">
     <div class="col-md-5">
         <div class="card p-4 shadow-sm h-100">
-            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-diagram-3 me-2"></i>Informaci├│n del Ministerio</h3>
+            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-diagram-3 me-2"></i>Información del Ministerio</h3>
 
             <table class="table table-borderless">
                 <tr>
@@ -19,16 +19,16 @@
                     <td class="py-2"><strong>{{ $ministerio->nombre }}</strong></td>
                 </tr>
                 <tr>
-                    <th class="ps-0 py-2 text-muted">L├¡der:</th>
-                    <td class="py-2">{{ $ministerio->lider->nombre ?? 'Sin l├¡der asignado' }}</td>
+                    <th class="ps-0 py-2 text-muted">Líder:</th>
+                    <td class="py-2">{{ $ministerio->lider->nombre ?? 'Sin líder asignado' }}</td>
                 </tr>
                 <tr>
-                    <th class="ps-0 py-2 text-muted">Email L├¡der:</th>
+                    <th class="ps-0 py-2 text-muted">Email Líder:</th>
                     <td class="py-2">{{ $ministerio->lider->email ?? 'N/A' }}</td>
                 </tr>
                 <tr>
-                    <th class="ps-0 py-2 text-muted">Descripci├│n:</th>
-                    <td class="py-2">{{ $ministerio->descripcion ?? 'Sin descripci├│n' }}</td>
+                    <th class="ps-0 py-2 text-muted">Descripción:</th>
+                    <td class="py-2">{{ $ministerio->descripcion ?? 'Sin descripción' }}</td>
                 </tr>
             </table>
 

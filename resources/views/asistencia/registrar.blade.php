@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Registrar Asistencia')
 
@@ -14,7 +14,7 @@
     <form method="GET" action="{{ route('asistencia.registrar') }}" class="row g-3 mb-4">
         <div class="col-md-6">
             <select name="sesion_id" class="form-select" onchange="this.form.submit()">
-                <option value="">-- Seleccionar Sesi├│n --</option>
+                <option value="">-- Seleccionar Sesión --</option>
                 @foreach($cursos as $curso)
                     <optgroup label="{{ $curso->nombre }}">
                         @foreach($curso->sesiones as $sesion)
@@ -38,7 +38,7 @@
             </div>
             <div class="col-md-4">
                 <div class="p-3 rounded border text-center" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
-                    <div class="text-muted small text-uppercase">Sesi├│n</div>
+                    <div class="text-muted small text-uppercase">Sesión</div>
                     <div class="fw-bold">{{ \Carbon\Carbon::parse($sesion->fecha)->format('d/m/Y') }} - {{ $sesion->hora ? substr($sesion->hora, 0, 5) : '--:--' }}</div>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                         <tr>
                             <th>Miembro</th>
                             <th style="width: 200px;">Estado</th>
-                            <th>Observaci├│n</th>
+                            <th>Observación</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -100,7 +100,7 @@
             @endif
         </form>
     @else
-        <div class="alert alert-info">Selecciona una sesi├│n para registrar la asistencia de los miembros inscritos.</div>
+        <div class="alert alert-info">Selecciona una sesión para registrar la asistencia de los miembros inscritos.</div>
     @endif
 </div>
 @endsection

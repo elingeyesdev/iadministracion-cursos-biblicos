@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detalle del Curso')
 
@@ -11,7 +11,7 @@
 <div class="row g-4">
     <div class="col-md-5">
         <div class="card p-4 shadow-sm h-100">
-            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-book me-2"></i>Informaci├│n del Curso</h3>
+            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-book me-2"></i>Información del Curso</h3>
 
             <table class="table table-borderless">
                 <tr>
@@ -27,7 +27,7 @@
                     <td class="py-2">{{ $curso->f_fin ? \Carbon\Carbon::parse($curso->f_fin)->format('d/m/Y') : 'Sin fecha fin registrada' }}</td>
                 </tr>
                 <tr>
-                    <th class="ps-0 py-2 text-muted">Cupo M├íximo:</th>
+                    <th class="ps-0 py-2 text-muted">Cupo Máximo:</th>
                     <td class="py-2">{{ $curso->cupo_max ?? 'Ilimitado' }}</td>
                 </tr>
                 <tr>
@@ -62,7 +62,7 @@
                         <tr>
                             <th>Docente</th>
                             <th>Especialidad</th>
-                            <th>T├¡tulo</th>
+                            <th>Título</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,7 +91,7 @@
                             <th>Tema</th>
                             <th>Fecha</th>
                             <th>Hora</th>
-                            <th class="text-end">Acci├│n</th>
+                            <th class="text-end">Acción</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -1,6 +1,6 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Editar Inscripci├│n')
+@section('title', 'Editar Inscripción')
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('inscripciones.index') }}" class="text-gold-500 text-decoration-none">Inscripciones</a></li>
@@ -10,7 +10,7 @@
 
 @section('content')
 <div class="card p-4 shadow-sm">
-    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-journal-richtext me-2"></i>Editar Inscripci├│n</h2>
+    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-journal-richtext me-2"></i>Editar Inscripción</h2>
 
     <p><strong>Miembro:</strong> {{ $inscripcion->miembro->nombre ?? 'Miembro eliminado' }} &middot; <strong>Curso:</strong> {{ $inscripcion->curso->nombre ?? 'Curso eliminado' }}</p>
 
@@ -20,7 +20,7 @@
 
         <div class="row g-3">
             <div class="col-md-6">
-                <label for="fecha_inscripcion" class="form-label">Fecha de Inscripci├│n <span class="text-danger">*</span></label>
+                <label for="fecha_inscripcion" class="form-label">Fecha de Inscripción <span class="text-danger">*</span></label>
                 <input type="date" class="form-control @error('fecha_inscripcion') is-invalid @enderror" id="fecha_inscripcion" name="fecha_inscripcion" value="{{ old('fecha_inscripcion', $inscripcion->fecha_inscripcion) }}" required>
                 @error('fecha_inscripcion')
                     <div class="invalid-feedback d-block">{{ $message }}</div>

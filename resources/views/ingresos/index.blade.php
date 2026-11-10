@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Listado de Ingresos')
 
@@ -36,10 +36,10 @@
                 <thead class="table-dark" style="background-color: #151521;">
                     <tr>
                         <th scope="col" class="border-0">Culto</th>
-                        <th scope="col" class="border-0">D├¡a</th>
+                        <th scope="col" class="border-0">Día</th>
                         <th scope="col" class="border-0">Fecha</th>
                         <th scope="col" class="border-0">Tipo / Concepto</th>
-                        <th scope="col" class="border-0">M├®todo de Pago</th>
+                        <th scope="col" class="border-0">Método de Pago</th>
                         <th scope="col" class="border-0 text-end">Monto Total</th>
                         <th scope="col" class="border-0 text-end">Acciones</th>
                     </tr>
@@ -85,7 +85,7 @@
         @if($ingresos->hasPages())
             <div class="card-footer border-0 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #151521;">
                 <div class="text-muted small">
-                    Mostrando {{ $ingresos->firstItem() }}ÔÇô{{ $ingresos->lastItem() }} de {{ $ingresos->total() }} ingresos
+                    Mostrando {{ $ingresos->firstItem() }}–{{ $ingresos->lastItem() }} de {{ $ingresos->total() }} ingresos
                 </div>
                 <div>
                     {{ $ingresos->links('pagination::bootstrap-5') }}
@@ -115,20 +115,20 @@
             });
         });
 
-        // SweetAlert2 confirmaci├│n de borrado
+        // SweetAlert2 confirmación de borrado
         const deleteButtons = document.querySelectorAll('.btn-delete-ingreso');
         deleteButtons.forEach(btn => {
             btn.addEventListener('click', function() {
                 const ingresoId = this.getAttribute('data-id');
 
                 Swal.fire({
-                    title: '┬┐Est├ís seguro?',
-                    text: "Vas a eliminar permanentemente este ingreso. Esta acci├│n no se puede deshacer.",
+                    title: '¿Estás seguro?',
+                    text: "Vas a eliminar permanentemente este ingreso. Esta acción no se puede deshacer.",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'S├¡, eliminar',
+                    confirmButtonText: 'Sí, eliminar',
                     cancelButtonText: 'Cancelar',
                     background: '#1e1e2d',
                     color: '#fff'

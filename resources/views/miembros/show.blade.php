@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detalle del Miembro')
 
@@ -11,7 +11,7 @@
 <div class="row g-4">
     <div class="col-md-5">
         <div class="card p-4 shadow-sm h-100">
-            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-person-badge me-2"></i>Informaci├│n del Miembro</h3>
+            <h3 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-person-badge me-2"></i>Información del Miembro</h3>
 
             <table class="table table-borderless">
                 <tr>
@@ -23,7 +23,7 @@
                     <td class="py-2">{{ $miembro->email }}</td>
                 </tr>
                 <tr>
-                    <th class="ps-0 py-2 text-muted">Tel├®fono:</th>
+                    <th class="ps-0 py-2 text-muted">Teléfono:</th>
                     <td class="py-2">{{ $miembro->telefono ?? 'No registrado' }}</td>
                 </tr>
                 <tr>
@@ -51,7 +51,7 @@
                     <td class="py-2">{{ $miembro->fecha_ingreso ? \Carbon\Carbon::parse($miembro->fecha_ingreso)->format('d/m/Y') : 'No registrado' }}</td>
                 </tr>
                 <tr>
-                    <th class="ps-0 py-2 text-muted">Direcci├│n:</th>
+                    <th class="ps-0 py-2 text-muted">Dirección:</th>
                     <td class="py-2">{{ $miembro->direccion ?? 'No registrada' }}</td>
                 </tr>
             </table>
@@ -74,7 +74,7 @@
                 <table class="table table-sm table-striped">
                     <thead>
                         <tr>
-                            <th>Descripci├│n</th>
+                            <th>Descripción</th>
                             <th>Monto</th>
                             <th>Vigencia</th>
                             <th>Estado</th>
@@ -108,7 +108,7 @@
                 <table class="table table-sm table-striped">
                     <thead>
                         <tr>
-                            <th>Sesi├│n / Tema</th>
+                            <th>Sesión / Tema</th>
                             <th>Fecha</th>
                             <th>Estado Asistencia</th>
                         </tr>

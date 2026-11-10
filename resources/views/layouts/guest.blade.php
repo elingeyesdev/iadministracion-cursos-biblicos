@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="church-light">
     <head>
         <meta charset="utf-8">
@@ -22,7 +22,7 @@
                     <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image:repeating-linear-gradient(-45deg,transparent,transparent 36px,rgba(255,255,255,.012) 36px,rgba(255,255,255,.012) 37px)"></div>
                     <div class="position-absolute top-0 start-0 p-5">
                         <div class="d-flex align-items-center gap-2">
-                            <span class="fs-4" style="color: var(--church-gold);">Ô£Ø</span>
+                            <span class="fs-4" style="color: var(--church-gold);">✝</span>
                             <div class="sidebar-title fs-4" style="color: var(--church-text);">{{ config('app.name') }}</div>
                         </div>
                         <div class="text-muted small mt-1" style="letter-spacing:.18em; text-transform:uppercase;">Bienvenido</div>
@@ -32,7 +32,7 @@
                         <blockquote class="sidebar-title fst-italic" style="font-size:2rem; line-height:1.2;">
                             "Sirviendo con orden, creciendo en fe."
                         </blockquote>
-                        <div class="text-muted small mt-2" style="letter-spacing:.18em; text-transform:uppercase;">ÔÇö Comunidad</div>
+                        <div class="text-muted small mt-2" style="letter-spacing:.18em; text-transform:uppercase;">— Comunidad</div>
                     </div>
                 </div>
 

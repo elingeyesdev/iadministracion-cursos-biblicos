@@ -42,8 +42,6 @@ Route::get('/', function () {
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store']);
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
-Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
-Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::get('/password/reset', [PasswordResetLinkController::class, 'create'])->name('password.request');
 Route::post('/password/email', [PasswordResetLinkController::class, 'store'])->name('password.email');
 Route::get('/password/reset/{token}', [NewPasswordController::class, 'create'])->name('password.reset');

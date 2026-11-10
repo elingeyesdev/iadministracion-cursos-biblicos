@@ -1,4 +1,4 @@
-﻿<button type="button"
+<button type="button"
         class="btn btn-outline-church btn-sm theme-toggle {{ $class ?? '' }}"
         data-theme-toggle
         title="Cambiar entre modo claro y oscuro"

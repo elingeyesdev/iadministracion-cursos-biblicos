@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Editar Actividad')
 
@@ -9,7 +9,7 @@
         <h1 class="sidebar-title" style="font-size:2rem;">Editar actividad</h1>
         <p class="text-muted mb-0">Modifica los datos de <strong>{{ $actividad->nombre }}</strong>.</p>
     </div>
-    <a href="{{ route('actividad.index') }}" class="btn btn-outline-church">ÔåÉ Volver</a>
+    <a href="{{ route('actividad.index') }}" class="btn btn-outline-church">← Volver</a>
 </div>
 
 <div class="card shadow-sm">
@@ -26,13 +26,13 @@
                     @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-12 col-md-6">
-                    <label for="id_categoria" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Categor├¡a</label>
+                    <label for="id_categoria" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Categoría</label>
                     <select id="id_categoria" name="id_categoria" class="form-select @error('id_categoria') is-invalid @enderror">
-                        <option value="">Selecciona una categor├¡a</option>
+                        <option value="">Selecciona una categoría</option>
                         @forelse($categorias as $cat)
                             <option value="{{ $cat->id }}" @selected(old('id_categoria', $actividad->id_categoria) == $cat->id)>{{ $cat->nombre }}</option>
                         @empty
-                            <option disabled>No hay categor├¡as disponibles</option>
+                            <option disabled>No hay categorías disponibles</option>
                         @endforelse
                     </select>
                     @error('id_categoria') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -62,7 +62,7 @@
                     @error('fecha_fin') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-12">
-                    <label for="descripcion" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Descripci├│n</label>
+                    <label for="descripcion" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Descripción</label>
                     <textarea id="descripcion" name="descripcion" rows="4" class="form-control @error('descripcion') is-invalid @enderror">{{ old('descripcion', $actividad->descripcion) }}</textarea>
                     @error('descripcion') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>

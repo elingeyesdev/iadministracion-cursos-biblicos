@@ -1,6 +1,6 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Editar Sesi├│n')
+@section('title', 'Editar Sesión')
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('sesiones.index') }}" class="text-gold-500 text-decoration-none">Sesiones</a></li>
@@ -9,7 +9,7 @@
 
 @section('content')
 <div class="card p-4 shadow-sm">
-    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-pencil-square me-2"></i>Editar Sesi├│n</h2>
+    <h2 class="sidebar-title mb-4" style="color: var(--church-gold);"><i class="bi bi-pencil-square me-2"></i>Editar Sesión</h2>
 
     <form action="{{ route('sesiones.update', $sesion->id) }}" method="POST">
         @csrf
@@ -32,8 +32,8 @@
             </div>
 
             <div class="col-md-6">
-                <label for="tema" class="form-label">Tema de la Sesi├│n</label>
-                <input type="text" class="form-control @error('tema') is-invalid @enderror" id="tema" name="tema" value="{{ old('tema', $sesion->tema) }}" placeholder="Ej. Introducci├│n al G├®nesis">
+                <label for="tema" class="form-label">Tema de la Sesión</label>
+                <input type="text" class="form-control @error('tema') is-invalid @enderror" id="tema" name="tema" value="{{ old('tema', $sesion->tema) }}" placeholder="Ej. Introducción al Génesis">
                 @error('tema')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -64,7 +64,7 @@
             </div>
 
             <div class="col-12 mt-4">
-                <label class="form-label d-block fw-bold" style="color: var(--church-gold);">Inscribir Miembros en esta Sesi├│n</label>
+                <label class="form-label d-block fw-bold" style="color: var(--church-gold);">Inscribir Miembros en esta Sesión</label>
                 <div class="row g-2" style="max-height: 250px; overflow-y: auto;">
                     @foreach($miembros as $miembro)
                         <div class="col-md-4 col-sm-6">

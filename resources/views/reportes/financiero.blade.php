@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Reporte Financiero')
 @section('body_class', 'report-page')
@@ -13,7 +13,7 @@
     $periodo = 'Desde '.\Carbon\Carbon::parse($desde)->format('d/m/Y').' hasta '.\Carbon\Carbon::parse($hasta)->format('d/m/Y');
 @endphp
 
-{{-- Interfaz de la aplicaci├│n: filtros y acciones (no se imprime) --}}
+{{-- Interfaz de la aplicación: filtros y acciones (no se imprime) --}}
 <div class="report-controls">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-cash-coin me-2"></i>Reporte Financiero</h2>
@@ -36,8 +36,8 @@
     </form>
 </div>
 
-{{-- Documento del reporte (es lo ├║nico que se imprime/exporta) --}}
-<x-report.document title="Reporte Financiero" subtitle="Ingresos, egresos y balance del per├¡odo" :period="$periodo">
+{{-- Documento del reporte (es lo único que se imprime/exporta) --}}
+<x-report.document title="Reporte Financiero" subtitle="Ingresos, egresos y balance del período" :period="$periodo">
     <x-report.summary :items="[
         ['label' => 'Ingresos', 'value' => 'Bs. '.number_format($totalIngresos, 2), 'class' => 'is-success'],
         ['label' => 'Egresos', 'value' => '$'.number_format($totalEgresos, 2), 'class' => 'is-danger'],
@@ -50,7 +50,7 @@
             <x-report.table :columns="[
                 ['label' => 'Fecha', 'class' => 'center'],
                 ['label' => 'Tipo'],
-                ['label' => 'M├®todo'],
+                ['label' => 'Método'],
                 ['label' => 'Monto', 'class' => 'num'],
             ]">
                 @forelse($ingresos as $ingreso)
@@ -62,7 +62,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="report-empty">Sin ingresos en el per├¡odo.</td>
+                        <td colspan="4" class="report-empty">Sin ingresos en el período.</td>
                     </tr>
                 @endforelse
             </x-report.table>
@@ -71,7 +71,7 @@
                 <div class="report-note">
                     <strong>Por tipo:</strong>
                     @foreach($ingresosPorTipo as $tipo => $total)
-                        {{ $tipo ?: 'General' }}: Bs. {{ number_format($total, 2) }}@if(!$loop->last) ┬À @endif
+                        {{ $tipo ?: 'General' }}: Bs. {{ number_format($total, 2) }}@if(!$loop->last) · @endif
                     @endforeach
                 </div>
             @endif
@@ -94,7 +94,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="report-empty">Sin egresos en el per├¡odo.</td>
+                        <td colspan="4" class="report-empty">Sin egresos en el período.</td>
                     </tr>
                 @endforelse
             </x-report.table>
@@ -103,7 +103,7 @@
                 <div class="report-note">
                     <strong>Por tipo:</strong>
                     @foreach($egresosPorTipo as $tipo => $total)
-                        {{ $tipo }}: ${{ number_format($total, 2) }}@if(!$loop->last) ┬À @endif
+                        {{ $tipo }}: ${{ number_format($total, 2) }}@if(!$loop->last) · @endif
                     @endforeach
                 </div>
             @endif

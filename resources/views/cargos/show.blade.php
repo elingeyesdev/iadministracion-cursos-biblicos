@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detalle del Cargo')
 
@@ -19,25 +19,25 @@
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="p-3 rounded border" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
-                <div class="text-muted small text-uppercase">Nivel Jer├írquico</div>
+                <div class="text-muted small text-uppercase">Nivel Jerárquico</div>
                 <div class="fs-5 fw-bold">{{ $cargo->nivel_jerarquico }}</div>
             </div>
         </div>
         <div class="col-md-8">
             <div class="p-3 rounded border" style="background-color: var(--church-surface-2); border-color: var(--church-border) !important;">
-                <div class="text-muted small text-uppercase">Descripci├│n</div>
-                <div>{{ $cargo->descripcion ?? 'Sin descripci├│n' }}</div>
+                <div class="text-muted small text-uppercase">Descripción</div>
+                <div>{{ $cargo->descripcion ?? 'Sin descripción' }}</div>
             </div>
         </div>
     </div>
 
-    <h5 class="fw-bold mb-3"><i class="bi bi-people me-1"></i> L├¡deres de Iglesia con este Cargo</h5>
+    <h5 class="fw-bold mb-3"><i class="bi bi-people me-1"></i> Líderes de Iglesia con este Cargo</h5>
     <div class="table-responsive">
         <table class="table table-striped table-hover align-middle">
             <thead class="table-dark">
                 <tr>
                     <th>Nombre</th>
-                    <th>Tel├®fono</th>
+                    <th>Teléfono</th>
                     <th>Fecha de Inicio</th>
                     <th>Estado</th>
                 </tr>
@@ -58,7 +58,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" class="text-center text-muted py-4">No hay l├¡deres asignados a este cargo.</td>
+                    <td colspan="4" class="text-center text-muted py-4">No hay líderes asignados a este cargo.</td>
                 </tr>
                 @endforelse
             </tbody>

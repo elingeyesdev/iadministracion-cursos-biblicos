@@ -19,7 +19,7 @@
     @endif
 
     @if(auth()->user()->puede('usuarios', 'crear'))
-    <form method="POST" action="{{ route('users.store') }}">
+    <form method="POST" action="{{ route('usuarios.store') }}">
         @csrf
 
         <div class="form-group">
@@ -54,7 +54,7 @@
 
         <div style="display: flex; gap: 15px; margin-top: 30px;">
             <button type="submit" class="btn">Crear Usuario</button>
-            <a href="{{ route('users.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
+            <a href="{{ route('usuarios.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
         </div>
     </form>
     @endif

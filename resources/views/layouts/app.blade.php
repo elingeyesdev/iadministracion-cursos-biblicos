@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" class="church-light">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Iglesia') ÔÇö Sistema de Gesti├│n</title>
+    <title>@yield('title', 'Iglesia') — Sistema de Gestión</title>
 
     @include('layouts.partials.theme-script')
     @include('layouts.partials.sidebar-script')
@@ -41,11 +41,11 @@
                 <div class="container-fluid py-3 d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-2">
                         <button class="btn btn-outline-church d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-                            <i class="bi bi-list"></i> Men├║
+                            <i class="bi bi-list"></i> Menú
                         </button>
                         <span class="fs-4 fw-bold text-white d-lg-none">Sistema Iglesia</span>
                         <div class="d-none d-lg-block text-muted small fw-semibold" style="letter-spacing:.18em; text-transform:uppercase;">
-                            Ôø¬ Sistema de Gesti├│n Eclesi├ística
+                            ⛪ Sistema de Gestión Eclesiástica
                         </div>
                     </div>
 
@@ -71,7 +71,7 @@
 
             <footer class="app-chrome container-fluid py-3 text-center border-top mt-auto" style="border-color: var(--church-border) !important; background: var(--church-surface);">
                 <div class="text-muted small">
-                    Ô£Ø Sistema de Gesti├│n Eclesi├ística ┬® {{ date('Y') }}
+                    ✝ Sistema de Gestión Eclesiástica © {{ date('Y') }}
                 </div>
             </footer>
         </div>
@@ -88,7 +88,7 @@
     <script>
         Swal.fire({
             icon: 'success',
-            title: '┬í├ëxito!',
+            title: '¡Éxito!',
             text: {!! json_encode(session('success')) !!},
             timer: 2500,
             showConfirmButton: false,

@@ -1,6 +1,6 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Gesti├│n de Usuarios')
+@section('title', 'Gestión de Usuarios')
 
 @section('breadcrumb')
     <li class="breadcrumb-item active text-white" aria-current="page">Usuarios</li>
@@ -11,7 +11,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Usuarios</h1>
-            <p class="text-muted mb-0">Administra las cuentas de usuario, perfiles y asignaci├│n de roles.</p>
+            <p class="text-muted mb-0">Administra las cuentas de usuario, perfiles y asignación de roles.</p>
         </div>
         @permiso('usuarios.gestionar')
             <a href="{{ route('usuarios.create') }}" class="btn btn-success">
@@ -40,7 +40,7 @@
                         <th scope="col" class="border-0">Nombre</th>
                         <th scope="col" class="border-0">Email</th>
                         <th scope="col" class="border-0">Username</th>
-                        <th scope="col" class="border-0">Tel├®fono</th>
+                        <th scope="col" class="border-0">Teléfono</th>
                         <th scope="col" class="border-0">Estado</th>
                         <th scope="col" class="border-0">Roles</th>
                         <th scope="col" class="border-0 text-end">Acciones</th>
@@ -111,7 +111,7 @@
         @if($usuarios->hasPages())
             <div class="card-footer border-0 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #151521;">
                 <div class="text-muted small">
-                    Mostrando {{ $usuarios->firstItem() }}ÔÇô{{ $usuarios->lastItem() }} de {{ $usuarios->total() }} usuarios
+                    Mostrando {{ $usuarios->firstItem() }}–{{ $usuarios->lastItem() }} de {{ $usuarios->total() }} usuarios
                 </div>
                 <div>
                     {{ $usuarios->links('pagination::bootstrap-5') }}
@@ -144,7 +144,7 @@
             });
         });
 
-        // SweetAlert2 confirmaci├│n de borrado
+        // SweetAlert2 confirmación de borrado
         const deleteButtons = document.querySelectorAll('.btn-delete-usuario');
         deleteButtons.forEach(btn => {
             btn.addEventListener('click', function() {
@@ -152,13 +152,13 @@
                 const userName = this.getAttribute('data-name');
 
                 Swal.fire({
-                    title: '┬┐Est├ís seguro?',
-                    text: `Vas a eliminar permanentemente al usuario "${userName}". Esta acci├│n no se puede deshacer.`,
+                    title: '¿Estás seguro?',
+                    text: `Vas a eliminar permanentemente al usuario "${userName}". Esta acción no se puede deshacer.`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'S├¡, eliminar',
+                    confirmButtonText: 'Sí, eliminar',
                     cancelButtonText: 'Cancelar',
                     background: '#1e1e2d',
                     color: '#fff'

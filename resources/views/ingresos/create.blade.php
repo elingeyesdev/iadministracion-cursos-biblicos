@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Registrar Ingreso')
 
@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Registrar Ingreso</h1>
-            <p class="text-muted mb-0">Registra un nuevo ingreso financiero asoci├índolo a un culto espec├¡fico.</p>
+            <p class="text-muted mb-0">Registra un nuevo ingreso financiero asociándolo a un culto específico.</p>
         </div>
         <a href="{{ route('ingresos.index') }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-1"></i> Volver
@@ -45,7 +45,7 @@
                             <option value="" disabled {{ old('id_culto') === null ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">-- Selecciona un culto --</option>
                             @foreach($cultos as $culto)
                                 <option value="{{ $culto->id_culto }}" {{ old('id_culto') == $culto->id_culto ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">
-                                    {{ $culto->nombre }} ÔÇö {{ ucfirst($culto->dia_semana) }}
+                                    {{ $culto->nombre }} — {{ ucfirst($culto->dia_semana) }}
                                 </option>
                             @endforeach
                         </select>
@@ -67,7 +67,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="metodo_pago" class="form-label text-white fw-semibold">M├®todo de Pago <span class="text-danger">*</span></label>
+                        <label for="metodo_pago" class="form-label text-white fw-semibold">Método de Pago <span class="text-danger">*</span></label>
                         <select name="metodo_pago" id="metodo_pago" class="form-select bg-transparent text-white border-secondary @error('metodo_pago') is-invalid @enderror" required style="background-color: var(--church-surface, #1e1e2d) !important;">
                             <option value="efectivo" {{ old('metodo_pago') === 'efectivo' ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">Efectivo</option>
                             <option value="transferencia" {{ old('metodo_pago') === 'transferencia' ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">Transferencia</option>

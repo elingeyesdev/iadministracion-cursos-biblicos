@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Nuevo Contrato')
 
@@ -47,7 +47,7 @@
             </div>
 
             <div class="col-md-4">
-                <label for="fecha_fin" class="form-label">Fecha de T├®rmino</label>
+                <label for="fecha_fin" class="form-label">Fecha de Término</label>
                 <input type="date" class="form-control @error('fecha_fin') is-invalid @enderror" id="fecha_fin" name="fecha_fin" value="{{ old('fecha_fin') }}">
                 @error('fecha_fin')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -67,8 +67,8 @@
             </div>
 
             <div class="col-12">
-                <label for="descripcion" class="form-label">Descripci├│n / Detalles del Acuerdo</label>
-                <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="4" placeholder="Escriba los t├®rminos del contrato, servicios prestados, etc...">{{ old('descripcion') }}</textarea>
+                <label for="descripcion" class="form-label">Descripción / Detalles del Acuerdo</label>
+                <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="4" placeholder="Escriba los términos del contrato, servicios prestados, etc...">{{ old('descripcion') }}</textarea>
                 @error('descripcion')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror

@@ -1,11 +1,11 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Biblia')
 
 @section('content')
 <div class="mb-4">
-    <h1 class="sidebar-title" style="font-size:2rem;">Buscador b├¡blico</h1>
-    <p class="text-muted mb-0">Busca referencias b├¡blicas en espa├▒ol (Reina-Valera 1909).</p>
+    <h1 class="sidebar-title" style="font-size:2rem;">Buscador bíblico</h1>
+    <p class="text-muted mb-0">Busca referencias bíblicas en español (Reina-Valera 1909).</p>
 </div>
 
 <div class="row">
@@ -14,7 +14,7 @@
             <div class="card-body">
                 <form id="search-form" class="row g-3">
                     <div class="col-12">
-                        <label for="query" class="form-label">Referencia b├¡blica</label>
+                        <label for="query" class="form-label">Referencia bíblica</label>
                         <input id="query" name="q" type="text" class="form-control" placeholder="Ej: Juan 3:16, Salmos 23 o 1 Corintios 13:4-7" autocomplete="off">
                     </div>
                     <div class="col-12 d-grid">
@@ -86,7 +86,7 @@
             return;
         }
 
-        setFeedback('Buscando vers├¡culos...', 'text-primary');
+        setFeedback('Buscando versículos...', 'text-primary');
         searchResults.innerHTML = '';
 
         try {
@@ -94,13 +94,13 @@
             const data = await response.json();
 
             if (!response.ok) {
-                renderSearchError(data.error || 'No se encontr├│ el vers├¡culo.');
+                renderSearchError(data.error || 'No se encontró el versículo.');
                 setFeedback('Error al buscar la referencia.', 'text-danger');
                 return;
             }
 
             renderSearchResult(data);
-            setFeedback('Vers├¡culo cargado correctamente.', 'text-success');
+            setFeedback('Versículo cargado correctamente.', 'text-success');
         } catch (error) {
             renderSearchError('Error al conectar con la API.');
             setFeedback('No se pudo conectar con Bible API.', 'text-danger');

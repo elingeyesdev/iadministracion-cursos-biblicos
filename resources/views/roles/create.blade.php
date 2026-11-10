@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Nuevo Rol')
 
@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Nuevo Rol</h1>
-            <p class="text-muted mb-0">Crea un rol con nombre, descripci├│n y estado. Los permisos se asignan despu├®s desde Administrar Permisos.</p>
+            <p class="text-muted mb-0">Crea un rol con nombre, descripción y estado. Los permisos se asignan después desde Administrar Permisos.</p>
         </div>
         <a href="{{ route('roles.index') }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-1"></i> Volver
@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="descripcion" class="form-label text-white fw-semibold">Descripci├│n</label>
+                    <label for="descripcion" class="form-label text-white fw-semibold">Descripción</label>
                     <textarea name="descripcion" id="descripcion" rows="4" class="form-control bg-transparent text-white border-secondary @error('descripcion') is-invalid @enderror" placeholder="Describe brevemente las responsabilidades o permisos asociados a este rol...">{{ old('descripcion') }}</textarea>
                     @error('descripcion') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>

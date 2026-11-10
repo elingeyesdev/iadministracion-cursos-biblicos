@@ -1,6 +1,6 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Gesti├│n de Roles')
+@section('title', 'Gestión de Roles')
 
 @section('breadcrumb')
     <li class="breadcrumb-item active text-white" aria-current="page">Roles</li>
@@ -45,7 +45,7 @@
                 <thead class="table-dark" style="background-color: #151521;">
                     <tr>
                         <th scope="col" class="border-0">Nombre</th>
-                        <th scope="col" class="border-0">Descripci├│n</th>
+                        <th scope="col" class="border-0">Descripción</th>
                         <th scope="col" class="border-0">Estado</th>
                         <th scope="col" class="border-0">Permisos</th>
                         <th scope="col" class="border-0">Usuarios Asignados</th>
@@ -64,7 +64,7 @@
                                 @endphp
                                 <span class="badge {{ $badgeClass }}">{{ $rol->nombre }}</span>
                             </td>
-                            <td>{{ $rol->descripcion ?? 'Sin descripci├│n' }}</td>
+                            <td>{{ $rol->descripcion ?? 'Sin descripción' }}</td>
                             <td>
                                 @if($rol->estado === 'activo')
                                     <span class="badge bg-success">Activo</span>
@@ -110,7 +110,7 @@
         @if($roles->hasPages())
             <div class="card-footer border-0 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #151521;">
                 <div class="text-muted small">
-                    Mostrando {{ $roles->firstItem() }}ÔÇô{{ $roles->lastItem() }} de {{ $roles->total() }} roles
+                    Mostrando {{ $roles->firstItem() }}–{{ $roles->lastItem() }} de {{ $roles->total() }} roles
                 </div>
                 <div>
                     {{ $roles->links('pagination::bootstrap-5') }}
@@ -141,7 +141,7 @@
             });
         });
 
-        // SweetAlert2 confirmaci├│n de borrado
+        // SweetAlert2 confirmación de borrado
         const deleteButtons = document.querySelectorAll('.btn-delete-rol');
         deleteButtons.forEach(btn => {
             btn.addEventListener('click', function() {
@@ -149,13 +149,13 @@
                 const rolNombre = this.getAttribute('data-nombre');
 
                 Swal.fire({
-                    title: '┬┐Est├ís seguro?',
-                    text: `Vas a eliminar permanentemente el rol "${rolNombre}". Esta acci├│n no se puede deshacer.`,
+                    title: '¿Estás seguro?',
+                    text: `Vas a eliminar permanentemente el rol "${rolNombre}". Esta acción no se puede deshacer.`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'S├¡, eliminar',
+                    confirmButtonText: 'Sí, eliminar',
                     cancelButtonText: 'Cancelar',
                     background: '#1e1e2d',
                     color: '#fff'

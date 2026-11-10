@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Registrar Egreso')
 
@@ -17,7 +17,7 @@
         <div class="row g-3">
             <div class="col-md-6">
                 <label for="tipo_egreso" class="form-label">Tipo de Egreso <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('tipo_egreso') is-invalid @enderror" id="tipo_egreso" name="tipo_egreso" value="{{ old('tipo_egreso') }}" required placeholder="Ej. Pago de Luz, Compra de Material Did├íctico">
+                <input type="text" class="form-control @error('tipo_egreso') is-invalid @enderror" id="tipo_egreso" name="tipo_egreso" value="{{ old('tipo_egreso') }}" required placeholder="Ej. Pago de Luz, Compra de Material Didáctico">
                 @error('tipo_egreso')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -48,8 +48,8 @@
             </div>
 
             <div class="col-md-4">
-                <label for="comprobante" class="form-label">N├║mero de Comprobante / Boleta / Factura</label>
-                <input type="text" class="form-control @error('comprobante') is-invalid @enderror" id="comprobante" name="comprobante" value="{{ old('comprobante') }}" placeholder="Ej. N┬░ Boleta 10243">
+                <label for="comprobante" class="form-label">Número de Comprobante / Boleta / Factura</label>
+                <input type="text" class="form-control @error('comprobante') is-invalid @enderror" id="comprobante" name="comprobante" value="{{ old('comprobante') }}" placeholder="Ej. N° Boleta 10243">
                 @error('comprobante')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -73,7 +73,7 @@
             <div class="col-md-6">
                 <label for="id_contrato" class="form-label">Asociar a Contrato</label>
                 <select class="form-select @error('id_contrato') is-invalid @enderror" id="id_contrato" name="id_contrato">
-                    <option value="" selected>Ning├║n Contrato</option>
+                    <option value="" selected>Ningún Contrato</option>
                     @foreach($contratos as $contrato)
                         <option value="{{ $contrato->id }}" {{ old('id_contrato') == $contrato->id ? 'selected' : '' }}>
                             Contrato #{{ $contrato->id }} - {{ $contrato->miembro->nombre ?? 'Miembro' }} ({{ Str::limit($contrato->descripcion, 30) }})
@@ -86,7 +86,7 @@
             </div>
 
             <div class="col-12">
-                <label for="descripcion" class="form-label">Descripci├│n Detallada del Gasto</label>
+                <label for="descripcion" class="form-label">Descripción Detallada del Gasto</label>
                 <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="4" placeholder="Detalle los motivos y especificaciones del gasto...">{{ old('descripcion') }}</textarea>
                 @error('descripcion')
                     <div class="invalid-feedback d-block">{{ $message }}</div>

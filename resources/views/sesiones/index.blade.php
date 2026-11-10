@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Listado de Sesiones')
 
@@ -11,7 +11,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="sidebar-title mb-0" style="color: var(--church-gold);"><i class="bi bi-journal-text me-2"></i>Sesiones</h2>
         <a href="{{ route('sesiones.create') }}" class="btn btn-church">
-            <i class="bi bi-plus-circle me-1"></i> Nueva Sesi├│n
+            <i class="bi bi-plus-circle me-1"></i> Nueva Sesión
         </a>
     </div>
 
@@ -83,13 +83,13 @@ document.getElementById('buscador').addEventListener('keyup', function() {
 document.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', function() {
         Swal.fire({
-            title: '┬┐Est├ís seguro?',
-            text: 'Esta acci├│n no se puede deshacer',
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'S├¡, eliminar',
+            confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         }).then(result => {
             if (result.isConfirmed) {

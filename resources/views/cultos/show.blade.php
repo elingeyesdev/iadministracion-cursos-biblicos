@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detalle de Culto')
 
@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Detalle del Culto</h1>
-            <p class="text-muted mb-0">Informaci├│n del culto y registro hist├│rico de recaudaciones.</p>
+            <p class="text-muted mb-0">Información del culto y registro histórico de recaudaciones.</p>
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('cultos.index') }}" class="btn btn-secondary">
@@ -25,7 +25,7 @@
     </div>
 
     <div class="row g-4">
-        <!-- Columna Izquierda: Informaci├│n General -->
+        <!-- Columna Izquierda: Información General -->
         <div class="col-12 col-lg-4">
             <div class="card border-0 shadow-sm" style="background: var(--church-surface, #1e1e2d); border: 1px solid var(--church-border, #2b2b40) !important;">
                 <div class="card-header border-0 bg-dark py-3">
@@ -38,7 +38,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="text-muted small fw-semibold d-block mb-1">D├¡a de la semana</label>
+                        <label class="text-muted small fw-semibold d-block mb-1">Día de la semana</label>
                         <span class="text-white text-capitalize fs-5">{{ $culto->dia_semana }}</span>
                     </div>
 
@@ -48,14 +48,14 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="text-muted small fw-semibold d-block mb-1">Descripci├│n</label>
-                        <p class="text-white mb-0" style="white-space: pre-line;">{{ $culto->descripcion ?? 'Sin descripci├│n registrada.' }}</p>
+                        <label class="text-muted small fw-semibold d-block mb-1">Descripción</label>
+                        <p class="text-white mb-0" style="white-space: pre-line;">{{ $culto->descripcion ?? 'Sin descripción registrada.' }}</p>
                     </div>
 
                     <hr class="border-secondary">
 
                     <div class="mb-0 bg-success bg-opacity-10 p-3 rounded border border-success border-opacity-20 text-center">
-                        <label class="text-success small fw-bold d-block mb-1 text-uppercase">Total Recaudado Hist├│rico</label>
+                        <label class="text-success small fw-bold d-block mb-1 text-uppercase">Total Recaudado Histórico</label>
                         <span class="text-success fw-bold fs-3">Bs. {{ number_format($total, 2) }}</span>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                                 <tr>
                                     <th scope="col" class="border-0 px-4">Fecha</th>
                                     <th scope="col" class="border-0">Tipo</th>
-                                    <th scope="col" class="border-0">M├®todo de Pago</th>
+                                    <th scope="col" class="border-0">Método de Pago</th>
                                     <th scope="col" class="border-0 text-end px-4">Monto</th>
                                 </tr>
                             </thead>
@@ -93,7 +93,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted py-4 px-4">No se han registrado ingresos para este culto todav├¡a.</td>
+                                        <td colspan="4" class="text-center text-muted py-4 px-4">No se han registrado ingresos para este culto todavía.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

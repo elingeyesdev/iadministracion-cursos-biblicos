@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Nuevo Curso')
 
@@ -32,7 +32,7 @@
             </div>
 
             <div class="col-md-3">
-                <label for="f_fin" class="form-label">Fecha de T├®rmino</label>
+                <label for="f_fin" class="form-label">Fecha de Término</label>
                 <input type="date" class="form-control @error('f_fin') is-invalid @enderror" id="f_fin" name="f_fin" value="{{ old('f_fin') }}">
                 @error('f_fin')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -40,8 +40,8 @@
             </div>
 
             <div class="col-md-4">
-                <label for="cupo_max" class="form-label">Cupo M├íximo</label>
-                <input type="number" class="form-control @error('cupo_max') is-invalid @enderror" id="cupo_max" name="cupo_max" value="{{ old('cupo_max') }}" placeholder="Ej. 30 (dejar vac├¡o si es ilimitado)">
+                <label for="cupo_max" class="form-label">Cupo Máximo</label>
+                <input type="number" class="form-control @error('cupo_max') is-invalid @enderror" id="cupo_max" name="cupo_max" value="{{ old('cupo_max') }}" placeholder="Ej. 30 (dejar vacío si es ilimitado)">
                 @error('cupo_max')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -51,13 +51,13 @@
                 <div class="form-check mt-4">
                     <input class="form-check-input" type="checkbox" id="tiene_pago" name="tiene_pago" value="1" {{ old('tiene_pago') ? 'checked' : '' }}>
                     <label class="form-check-label" for="tiene_pago">
-                        Curso requiere Pago / Matr├¡cula
+                        Curso requiere Pago / Matrícula
                     </label>
                 </div>
             </div>
 
             <div class="col-md-4" id="monto_container" style="display: none;">
-                <label for="monto_inscripcion" class="form-label">Monto Inscripci├│n ($) <span class="text-danger">*</span></label>
+                <label for="monto_inscripcion" class="form-label">Monto Inscripción ($) <span class="text-danger">*</span></label>
                 <input type="number" step="0.01" class="form-control @error('monto_inscripcion') is-invalid @enderror" id="monto_inscripcion" name="monto_inscripcion" value="{{ old('monto_inscripcion') }}" placeholder="0.00">
                 @error('monto_inscripcion')
                     <div class="invalid-feedback d-block">{{ $message }}</div>

@@ -1,4 +1,4 @@
-﻿/* Tokens base del tema. El MODO CLARO es el predeterminado; la clase
+/* Tokens base del tema. El MODO CLARO es el predeterminado; la clase
    "church-dark" (aplicada en <html>) redefine todo para el modo oscuro.
    El marcador de tema es una sola clase en <html>: "church-light" o
    "church-dark". Ver resources/js/theme.js. */
@@ -79,7 +79,7 @@ html,body{height:100%}
   --bs-focus-ring-color:rgba(212,175,83,.35);
 }
 
-/* Bot├│n para alternar entre tema claro y oscuro */
+/* Botón para alternar entre tema claro y oscuro */
 .theme-toggle .theme-icon-sun{display:none}
 .church-light .theme-toggle .theme-icon-sun{display:inline-block}
 .church-light .theme-toggle .theme-icon-moon{display:none}
@@ -251,8 +251,8 @@ html,body{height:100%}
 }
 
 /* Sidebar de escritorio fijo: permanece visible mientras se hace scroll en
-   el contenido. La navegaci├│n se desplaza internamente y el pie con
-   "Cerrar sesi├│n" queda siempre a la vista. */
+   el contenido. La navegación se desplaza internamente y el pie con
+   "Cerrar sesión" queda siempre a la vista. */
 @media (min-width: 992px){
   aside.sidebar{
     position:sticky;
@@ -260,9 +260,9 @@ html,body{height:100%}
     align-self:flex-start;
     height:100vh;
     /* El sidebar (sticky) crea un contexto de apilamiento. Bootstrap marca
-       las .card como position:relative, as├¡ que sin z-index las tarjetas del
-       contenido se pintar├¡an por encima del men├║ flotante del usuario.
-       Con este z-index el contexto del sidebar (y su submen├║) queda por
+       las .card como position:relative, así que sin z-index las tarjetas del
+       contenido se pintarían por encima del menú flotante del usuario.
+       Con este z-index el contexto del sidebar (y su submenú) queda por
        encima del contenido. */
     z-index:1030;
   }
@@ -278,7 +278,7 @@ html,body{height:100%}
   letter-spacing:.04em;
 }
 
-/* Men├║ de usuario en el pie del sidebar (correo + cerrar sesi├│n) */
+/* Menú de usuario en el pie del sidebar (correo + cerrar sesión) */
 .user-menu-toggle{
   color:var(--church-text);
   background:transparent;
@@ -300,7 +300,7 @@ html,body{height:100%}
   background:rgba(34,30,25,.05);
 }
 
-/* Vers├¡culo del d├¡a (dashboard): usa las variables del tema para adaptarse
+/* Versículo del día (dashboard): usa las variables del tema para adaptarse
    a claro u oscuro en lugar de un gradiente fijo. */
 .verse-card{
   background:linear-gradient(135deg, var(--church-surface) 0%, var(--church-surface-2) 100%);
@@ -387,7 +387,7 @@ html,body{height:100%}
 /* ============================================================
    AJUSTES DEL MODO CLARO
    El modo claro es el predeterminado (clase "church-light" en <html>).
-   Aqu├¡ se corrigen los componentes que usan colores fijos (no variables)
+   Aquí se corrigen los componentes que usan colores fijos (no variables)
    y las clases utilitarias con colores "de tema oscuro" escritas en las
    vistas (text-white, bg-dark, border-secondary, etc.).
    ============================================================ */
@@ -401,11 +401,11 @@ html,body{height:100%}
 .church-light .table thead th,
 .church-light .table-dark th{
   color:rgba(34,30,25,.72)!important;
-  /* Fondo opaco: tapamos los .table-dark / background en l├¡nea de las vistas */
+  /* Fondo opaco: tapamos los .table-dark / background en línea de las vistas */
   background-color:var(--church-surface-2)!important;
   border-color:var(--church-border)!important;
 }
-/* Encabezados que traen un color de fondo oscuro en l├¡nea (#151521, etc.) */
+/* Encabezados que traen un color de fondo oscuro en línea (#151521, etc.) */
 .church-light thead.table-dark[style]{background-color:transparent!important}
 
 /* Formularios */
@@ -439,7 +439,7 @@ html,body{height:100%}
   --bs-alert-color:#7a5608;
 }
 
-/* Sombras m├ís suaves sobre fondo claro */
+/* Sombras más suaves sobre fondo claro */
 .church-light .shadow-sm{box-shadow:0 .125rem .35rem rgba(34,30,25,.08)!important}
 
 /* Clases utilitarias de tema oscuro usadas directamente en las vistas */
@@ -505,7 +505,7 @@ html,body{height:100%}
    Muchos listados definen a mano colores del tema oscuro (texto
    #c5c5d2, thead / footer #151521, opciones #1e1e2d, etc.). En el
    modo claro los recolocamos en la paleta clara. Se usa !important
-   porque en varios casos vienen como style="" en l├¡nea.
+   porque en varios casos vienen como style="" en línea.
    ============================================================ */
 
 /* Texto claro (#c5c5d2) usado en tablas de listados */
@@ -532,16 +532,16 @@ html,body{height:100%}
 .church-light .swal2-html-container{color:var(--church-text)!important}
 
 /* ============================================================
-   MEN├Ü LATERAL: EXPANDIDO / CONTRA├ìDO (estilo ChatGPT)
+   MENÚ LATERAL: EXPANDIDO / CONTRAÍDO (estilo ChatGPT)
    El estado se guarda con la clase "sidebar-collapsed" en <html>
    (ver resources/js/sidebar.js). Solo se aplica en escritorio; en
-   m├│vil el men├║ sigue siendo el offcanvas de Bootstrap.
+   móvil el menú sigue siendo el offcanvas de Bootstrap.
    ============================================================ */
 
 /* La anchura se anima y el contenido principal se reajusta solo. */
 .sidebar{transition:width .25s ease;}
 
-/* Bot├│n de plegado en la cabecera del men├║ (solo escritorio) */
+/* Botón de plegado en la cabecera del menú (solo escritorio) */
 .sidebar-toggle-btn{
   display:none;
   align-items:center;
@@ -571,7 +571,7 @@ html,body{height:100%}
 @media (min-width: 992px){
   .sidebar-toggle-btn{display:inline-flex;}
 
-  /* Anchura contra├¡da (el aside y su interior comparten la clase .sidebar) */
+  /* Anchura contraída (el aside y su interior comparten la clase .sidebar) */
   html.sidebar-collapsed .sidebar{width:72px;}
   /* Menos relleno interior para que quepan los iconos centrados */
   html.sidebar-collapsed .sidebar.p-3{
@@ -579,7 +579,7 @@ html,body{height:100%}
     padding-right:.5rem!important;
   }
 
-  /* Cabecera: logo arriba y bot├│n debajo, todo centrado */
+  /* Cabecera: logo arriba y botón debajo, todo centrado */
   html.sidebar-collapsed .sidebar-header{
     flex-direction:column;
     align-items:center;
@@ -601,7 +601,7 @@ html,body{height:100%}
     margin-right:0!important;
   }
 
-  /* Secciones secundarias, t├¡tulos y chevrones fuera */
+  /* Secciones secundarias, títulos y chevrones fuera */
   html.sidebar-collapsed .sidebar .sidebar-caret,
   html.sidebar-collapsed .sidebar .sidebar-submenu,
   html.sidebar-collapsed .sidebar .sidebar-group-title{
@@ -619,8 +619,8 @@ html,body{height:100%}
 }
 
 /* ============================================================
-   SUBMEN├Ü FLOTANTE DE USUARIO (avatar del pie del sidebar)
-   Panel con "position:fixed" para que no lo recorte ning├║n
+   SUBMENÚ FLOTANTE DE USUARIO (avatar del pie del sidebar)
+   Panel con "position:fixed" para que no lo recorte ningún
    contenedor con overflow. Prefiere abrir a la derecha del
    avatar; el posicionamiento lo calcula resources/js/sidebar.js.
    ============================================================ */
@@ -694,7 +694,7 @@ html,body{height:100%}
   background:rgba(212,175,83,.16);
 }
 
-/* Cerrar sesi├│n: claramente identificable (rojo) y con hover propio */
+/* Cerrar sesión: claramente identificable (rojo) y con hover propio */
 .user-menu-item.text-danger{
   color:var(--bs-danger);
 }
@@ -710,7 +710,7 @@ html,body{height:100%}
   background:rgba(220,53,69,.2);
 }
 
-/* Animaci├│n suave de apertura y cierre (la controla Alpine) */
+/* Animación suave de apertura y cierre (la controla Alpine) */
 .user-menu-transition{
   transition:opacity .18s ease, transform .18s ease;
 }

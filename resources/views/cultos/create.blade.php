@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Nuevo Culto')
 
@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 text-white mb-1">Nuevo Culto</h1>
-            <p class="text-muted mb-0">Crea una nueva reuni├│n de culto especificando nombre, d├¡a y horario.</p>
+            <p class="text-muted mb-0">Crea una nueva reunión de culto especificando nombre, día y horario.</p>
         </div>
         <a href="{{ route('cultos.index') }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-1"></i> Volver
@@ -40,15 +40,15 @@
 
                 <div class="mb-3">
                     <label for="nombre" class="form-label text-white fw-semibold">Nombre del Culto <span class="text-danger">*</span></label>
-                    <input type="text" name="nombre" id="nombre" class="form-control bg-transparent text-white border-secondary @error('nombre') is-invalid @enderror" value="{{ old('nombre') }}" placeholder="Ej: Culto General Dominical, Culto de Oraci├│n, J├│venes..." required>
+                    <input type="text" name="nombre" id="nombre" class="form-control bg-transparent text-white border-secondary @error('nombre') is-invalid @enderror" value="{{ old('nombre') }}" placeholder="Ej: Culto General Dominical, Culto de Oración, Jóvenes..." required>
                     @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="dia_semana" class="form-label text-white fw-semibold">D├¡a de la semana <span class="text-danger">*</span></label>
+                        <label for="dia_semana" class="form-label text-white fw-semibold">Día de la semana <span class="text-danger">*</span></label>
                         <select name="dia_semana" id="dia_semana" class="form-select bg-transparent text-white border-secondary @error('dia_semana') is-invalid @enderror" required style="background-color: var(--church-surface, #1e1e2d) !important;">
-                            <option value="" disabled {{ old('dia_semana') === null ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">-- Selecciona un d├¡a --</option>
+                            <option value="" disabled {{ old('dia_semana') === null ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">-- Selecciona un día --</option>
                             @foreach(['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'] as $dia)
                                 <option value="{{ $dia }}" {{ old('dia_semana') === $dia ? 'selected' : '' }} style="background: #1e1e2d; color: #fff;">{{ ucfirst($dia) }}</option>
                             @endforeach
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="descripcion" class="form-label text-white fw-semibold">Descripci├│n</label>
+                    <label for="descripcion" class="form-label text-white fw-semibold">Descripción</label>
                     <textarea name="descripcion" id="descripcion" rows="4" class="form-control bg-transparent text-white border-secondary @error('descripcion') is-invalid @enderror" placeholder="Agrega notas o detalles sobre este culto...">{{ old('descripcion') }}</textarea>
                     @error('descripcion') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>

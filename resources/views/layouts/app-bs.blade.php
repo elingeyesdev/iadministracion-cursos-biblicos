@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" class="church-light">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Iglesia') ÔÇö Sistema de Gesti├│n</title>
+    <title>@yield('title', 'Iglesia') — Sistema de Gestión</title>
     @include('layouts.partials.theme-script')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,10 +29,10 @@
                 <div class="container-fluid py-3 d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-2">
                         <button class="btn btn-outline-church d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
-                            Men├║
+                            Menú
                         </button>
                         <div class="d-none d-lg-block text-muted small" style="letter-spacing:.18em; text-transform:uppercase;">
-                            Sistema de gesti├│n eclesi├ística
+                            Sistema de gestión eclesiástica
                         </div>
                     </div>
 
@@ -62,7 +62,7 @@
 
             <footer class="container-fluid pb-4 text-center">
                 <div class="text-muted small">
-                    Ô£Ø Sistema de Gesti├│n
+                    ✝ Sistema de Gestión
                 </div>
             </footer>
         </div>

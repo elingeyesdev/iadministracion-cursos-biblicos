@@ -1,15 +1,15 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Editar Categor├¡a')
+@section('title', 'Editar Categoría')
 
 @section('content')
 
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
     <div>
-        <h1 class="sidebar-title" style="font-size:2rem;">Editar categor├¡a</h1>
+        <h1 class="sidebar-title" style="font-size:2rem;">Editar categoría</h1>
         <p class="text-muted mb-0">Modifica los datos de <strong>{{ $categoria->nombre }}</strong>.</p>
     </div>
-    <a href="{{ route('categoriaactividad.index') }}" class="btn btn-outline-church">ÔåÉ Volver</a>
+    <a href="{{ route('categoriaactividad.index') }}" class="btn btn-outline-church">← Volver</a>
 </div>
 
 <div class="card shadow-sm">
@@ -24,7 +24,7 @@
                 @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             <div class="mb-3">
-                <label for="descripcion" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Descripci├│n</label>
+                <label for="descripcion" class="form-label text-muted" style="letter-spacing:.18em; text-transform:uppercase; font-size:.75rem;">Descripción</label>
                 <textarea id="descripcion" name="descripcion" rows="4" class="form-control @error('descripcion') is-invalid @enderror">{{ old('descripcion', $categoria->descripcion) }}</textarea>
                 @error('descripcion') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
