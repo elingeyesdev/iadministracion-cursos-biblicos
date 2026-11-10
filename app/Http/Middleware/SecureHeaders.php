@@ -28,15 +28,19 @@ class SecureHeaders
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
-        // Content Security Policy (CWE-693). Se permite 'unsafe-inline' porque las
-        // vistas usan <script> y estilos en línea; migrar a nonces para endurecerla.
+        // Content Security Policy (CWE-693).
+        // - 'unsafe-inline': las vistas usan <script> y estilos en línea.
+        // - 'unsafe-eval': Alpine.js compila sus expresiones con new Function().
+        // - fonts.googleapis.com / fonts.gstatic.com: tipografías del tema.
+        // El resto de dependencias (Bootstrap, SweetAlert) se empaquetan con Vite.
         $response->headers->set(
             'Content-Security-Policy',
             "default-src 'self'; ".
             "img-src 'self' data:; ".
-            "style-src 'self' 'unsafe-inline'; ".
-            "script-src 'self' 'unsafe-inline'; ".
-            "font-src 'self' data:; ".
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; ".
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; ".
+            "font-src 'self' data: https://fonts.gstatic.com; ".
+            "connect-src 'self'; ".
             "object-src 'none'; ".
             "base-uri 'self'; ".
             "form-action 'self'; ".

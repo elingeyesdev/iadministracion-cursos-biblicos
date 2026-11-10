@@ -9,9 +9,8 @@
     @include('layouts.partials.theme-script')
     @include('layouts.partials.sidebar-script')
 
-    <!-- Bootstrap 5 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
+    <!-- Bootstrap se incluye en app.css/app.js mediante Vite. -->
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -74,36 +73,38 @@
         </div>
     </div>
 
-    <!-- Bootstrap 5 Bundle JS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-    <!-- SweetAlert2 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Bootstrap y SweetAlert2 se incluyen en app.js mediante Vite. -->
 
     <!-- Success and Error alerts from session -->
     @if(session('success'))
     <script>
-        Swal.fire({
-            icon: 'success',
-            title: '¡Éxito!',
-            text: {!! json_encode(session('success')) !!},
-            timer: 2500,
-            showConfirmButton: false,
-            toast: true,
-            position: 'top-end',
-            timerProgressBar: true
+        // SweetAlert viene en app.js (módulo diferido), así que esperamos a que
+        // el documento termine de cargar para que window.Swal ya exista.
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: {!! json_encode(session('success')) !!},
+                timer: 2500,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end',
+                timerProgressBar: true
+            });
         });
     </script>
     @endif
     
     @if(session('error'))
     <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: {!! json_encode(session('error')) !!},
-            timer: 3500,
-            showConfirmButton: true
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: {!! json_encode(session('error')) !!},
+                timer: 3500,
+                showConfirmButton: true
+            });
         });
     </script>
     @endif
